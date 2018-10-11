@@ -1,0 +1,9 @@
+{# @var form #}
+{% extends 'base.html.twig' %}
+{% block title %} Micro Posts Page {% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+    {{ form_end(form) }}
+{% endblock %}

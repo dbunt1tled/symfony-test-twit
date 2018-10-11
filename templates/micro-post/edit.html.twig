@@ -1,0 +1,12 @@
+{# @var form #}
+{% extends 'base.html.twig' %}
+{% block title %} Micro Posts Page {% endblock %}
+
+{% block body %}
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+        <h6 class="border-bottom border-grey pb-2 mb-0">Edit Micro Post</h6>
+        {{ form_start(form) }}
+            {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
