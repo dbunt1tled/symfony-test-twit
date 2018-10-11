@@ -32,5 +32,9 @@ services:
     App\Twig\AppExtension:
         arguments:
             $locale: '%locale%'
+
+    App\EventListener\LikeNotificationSubscriber:
+        tags:
+            - { name: doctrine.event_subscriber, event: onFlush, connection: default }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

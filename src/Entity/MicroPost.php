@@ -121,6 +121,12 @@ class MicroPost
             $this->likedBy->add($user);
         }
     }
+    public function unLike(User $user)
+    {
+        if($this->likedBy->contains($user)) {
+            $this->likedBy->removeElement($user);
+        }
+    }
 
     /**
      * @ORM\PrePersist()

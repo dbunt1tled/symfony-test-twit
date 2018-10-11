@@ -7,6 +7,51 @@
         <h6 class="border-bottom border-grey pb-2 mb-0">Show Mocro Post</h6>
         {% if post %}
             {{ include('/micro-post/post.html.twig', {'post': post}) }}
+
+            {% set isLiked = post.getLikedBy.contains(app.user) %}
+            <div class="pt-2">
+                    <button class="btn btn-outline-secondary btn-sm" id="unLikeBtn" {% if not isLiked %} style="display: none" {% endif %}><i class="fal fa-heart"></i>UnLike
+                        <span class="badge badge-secondary" id="likesUnLike">{{ post.getLikedBy.count }}</span>
+                    </button>
+                    <button class="btn btn-outline-danger btn-sm" id="likeBtn" {% if isLiked %} style="display: none" {% endif %}><i class="fas fa-heart"></i>Like
+                        <span class="badge badge-danger" id="likesLike">{{ post.getLikedBy.count }}</span>
+                    </button>
+            </div>
         {% endif %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        let likeButton = document.getElementById('likeBtn');
+        let unLikeButton = document.getElementById('unLikeBtn');
+        addOnClick(likeButton,unLikeButton, document.getElementById('likesUnLike'),'{{ path('likes_like',{'id': post.id}) }}' );
+        addOnClick(unLikeButton,likeButton, document.getElementById('likesLike'),'{{ path('likes_unlike',{'id': post.id}) }}' );
+        function switchButton(button, oppositeButton) {
+            button.disabled = false;
+            button.style.display = 'none';
+            oppositeButton.style.display = 'block';
+        }
+        function  addOnClick(button, oppositeButton, likeCount, path) {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+                {% if app.user %}
+                    button.disabled = true;
+                    fetch(path,{'credentials': 'include'})
+                        .then(function (response) {
+                            response.json().then(function (json) {
+                                likeCount.innerText = json.count;
+                                switchButton(button, oppositeButton);
+                            })
+                        })
+                        .catch( function () {
+                            switchButton(button, oppositeButton);
+                        });
+                {% else %}
+                    window.location = '{{ path('login') }}';
+                {% endif %}
+            });
+        }
+    </script>
 {% endblock %}

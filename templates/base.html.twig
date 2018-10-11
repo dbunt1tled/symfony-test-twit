@@ -24,6 +24,14 @@
 
                 <ul class="navbar-nav px-3">
                     {% if is_granted('ROLE_USER') %}
+                        <li class="nav-item text-nowrap border-right border-secondary">
+                            <a class="nav-link" href="{{ path('notification_all') }}">
+                                Notifications
+                                <span class="badge badge-light" id="notification-count">
+                                    <i class="fa fa-circle fa-circle-o-notch fa-spin"></i>
+                                </span>
+                            </a>
+                        </li>
                         <li class="nav-item text-nowrap">
                             <a class="nav-link" href="#">{{ app.user.fullName }}</a>
                         </li>
@@ -56,6 +64,24 @@
     </footer>
 </wrapper>
 <script src="{{ asset('build/app.js') }}"></script>
+{% if is_granted('ROLE_USER') %}
+    <script>
+        function fetchNotificationCount() {
+            fetch('{{ path('notification_unread',{'credentials': 'include'}) }}')
+                .then(response => {
+                    response.json().then(value => {
+                        document.getElementById('notification-count').innerText = value.count;
+                    });
+                    setTimeout(fetchNotificationCount,10000);
+                })
+                .catch(reason => {
+                    console.log(reason);
+                });
+        }
+        fetchNotificationCount();
+    </script>
+{% endif %}
+
 {% block javascripts %}{% endblock %}
 </body>
 </html>
