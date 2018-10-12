@@ -52,6 +52,7 @@ class AppFixtures extends Fixture
                 ->setRoles([User::ROLE_USER])
                 ->setUsername($this->slug($name))
                 ->setPlainPassword('12345678')
+                ->setEnabled(true)
                 ->setPassword($this->userPasswordEncoder->encodePassword($user,$user->getPlainPassword()));
             $manager->persist($user);
             $this->addReference($user->getUsername(),$user);
@@ -63,6 +64,7 @@ class AppFixtures extends Fixture
             ->setRoles([User::ROLE_ADMIN])
             ->setUsername('sidni')
             ->setPlainPassword('12345678')
+            ->setEnabled(true)
             ->setPassword($this->userPasswordEncoder->encodePassword($user,$user->getPlainPassword()));
         $manager->persist($user);
         $this->addReference($user->getUsername(),$user);

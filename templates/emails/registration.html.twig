@@ -1,0 +1,6 @@
+{# @var User $user #}
+<h3>Welcome to App</h3>
+<p>Hello {{ user.fullName }}! You are registered into App</p>
+To confirm, you email go to <a href="{{ url('security_confirm',{'token':user.confirmationToken}) }}">Login</a>
+
+thanks!

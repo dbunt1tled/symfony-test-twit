@@ -1,0 +1,12 @@
+{# @var user #}
+{% extends 'base.html.twig' %}
+{% block title %} Micro Posts Confirm {% endblock %}
+
+{% block body %}
+    {% if user %}
+        <h5>Congratulations!</h5>
+        <p>Dear, {{ user.fullName }}. Your account is confirmed! You can now sign in <a href="{{ path('login') }}">here</a></p>
+    {% else %}
+        <div class="col-12 alert alert-info">Something Wrong. Check your email</div>
+    {% endif %}
+{% endblock %}

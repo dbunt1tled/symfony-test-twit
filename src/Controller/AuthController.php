@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Events\UserRegisterEvent;
 use App\Form\LoginType;
 use App\Form\SignUpType;
 use App\Repository\UserRepository;
+use App\Security\TokenGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -41,12 +44,22 @@ class AuthController extends AbstractController
      * @var FlashBagInterface
      */
     private $flashBag;
+    /**
+     * @var EventDispatcherInterface
+     */
+    private $eventDispatcher;
+    /**
+     * @var TokenGenerator
+     */
+    private $tokenGenerator;
 
     public function __construct(UserRepository $userRepository,
                                 SessionInterface $session,
                                 EntityManagerInterface $entityManager,
                                 AuthenticationUtils $authenticationUtils,
                                 UserPasswordEncoderInterface $passwordEncoder,
+                                EventDispatcherInterface $eventDispatcher,
+                                TokenGenerator $tokenGenerator,
                                 FlashBagInterface $flashBag)
     {
         $this->userRepository = $userRepository;
@@ -55,6 +68,8 @@ class AuthController extends AbstractController
         $this->authenticationUtils = $authenticationUtils;
         $this->passwordEncoder = $passwordEncoder;
         $this->flashBag = $flashBag;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->tokenGenerator = $tokenGenerator;
     }
 
     /**
@@ -93,14 +108,37 @@ class AuthController extends AbstractController
         if($form->isSubmitted() && $form->isValid()) {
             $password = $this->passwordEncoder->encodePassword($user,$user->getPlainPassword());
             $user->setPassword($password);
+            $user->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
             $this->entityManager->persist($user);
             $this->entityManager->flush();
+
+            $userRegisterEvent = new UserRegisterEvent($user);
+            $this->eventDispatcher->dispatch(UserRegisterEvent::NAME, $userRegisterEvent);
 
             return $this->redirectToRoute('micro_post_index');
         }
 
         return $this->render('auth/register.html.twig',[
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/confirm/{token}", name="security_confirm", methods={"GET"})
+     * @param string $token
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function confirm(string $token)
+    {
+        $user = $this->userRepository->findOneBy(['confirmationToken'=>$token]);
+        if($user !== null) {
+            $user->setEnabled(true)
+                ->setConfirmationToken('');
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+        }
+        return $this->render('auth/confirm.html.twig',[
+            'user' => $user,
         ]);
     }
 }

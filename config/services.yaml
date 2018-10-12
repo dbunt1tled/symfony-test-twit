@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
+    emailFrom: '%env(MAILER_FROM)%'
     #hello_message : 'Hello from service'
 
 services:
@@ -12,7 +13,7 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        public: true       # Allows optimizing the container by removing unused services; this also means
+        public: false       # Allows optimizing the container by removing unused services; this also means
                             # fetching services directly from the container via $container->get() won't work.
                             # The best practice is to be explicit about your dependencies anyway.
         #bind:
@@ -33,6 +34,9 @@ services:
         arguments:
             $locale: '%locale%'
 
+    App\Mailer\Mailer:
+        arguments:
+            $mailFrom: '%emailFrom%'
     App\EventListener\LikeNotificationSubscriber:
         tags:
             - { name: doctrine.event_subscriber, event: onFlush, connection: default }

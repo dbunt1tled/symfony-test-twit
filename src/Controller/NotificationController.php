@@ -92,7 +92,7 @@ class NotificationController extends AbstractController
         $notification->setSeen(true);
         $this->entityManager->persist($notification);
         $this->entityManager->flush();
-        return $this->redirectToRoute('notification_all')
+        return $this->redirectToRoute('notification_all');
     }
 
     /**
@@ -101,10 +101,11 @@ class NotificationController extends AbstractController
      */
     public function acknowledgeAll()
     {
-        $notification->setSeen(true);
-        $this->entityManager->persist($notification);
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->notificationRepository->markAllAsReadByUser($user);
         $this->entityManager->flush();
-        return $this->redirectToRoute('notification_all')
+        return $this->redirectToRoute('notification_all');
     }
 
 

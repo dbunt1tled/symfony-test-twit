@@ -4,21 +4,30 @@
 
 {% block body %}
     <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Unread Notifications</h5>
-        </div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                {% for notification in notifications %}
-                    <li class="list-group-item">
-                        {% if notification is like %}
-                            <a href="{{ path('micro_post_user',{'username': notification.likedBy.username}) }}">{{ notification.likedBy.username }}</a>
-                            likes yours
-                            <a href="{{ path('micro_post_post',{'id': notification.microPost.id}) }}">post</a>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+        {% if notifications|length %}
+            <div class="card-header">
+                <h5 class="card-title">Unread Notifications</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><a class="btn btn-link btn-outline-info" href="{{ path('notification_acknowledge_all') }}">Mark all seen</a></li>
+                    {% for notification in notifications %}
+                        <li class="list-group-item">
+                            {% if notification is like %}
+                                <a href="{{ path('micro_post_user',{'username': notification.likedBy.username}) }}">{{ notification.likedBy.username }}</a>
+                                likes yours
+                                <a href="{{ path('micro_post_post',{'id': notification.microPost.id}) }}">post</a>
+                                <a class="btn btn-primary btn-sm" href="{{ path('notification_acknowledge',{'id': notification.id}) }}">OK</a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <div class="card-body">
+                You have not Notifications
+            </div>
+
+        {% endif %}
     </div>
 {% endblock %}
