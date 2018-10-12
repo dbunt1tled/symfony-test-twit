@@ -26,6 +26,7 @@ security:
             security: false
         main:
             pattern: ^/
+            user_checker: App\Security\UserChecker
             provider: chain_providers
             anonymous: true
             switch_user: true

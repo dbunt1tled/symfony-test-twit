@@ -286,6 +286,7 @@ class User implements UserInterface, \Serializable
             $this->id,
             $this->email,
             $this->password,
+            $this->enabled,
         ]);
     }
     public function unserialize($serialized): void
@@ -293,7 +294,8 @@ class User implements UserInterface, \Serializable
         list(
             $this->id,
             $this->email,
-            $this->password) = unserialize($serialized);
+            $this->password,
+            $this->enabled) = unserialize($serialized);
     }
     public function eraseCredentials()
     {
@@ -407,4 +409,20 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+    public function isEnabled()
+    {
+        return $this->getEnabled();
+    }
 }
