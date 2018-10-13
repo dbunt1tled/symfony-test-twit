@@ -4,15 +4,15 @@
 {% block title %} Micro Posts Page {% endblock %}
 
 {% block body %}
-    {% if error %}
-        <div class="col-12 alert alert-danger">
-            {{ error.messageKey | trans(error.messageData, 'security') }}
-        </div>
-    {% endif %}
-        <div class="example-wrapper">
-            <h1>Login on Our Site ✅</h1>
-            {{ form_start(form) }}
+    <div class="col-12">
+        {% if error %}
+            <div class="col-12 alert alert-danger">
+                {{ error.messageKey | trans(error.messageData, 'security') }}
+            </div>
+        {% endif %}
+        <h4>{{ 'Login on Our Site'|trans }}</h4>
+         {{ form_start(form) }}
             {{ form_widget(form) }}
-            {{ form_end(form) }}
-        </div>
+         {{ form_end(form) }}
+    </div>
 {% endblock %}

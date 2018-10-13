@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: 'en'
+    locale: 'ru'
     emailFrom: '%env(MAILER_FROM)%'
     #hello_message : 'Hello from service'
 
@@ -37,6 +37,13 @@ services:
     App\Mailer\Mailer:
         arguments:
             $mailFrom: '%emailFrom%'
+
+    Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
+      arguments:
+            #- 'mysql:dbname=sym_prj'
+            #- { db_username: root, db_password: 12345678 }
+            - !service { class: PDO, factory: 'database_connection:getWrappedConnection' }
+            - { lock_mode: 1}
     App\EventListener\LikeNotificationSubscriber:
         tags:
             - { name: doctrine.event_subscriber, event: onFlush, connection: default }

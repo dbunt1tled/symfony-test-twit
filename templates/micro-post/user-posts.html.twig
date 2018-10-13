@@ -24,7 +24,7 @@
     <div class="card-group py-2 p-2">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Followers</h5>
+                <h5 class="card-title">{{ 'Followers' |  transchoice(user.followers|length) }}</h5>
             </div>
             <ul class="list-group list-group-flush p-2">
                 {% for follower in user.followers %}
@@ -38,7 +38,7 @@
     <div class="card-group py-2 p-2">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">Followings</h5>
+                <h5 class="card-title">{{ 'Followings' |  transchoice(user.following|length) }}</h5>
             </div>
             <ul class="list-group list-group-flush p-2">
                 {% for following in user.following %}

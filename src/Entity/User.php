@@ -14,7 +14,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UniqueEntity("email")
+ * @UniqueEntity(fields="email", message="This e-mail is already used")
+ * @UniqueEntity(fields="username", message="This name is already used")
  */
 class User implements UserInterface, \Serializable
 {
@@ -360,7 +361,7 @@ class User implements UserInterface, \Serializable
      */
     public function follow(User $follower): void
     {
-        if($this->getFollowing()->contains($follower)) {
+        if(!$this->getFollowing()->contains($follower)) {
             $this->getFollowing()->add($follower);
         }
     }
