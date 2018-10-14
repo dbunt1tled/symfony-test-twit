@@ -137,6 +137,12 @@ class User implements UserInterface, \Serializable
      * @ORM\Column(type="boolean")
      */
     private $enabled;
+    /**
+     * "persist" - automaticaly add to persist on save user
+     * @ORM\OneToOne(targetEntity="App\Entity\UserPreferences", cascade={"persist"} )
+     *
+     */
+    private $preferences;
 
     public function __construct()
     {
@@ -410,6 +416,27 @@ class User implements UserInterface, \Serializable
         return $this;
     }
 
+    /**
+     * @param UserPreferences $preferences
+     * @return User
+     */
+    public function setPreferences(UserPreferences $preferences): self
+    {
+        $this->preferences = $preferences;
+        return $this;
+    }
+
+    /**
+     * @return null|UserPreferences
+     */
+    public function getPreferences(): ?UserPreferences
+    {
+        return $this->preferences;
+    }
+
+    /*
+     * For UserChecker
+     */
     public function isAccountNonLocked()
     {
         return true;

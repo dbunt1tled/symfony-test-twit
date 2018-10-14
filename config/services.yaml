@@ -38,6 +38,14 @@ services:
         arguments:
             $mailFrom: '%emailFrom%'
 
+    App\EventListener\LocaleSubscriber:
+        arguments:
+            - '%kernel.default_locale%'
+
+    App\EventListener\UserSubscriber:
+        arguments:
+            $defaultLanguage: '%kernel.default_locale%'
+
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
       arguments:
             #- 'mysql:dbname=sym_prj'

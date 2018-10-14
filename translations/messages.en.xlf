@@ -2,6 +2,10 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" target-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="add_new">
+                <source>Add new</source>
+                <target>Add new</target>
+            </trans-unit>
             <trans-unit id="note">
                 <source>note</source>
                 <target>NOTE</target>
@@ -25,6 +29,30 @@
             <trans-unit id="users.following">
                 <source>Followings</source>
                 <target>{0} Following no one|]0,Inf[ %count% Followings</target>
+            </trans-unit>
+            <trans-unit id="recent_updates">
+                <source>Recent Updates</source>
+                <target>Recent Updates</target>
+            </trans-unit>
+            <trans-unit id="show">
+                <source>Show</source>
+                <target>Show</target>
+            </trans-unit>
+            <trans-unit id="edit">
+                <source>Edit</source>
+                <target>Edit</target>
+            </trans-unit>
+            <trans-unit id="delete">
+                <source>Delete</source>
+                <target>Delete</target>
+            </trans-unit>
+            <trans-unit id="like">
+                <source>Like</source>
+                <target>Like</target>
+            </trans-unit>
+            <trans-unit id="unlike">
+                <source>UnLike</source>
+                <target>UnLike</target>
             </trans-unit>
             <trans-unit id="emails.registration">
                 <source>emails.registration</source>

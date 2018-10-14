@@ -36,20 +36,44 @@ thanks!]]></target>
             </trans-unit>
 
             <trans-unit id="add_new">
-                <source>Add New</source>
+                <source>Add new</source>
                 <target>Добавить новую</target>
             </trans-unit>
-            <trans-unit id="Logout">
+            <trans-unit id="logout">
                 <source>Logout</source>
                 <target>Выйти</target>
             </trans-unit>
-            <trans-unit id="Login">
+            <trans-unit id="login">
                 <source>Login</source>
                 <target>Войти</target>
             </trans-unit>
             <trans-unit id="register">
                 <source>Register</source>
                 <target>Регистрация</target>
+            </trans-unit>
+            <trans-unit id="recent_updates">
+                <source>Recent Updates</source>
+                <target>Последние обновления</target>
+            </trans-unit>
+            <trans-unit id="show">
+                <source>Show</source>
+                <target>Показать</target>
+            </trans-unit>
+            <trans-unit id="edit">
+                <source>Edit</source>
+                <target>Редактировать</target>
+            </trans-unit>
+            <trans-unit id="delete">
+                <source>Delete</source>
+                <target>Удалить</target>
+            </trans-unit>
+            <trans-unit id="like">
+                <source>Like</source>
+                <target>Лайк</target>
+            </trans-unit>
+            <trans-unit id="unlike">
+                <source>UnLike</source>
+                <target>АнЛайк</target>
             </trans-unit>
             <trans-unit id="notifications">
                 <source>Notifications</source>

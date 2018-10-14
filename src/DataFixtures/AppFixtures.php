@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\MicroPost;
 use App\Entity\User;
+use App\Entity\UserPreferences;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
 use Faker\Factory;
@@ -13,6 +14,7 @@ class AppFixtures extends Fixture
 {
     private $faker;
     private $users = [];
+    private $languages = ['en','ru'];
     /**
      * @var UserPasswordEncoderInterface
      */
@@ -54,8 +56,12 @@ class AppFixtures extends Fixture
                 ->setPlainPassword('12345678')
                 ->setEnabled(true)
                 ->setPassword($this->userPasswordEncoder->encodePassword($user,$user->getPlainPassword()));
-            $manager->persist($user);
             $this->addReference($user->getUsername(),$user);
+            $preference = new UserPreferences();
+            $preference->setLocale($this->languages[array_rand($this->languages)]);
+            $user->setPreferences($preference);
+            //$manager->persist($preference); // set  cascade={"persist"}  in User
+            $manager->persist($user);
             $this->users[] = $user->getUsername();
         }
         $user = new User();
@@ -66,10 +72,13 @@ class AppFixtures extends Fixture
             ->setPlainPassword('12345678')
             ->setEnabled(true)
             ->setPassword($this->userPasswordEncoder->encodePassword($user,$user->getPlainPassword()));
-        $manager->persist($user);
         $this->addReference($user->getUsername(),$user);
+        $preference = new UserPreferences();
+        $preference->setLocale('ru');
+        $user->setPreferences($preference);
+        //$manager->persist($preference); // set  cascade={"persist"} in User
+        $manager->persist($user);
         $this->users[] = $user->getUsername();
-
         $manager->flush();
     }
 

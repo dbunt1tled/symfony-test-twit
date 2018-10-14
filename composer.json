@@ -7,6 +7,7 @@
         "ext-iconv": "*",
         "ext-intl": "*",
         "ext-json": "*",
+        "ext-ctype": "*",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "*",
         "symfony/console": "*",
@@ -36,6 +37,7 @@
         "symfony/debug-pack": "*",
         "symfony/dotenv": "*",
         "symfony/maker-bundle": "^1.0",
+        "symfony/phpunit-bridge": "*",
         "symfony/profiler-pack": "*",
         "symfony/test-pack": "*",
         "symfony/web-server-bundle": "*"
