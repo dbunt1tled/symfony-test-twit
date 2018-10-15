@@ -441,6 +441,7 @@ class User implements UserInterface, \Serializable
     {
         return true;
     }
+
     public function isCredentialsNonExpired()
     {
         return true;
