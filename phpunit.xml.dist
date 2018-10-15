@@ -15,6 +15,11 @@
         <env name="APP_SECRET" value="s$cretf0rt3st" />
         <env name="SHELL_VERBOSITY" value="-1" />
         <!-- define your env variables for the test env here -->
+
+        <!-- ###+ doctrine/mongodb-odm-bundle ### -->
+        <env name="MONGODB_URL" value="mongodb://localhost:27017"/>
+        <env name="MONGODB_DB" value="symfony"/>
+        <!-- ###- doctrine/mongodb-odm-bundle ### -->
     </php>
 
     <testsuites>

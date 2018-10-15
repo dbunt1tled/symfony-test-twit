@@ -1,3 +1,14 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+Auth:
+  resource: 'App\Controller\AuthController'
+  type: annotation
+
+MongoTest:
+  resource: 'App\Controller\MongoTestController'
+  type: annotation
+
+MicroPost:
+  resource: 'App\Controller\MicroPostController'
+  type: annotation
