@@ -10,6 +10,7 @@ namespace App\Security;
 
 
 use App\Entity\User;
+use App\Document\User as MUser;
 use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 use Symfony\Component\Security\Core\Exception\CredentialsExpiredException;
 use Symfony\Component\Security\Core\Exception\DisabledException;
@@ -24,7 +25,8 @@ class UserChecker implements UserCheckerInterface
      */
     public function checkPreAuth(UserInterface $user)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof User || !$user instanceof MUser) {
+
             return;
         }
 
@@ -52,7 +54,7 @@ class UserChecker implements UserCheckerInterface
      */
     public function checkPostAuth(UserInterface $user)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof User || !$user instanceof MUser) {
             return;
         }
 

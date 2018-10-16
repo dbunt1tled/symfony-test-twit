@@ -36,4 +36,13 @@ class UserRepository extends DocumentRepository
         $this->dm->persist($user);
         $this->dm->flush();
     }
+    public function getByToken(string $token)
+    {
+        return $this->createQueryBuilder()
+            ->field('confirmationToken')->equals($token)
+            ->getQuery()
+            ->getSingleResult();
+
+
+    }
 }

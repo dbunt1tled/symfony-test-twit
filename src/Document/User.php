@@ -12,15 +12,14 @@ namespace App\Document;
 use App\Document\Traits\TimestampableTrait;
 use App\Hydrator\Hydro;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @MongoDB\Document(repositoryClass="App\Repositories\UserRepository", requireIndexes=true)
+ * @MongoDB\Document(repositoryClass="App\Repositories\UserRepository")
  * @MongoDB\HasLifecycleCallbacks
- * @UniqueEntity(fields="email", message="This e-mail is already used")
- * @UniqueEntity(fields="username", message="This name is already used")
+ * @MongoDBUnique(fields="email", message="This e-mail is already used")
  */
 class User implements UserInterface, \Serializable
 {
@@ -97,6 +96,7 @@ class User implements UserInterface, \Serializable
     {
         $this->enabled = false;
         $this->roles = [self::ROLE_USER];
+        $this->preferences = ['locale' => 'en'];
     }
 
     /**
@@ -342,4 +342,12 @@ class User implements UserInterface, \Serializable
     {
         $this->preferences = $preferences;
     }
+    /**
+     * @param array $preferences
+     */
+    public function addPreferences(array $preferences): void
+    {
+        $this->preferences = $this->preferences + $preferences;
+    }
+
 }

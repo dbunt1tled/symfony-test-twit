@@ -12,7 +12,7 @@ namespace App\EventListener;
 use App\Entity\UserPreferences;
 use App\Events\UserRegisterEvent;
 use App\Mailer\Mailer;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repositories\UserRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class UserSubscriber implements EventSubscriberInterface
@@ -22,19 +22,19 @@ class UserSubscriber implements EventSubscriberInterface
      */
     private $mailer;
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-    /**
      * @var string
      */
     private $defaultLanguage;
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
 
-    public function __construct(Mailer $mailer, EntityManagerInterface $entityManager, string $defaultLanguage)
+    public function __construct(Mailer $mailer, UserRepository $userRepository, string $defaultLanguage)
     {
         $this->mailer = $mailer;
-        $this->entityManager = $entityManager;
         $this->defaultLanguage = $defaultLanguage;
+        $this->userRepository = $userRepository;
     }
 
     public static function getSubscribedEvents()
@@ -46,11 +46,8 @@ class UserSubscriber implements EventSubscriberInterface
     public function onUserRegister(UserRegisterEvent $event)
     {
         $user = $event->getRegisterUser();
-        $preferences = new UserPreferences();
-        $preferences->setLocale($this->defaultLanguage);
-        $user->setPreferences($preferences);
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $user->addPreferences(['locale' => $this->defaultLanguage]);
+        $this->userRepository->save($user);
         return $this->mailer->sendConfirmationEmail($user);
 
     }

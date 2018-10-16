@@ -8,7 +8,7 @@
 
 namespace App\Form;
 
-use App\Entity\User;
+use App\Document\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -26,14 +26,14 @@ class SignUpType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('username', TextType::class)
+            ->add('firstName', TextType::class)
+            ->add('lastName', TextType::class)
             ->add('email', EmailType::class)
             ->add('plainPassword', RepeatedType::class,[
                 'type' => PasswordType::class,
                 'first_options' => ['label' => 'Password'],
                 'second_options' => ['label' => 'Repeated passwords']
             ])
-            ->add('fullName', TextType::class)
             ->add('termsAgreed', CheckboxType::class,[
                 'mapped' => false,
                 'constraints' => new IsTrue(),

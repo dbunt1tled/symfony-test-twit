@@ -2,13 +2,12 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
+use App\Document\User;
 use App\Events\UserRegisterEvent;
 use App\Form\LoginType;
 use App\Form\SignUpType;
-use App\Repository\UserRepository;
+use App\Repositories\UserRepository;
 use App\Security\TokenGenerator;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,10 +27,6 @@ class AuthController extends AbstractController
      * @var SessionInterface
      */
     private $session;
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
     /**
      * @var AuthenticationUtils
      */
@@ -55,7 +50,6 @@ class AuthController extends AbstractController
 
     public function __construct(UserRepository $userRepository,
                                 SessionInterface $session,
-                                EntityManagerInterface $entityManager,
                                 AuthenticationUtils $authenticationUtils,
                                 UserPasswordEncoderInterface $passwordEncoder,
                                 EventDispatcherInterface $eventDispatcher,
@@ -64,7 +58,6 @@ class AuthController extends AbstractController
     {
         $this->userRepository = $userRepository;
         $this->session = $session;
-        $this->entityManager = $entityManager;
         $this->authenticationUtils = $authenticationUtils;
         $this->passwordEncoder = $passwordEncoder;
         $this->flashBag = $flashBag;
@@ -109,8 +102,7 @@ class AuthController extends AbstractController
             $password = $this->passwordEncoder->encodePassword($user,$user->getPlainPassword());
             $user->setPassword($password);
             $user->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
-            $this->entityManager->persist($user);
-            $this->entityManager->flush();
+            $this->userRepository->save($user);
 
             $userRegisterEvent = new UserRegisterEvent($user);
             $this->eventDispatcher->dispatch(UserRegisterEvent::NAME, $userRegisterEvent);
@@ -124,18 +116,17 @@ class AuthController extends AbstractController
     }
 
     /**
-     * @Route("/confirm/{token}", name="security_confirm", methods={"GET"})
-     * @param string $token
+     * @Route("/confirm/{confirmationToken}", name="security_confirm", methods={"GET"})
+     * @param string $confirmationToken
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function confirm(string $token)
+    public function confirm(string $confirmationToken)
     {
-        $user = $this->userRepository->findOneBy(['confirmationToken'=>$token]);
+        $user = $this->userRepository->findOneBy(['confirmationToken'=>$confirmationToken]);
         if($user !== null) {
             $user->setEnabled(true)
                 ->setConfirmationToken('');
-            $this->entityManager->persist($user);
-            $this->entityManager->flush();
+            $this->userRepository->save($user);
         }
         return $this->render('auth/confirm.html.twig',[
             'user' => $user,

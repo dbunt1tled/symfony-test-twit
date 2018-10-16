@@ -72,6 +72,12 @@ services:
             $autoGenerate: 1
     Doctrine\ODM\MongoDB\Hydrator\HydratorFactory: '@mongodb.odm.hydrator_factory'
 
+    App\Repositories\UserRepository:
+        factory: ["@doctrine_mongodb", getRepository]
+        arguments: # Note that this argument is passed to factory method (getRepository) not the service instance
+            - App\Document\User
+
+
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
       arguments:
             #- 'mysql:dbname=sym_prj'

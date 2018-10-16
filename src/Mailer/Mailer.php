@@ -9,7 +9,7 @@
 namespace App\Mailer;
 
 
-use App\Entity\User;
+use App\Document\User;
 
 class Mailer
 {

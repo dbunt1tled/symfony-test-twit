@@ -9,7 +9,7 @@
 namespace App\Events;
 
 
-use App\Entity\User;
+use App\Document\User;
 use Symfony\Component\EventDispatcher\Event;
 
 class UserRegisterEvent extends Event
