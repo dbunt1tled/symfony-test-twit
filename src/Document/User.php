@@ -9,12 +9,27 @@
 namespace App\Document;
 
 
+use App\Document\Traits\TimestampableTrait;
+use App\Hydrator\Hydro;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
 /**
- * @MongoDB\Document
+ * @MongoDB\Document(repositoryClass="App\Repositories\UserRepository", requireIndexes=true)
+ * @MongoDB\HasLifecycleCallbacks
+ * @UniqueEntity(fields="email", message="This e-mail is already used")
+ * @UniqueEntity(fields="username", message="This name is already used")
  */
-class User
+class User implements UserInterface, \Serializable
 {
+    use TimestampableTrait;
+
+    const ROLE_USER = 'ROLE_USER';
+    const ROLE_MODERATOR = 'ROLE_MODERATOR';
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+
     /**
      * @MongoDB\Id
      */
@@ -23,15 +38,21 @@ class User
     /**
      * @MongoDB\Field(type="string")
      */
-    protected $firstname;
+    protected $firstName;
 
     /**
      * @MongoDB\Field(type="string")
      */
-    protected $lastname;
+    protected $lastName;
 
     /**
      * @MongoDB\Field(type="string")
+     * @Assert\NotBlank(
+     *     message="Email не может быть пустым"
+     * )
+     * @Assert\Email(
+     *     message="Email имеет не верный формат"
+     * )
      */
     protected $email;
 
@@ -41,9 +62,42 @@ class User
     protected $password;
 
     /**
-     * @MongoDB\Field(type="date")
+     * @MongoDB\Field(type="string")
+     *
+     * @Assert\NotBlank(
+     *     message="Не может быть пустым"
+     * )
+     * @Assert\Length(
+     *     min=6,
+     *     max=4096,
+     *     minMessage="Минимум шесть символов"
+     * )
      */
-    protected $create_date;
+    protected $plainPassword;
+    /**
+     * @MongoDB\Field(type="boolean")
+     */
+    protected $enabled;
+
+    /**
+     * @MongoDB\Field(type="string", nullable=true)
+     */
+    private $confirmationToken;
+
+    /**
+     * @MongoDB\Field(name="roles", type="collection")
+     */
+    private $roles;
+    /**
+     * @MongoDB\Field(type="hash")
+     */
+    private $preferences;
+
+    public function __construct()
+    {
+        $this->enabled = false;
+        $this->roles = [self::ROLE_USER];
+    }
 
     /**
      * @return mixed
@@ -54,39 +108,112 @@ class User
     }
 
     /**
-     * @return mixed
+     * @return boolean
      */
-    public function getFirstname()
+    public function getEnabled()
     {
-        return $this->firstname;
+        return $this->enabled;
     }
 
     /**
-     * @param mixed $firstname
+     * @param bool $enabled
+     * @return User
      */
-    public function setFirstname($firstname): void
+    public function setEnabled(bool $enabled): self
     {
-        $this->firstname = $firstname;
+        $this->enabled = $enabled;
+        return $this;
+    }
+
+    public function eraseCredentials()
+    {
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getLastname()
+    public function __toString(): string
     {
-        return $this->lastname;
+        return $this->email;
     }
 
     /**
-     * @param mixed $lastname
+     * @return null|string
      */
-    public function setLastname($lastname): void
+    public function getConfirmationToken()
     {
-        $this->lastname = $lastname;
+        return $this->confirmationToken;
     }
 
     /**
-     * @return mixed
+     * @param string $confirmationToken
+     * @return User
+     */
+    public function setConfirmationToken(string $confirmationToken): self
+    {
+        $this->confirmationToken = $confirmationToken;
+        return $this;
+    }
+
+    /*
+     * For UserChecker
+     */
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+    public function isEnabled()
+    {
+        return $this->getEnabled();
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param string $firstName
+     * @return User
+     */
+    public function setFirstName(string $firstName): self
+    {
+        $this->firstName = $firstName;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * @param string $lastName
+     * @return User
+     */
+    public function setLastName(string $lastName): self
+    {
+        $this->lastName = $lastName;
+        return $this;
+    }
+
+    /**
+     * @return string
      */
     public function getEmail()
     {
@@ -94,43 +221,125 @@ class User
     }
 
     /**
-     * @param mixed $email
+     * @param string $email
+     * @return User
      */
-    public function setEmail($email): void
+    public function setEmail(string $email): self
     {
         $this->email = $email;
+        return $this;
     }
 
     /**
-     * @return mixed
+     * @return null|string
      */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
     /**
-     * @param mixed $password
+     * @param string $password
+     * @return User
      */
-    public function setPassword($password): void
+    public function setPassword(string $password): self
     {
         $this->password = $password;
+        return $this;
     }
 
+    /**
+     * @return null|string
+     */
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param string $password
+     * @return User
+     */
+    public function setPlainPassword(string $password): self
+    {
+        $this->plainPassword = $password;
+        return $this;
+    }
+
+    public function getSalt(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * @param array $roles
+     * @return User
+     */
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRoles()
+    {
+        $role = $this->roles;
+        if (empty($role)) {
+            $role[] = self::ROLE_USER;
+        }
+        return array_unique($role);
+    }
+
+    public function serialize(): string
+    {
+        return serialize([
+            $this->id,
+            $this->email,
+            $this->password,
+            $this->enabled,
+        ]);
+    }
+    public function unserialize($serialized): void
+    {
+        list(
+            $this->id,
+            $this->email,
+            $this->password,
+            $this->enabled) = unserialize($serialized);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFullName()
+    {
+        return ($this->firstName . " " .$this->lastName);
+    }
     /**
      * @return mixed
      */
-    public function getCreateDate()
+    public function getPreferences()
     {
-        return $this->create_date;
+        return new Hydro($this->preferences);
+        //return json_decode(json_encode($this->preferences), FALSE);
     }
 
     /**
-     * @param mixed $create_date
+     * @param array $preferences
      */
-    public function setCreateDate($create_date): void
+    public function setPreferences(array $preferences): void
     {
-        $this->create_date = $create_date;
+        $this->preferences = $preferences;
     }
-
 }

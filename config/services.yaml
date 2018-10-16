@@ -46,6 +46,32 @@ services:
         arguments:
             $defaultLanguage: '%kernel.default_locale%'
 
+    mongodb.odm.unit_of_work:
+        class: Doctrine\ODM\MongoDB\UnitOfWork
+        autowire: true
+    Doctrine\ODM\MongoDB\UnitOfWork: '@mongodb.odm.unit_of_work'
+
+    mongodb.odm.mapping.class_metadata:
+        class: Doctrine\ODM\MongoDB\Mapping\ClassMetadata
+        autowire: true
+        arguments:
+            $documentName: 'StdClass'
+    Doctrine\ODM\MongoDB\Mapping\ClassMetadata: '@mongodb.odm.mapping.class_metadata'
+
+    mongodb.common.event_manager:
+        class: Doctrine\Common\EventManager
+        autowire: true
+    Doctrine\Common\EventManager: '@mongodb.common.event_manager'
+
+    mongodb.odm.hydrator_factory:
+        class: Doctrine\ODM\MongoDB\Hydrator\HydratorFactory
+        autowire: true
+        arguments:
+            $hydratorDir: '/var/cache/dev/doctrine/odm/mongodb/Hydrators'
+            $hydratorNs: 'App\Hydrator'
+            $autoGenerate: 1
+    Doctrine\ODM\MongoDB\Hydrator\HydratorFactory: '@mongodb.odm.hydrator_factory'
+
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
       arguments:
             #- 'mysql:dbname=sym_prj'

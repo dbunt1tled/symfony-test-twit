@@ -2,6 +2,7 @@ security:
     encoders:
         #for db_provider
         App\Entity\User: bcrypt
+        App\Document\User: bcrypt
         #for in_memory
         Symfony\Component\Security\Core\User\User: bcrypt
         # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
@@ -9,7 +10,7 @@ security:
         #our providers
         chain_providers:
             chain:
-                providers: [ in_memory, db_provider ]
+                providers: [ in_memory,mongo_db_provider, db_provider ]
         in_memory:
             memory:
                 users:
@@ -20,6 +21,8 @@ security:
             entity:
                 class: App\Entity\User
                 property: username
+        mongo_db_provider:
+            mongodb: {class: App\Document\User, property: email}
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
