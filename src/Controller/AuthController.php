@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Document\User;
+use App\Document\UserPreferences;
 use App\Events\UserRegisterEvent;
 use App\Form\LoginType;
 use App\Form\SignUpType;
@@ -102,8 +103,12 @@ class AuthController extends AbstractController
             $password = $this->passwordEncoder->encodePassword($user,$user->getPlainPassword());
             $user->setPassword($password);
             $user->setConfirmationToken($this->tokenGenerator->getRandomSecureToken());
-            $this->userRepository->save($user);
 
+            $userPreferences = new UserPreferences();
+            $userPreferences->setLocale('fr');
+            $user->setPreferences($userPreferences);
+
+            $this->userRepository->save($user);
             $userRegisterEvent = new UserRegisterEvent($user);
             $this->eventDispatcher->dispatch(UserRegisterEvent::NAME, $userRegisterEvent);
 

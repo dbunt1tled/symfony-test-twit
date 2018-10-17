@@ -46,7 +46,9 @@ class UserSubscriber implements EventSubscriberInterface
     public function onUserRegister(UserRegisterEvent $event)
     {
         $user = $event->getRegisterUser();
-        $user->addPreferences(['locale' => $this->defaultLanguage]);
+        $currentPreferences = $user->getPreferences();
+        $currentPreferences->setLocale($this->defaultLanguage);
+        $user->setPreferences($currentPreferences);
         $this->userRepository->save($user);
         return $this->mailer->sendConfirmationEmail($user);
 

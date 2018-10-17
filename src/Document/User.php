@@ -81,22 +81,23 @@ class User implements UserInterface, \Serializable
     /**
      * @MongoDB\Field(type="string", nullable=true)
      */
-    private $confirmationToken;
+    protected $confirmationToken;
 
     /**
      * @MongoDB\Field(name="roles", type="collection")
      */
     private $roles;
+
     /**
-     * @MongoDB\Field(type="hash")
-     */
+     * @MongoDB\EmbedOne(targetDocument="UserPreferences")
+     **/
     private $preferences;
 
     public function __construct()
     {
         $this->enabled = false;
         $this->roles = [self::ROLE_USER];
-        $this->preferences = ['locale' => 'en'];
+        $this->preferences = new UserPreferences();
     }
 
     /**
@@ -327,27 +328,20 @@ class User implements UserInterface, \Serializable
         return ($this->firstName . " " .$this->lastName);
     }
     /**
-     * @return mixed
+     * @return UserPreferences
      */
     public function getPreferences()
     {
-        return new Hydro($this->preferences);
-        //return json_decode(json_encode($this->preferences), FALSE);
+        return $this->preferences;
     }
 
     /**
-     * @param array $preferences
+     * @param UserPreferences $preferences
+     * @return User
      */
-    public function setPreferences(array $preferences): void
+    public function setPreferences(UserPreferences $preferences): self
     {
         $this->preferences = $preferences;
+        return $this;
     }
-    /**
-     * @param array $preferences
-     */
-    public function addPreferences(array $preferences): void
-    {
-        $this->preferences = $this->preferences + $preferences;
-    }
-
 }

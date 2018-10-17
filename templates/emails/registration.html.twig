@@ -1,5 +1,5 @@
 {# @var User $user #}
 {{ 'emails.registration'|trans({
     'name':user.fullName,
-    'confirm-link': url('security_confirm',{'token':user.confirmationToken})
+    'confirm-link': url('security_confirm',{'confirmationToken':user.confirmationToken})
 })|raw }}
