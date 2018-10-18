@@ -76,7 +76,10 @@ services:
         factory: ["@doctrine_mongodb", getRepository]
         arguments: # Note that this argument is passed to factory method (getRepository) not the service instance
             - App\Document\User
-
+    App\Repositories\PostRepository:
+        factory: ["@doctrine_mongodb", getRepository]
+        arguments: # Note that this argument is passed to factory method (getRepository) not the service instance
+            - App\Document\Post
 
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
       arguments:

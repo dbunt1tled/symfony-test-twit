@@ -11,8 +11,10 @@ namespace App\Document;
 
 use App\Document\Traits\TimestampableTrait;
 use App\Hydrator\Hydro;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
+use MongoDB\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -93,11 +95,15 @@ class User implements UserInterface, \Serializable
      **/
     private $preferences;
 
+    /** @MongoDB\ReferenceMany(targetDocument="Post", mappedBy="user") */
+    private $posts;
+
     public function __construct()
     {
         $this->enabled = false;
         $this->roles = [self::ROLE_USER];
         $this->preferences = new UserPreferences();
+        $this->posts = new ArrayCollection();
     }
 
     /**
@@ -273,17 +279,17 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @param array $roles
+     * @param $roles
      * @return User
      */
-    public function setRoles(array $roles): self
+    public function setRoles($roles): self
     {
         $this->roles = $roles;
         return $this;
     }
 
     /**
-     * @return array
+     * @return mixed
      */
     public function getRoles()
     {
@@ -344,4 +350,35 @@ class User implements UserInterface, \Serializable
         $this->preferences = $preferences;
         return $this;
     }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->contains($post)) {
+            $this->posts->removeElement($post);
+            // set the owning side to null (unless already changed)
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPosts()
+    {
+        return $this->posts;
+    }
+
 }

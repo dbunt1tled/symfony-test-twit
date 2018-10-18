@@ -9,7 +9,9 @@
 namespace App\Controller;
 
 
+use App\Document\Post;
 use App\Document\User;
+use App\Repositories\PostRepository;
 use App\Repositories\UserRepository;
 use App\Security\TokenGenerator;
 use MongoDB\BSON\Timestamp;
@@ -33,6 +35,10 @@ class MongoTestController extends Controller
      * @var UserRepository
      */
     private $userRepository;
+    /**
+     * @var PostRepository
+     */
+    private $postRepository;
 
     /**
      * MongoTestController constructor.
@@ -43,12 +49,14 @@ class MongoTestController extends Controller
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
         TokenGenerator $tokenGenerator,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        PostRepository $postRepository
     )
     {
         $this->passwordEncoder = $passwordEncoder;
         $this->tokenGenerator = $tokenGenerator;
         $this->userRepository = $userRepository;
+        $this->postRepository = $postRepository;
     }
 
     /**
@@ -70,6 +78,22 @@ class MongoTestController extends Controller
         $user->setPreferences(['locale'=>'en']);
         $this->userRepository->save($user);
         dump($user);
+        die();
+        return $this->json(['Status' => 'OK']);
+    }
+    /**
+     * @Route("/mongoTest1")
+     * @Method("GET")
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function mongoTest1()
+    {
+        $post = new Post();
+        $post->setText("1111111111111111111111111111")
+            ->setTitle('Privet.Go KS')
+            ->setUser($this->getUser());
+        $this->postRepository->save($post);
+        dump($post);
         die();
         return $this->json(['Status' => 'OK']);
     }
