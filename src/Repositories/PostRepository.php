@@ -10,6 +10,7 @@ namespace App\Repositories;
 
 
 use App\Document\Post;
+use App\Repositories\Traits\PagerTrait;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
@@ -17,6 +18,8 @@ use Doctrine\ODM\MongoDB\UnitOfWork;
 
 class PostRepository extends DocumentRepository
 {
+    use PagerTrait;
+
     /**
      * UserRepository constructor.
      * @param DocumentManager $dm
@@ -35,5 +38,15 @@ class PostRepository extends DocumentRepository
     {
         $this->dm->persist($post);
         $this->dm->flush();
+    }
+
+
+    public function getPosts(int $page = 1, int $limit = 20, bool $asArray = false)
+    {
+        $offset = $this->getOffset($page, $limit);
+        $qb = $this->dm->createQueryBuilder(Post::class);
+        $qb->limit($limit)
+            ->skip($offset);
+        return $qb->getQuery()->execute();
     }
 }

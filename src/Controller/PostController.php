@@ -2,12 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\MicroPost;
-use App\Entity\User;
-use App\Form\MicroPostType;
-use App\Repository\MicroPostRepository;
-use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Document\Post;
+use App\Document\User;
+use App\Form\PostType;
+use App\Repositories\PostRepository;
+use App\Repositories\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,25 +15,16 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-/**
- * Class MicroPostController
- * @package App\Controller
- * @Route("/micro-post")
- */
-class MicroPostController extends AbstractController
+class PostController extends AbstractController
 {
     /**
-     * @var MicroPostRepository
+     * @var PostRepository
      */
-    private $microPostRepository;
+    private $postRepository;
     /**
      * @var SessionInterface
      */
     private $session;
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
     /**
      * @var AuthorizationCheckerInterface
      */
@@ -49,62 +39,63 @@ class MicroPostController extends AbstractController
     private $userRepository;
 
     public function __construct(
-        MicroPostRepository $microPostRepository,
+        postRepository $postRepository,
         UserRepository $userRepository,
         SessionInterface $session,
-        EntityManagerInterface $entityManager,
         AuthorizationCheckerInterface $authorizationChecker,
         FlashBagInterface $flashBag
     )
     {
-        $this->microPostRepository = $microPostRepository;
+        $this->postRepository = $postRepository;
         $this->session = $session;
-        $this->entityManager = $entityManager;
         $this->authorizationChecker = $authorizationChecker;
         $this->flashBag = $flashBag;
         $this->userRepository = $userRepository;
     }
 
     /**
-     * @Route("/", name="micro_post_index")
+     * @Route("/", name="post_index")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index()
     {
         $currentUser = $this->getUser();
         $usersToFollow = [];
-
         if($currentUser instanceof User) {
-            $posts = $this->microPostRepository->findAllByUsers($currentUser->getFollowing());
+            $posts = $this->postRepository->findAllByUsers($currentUser->getFollowing());
             $usersToFollow = count($posts) === 0 ? $this->userRepository->findAllWithMoreThan4PostsExceptUser($currentUser) : [];
         } else {
-            $posts = $this->microPostRepository->findBy([],['created_at'=>'DESC']);
+            //$posts = $this->postRepository->findBy([],['created_at'=>'DESC']);
+            $posts = $this->postRepository->getPosts(1,20,true);
+            foreach ($posts as $key => $post){
+                dump($key,$post->getUser()->getFirstName());
+            }
         }
 
-        return $this->render('micro-post/index.html.twig',[
+        return $this->render('post/index.html.twig',[
             'posts' => $posts,
             'usersToFollow' => $usersToFollow,
         ]);
     }
 
     /**
-     * @Route("/user/{username}", name="micro_post_user")
+     * @Route("/user/{username}", name="post_user")
      * @param User $userWithPosts
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function userPosts(User $userWithPosts)
     {
-        //$posts = $this->microPostRepository->findBy(['user' => $userWithPosts],['created_at'=>'DESC']);
+        //$posts = $this->postRepository->findBy(['user' => $userWithPosts],['created_at'=>'DESC']);
         $posts = $userWithPosts->getPosts(); //This method not sorted
 
-        return $this->render('micro-post/user-posts.html.twig',[
+        return $this->render('post/user-posts.html.twig',[
             'posts' => $posts,
             'user' => $userWithPosts,
         ]);
     }
 
     /**
-     * @Route("/add", name="micro_post_add")
+     * @Route("/add", name="post_add")
      * @param Request $request
      * @Security("is_granted('ROLE_USER')", message="Access Denied")
      * @return \Symfony\Component\HttpFoundation\Response
@@ -114,77 +105,77 @@ class MicroPostController extends AbstractController
         /*if (!$this->authorizationChecker->isGranted('ROLE_USER')){
             throw new UnauthorizedHttpException();
         }/**/
-        $microPost = new MicroPost();
-        $form = $this->createForm(MicroPostType::class,$microPost);
+        $Post = new Post();
+        $form = $this->createForm(PostType::class,$Post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $microPost->setUser($this->getUser());
-            $this->entityManager->persist($microPost);
+            $Post->setUser($this->getUser());
+            $this->entityManager->persist($Post);
             $this->entityManager->flush();
-            return $this->redirectToRoute('micro_post_index');
+            return $this->redirectToRoute('post_index');
         }
-        return $this->render('micro-post/add.html.twig',[
+        return $this->render('post/add.html.twig',[
             'form' => $form->createView(),
         ]);
     }
     /**
-     * @Route("/delete/{id}", name="micro_post_delete")
+     * @Route("/delete/{id}", name="post_delete")
      * @Security("is_granted('delete', post)", message="Access Denied")
-     * @param MicroPost $post
+     * @param Post $post
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function delete(MicroPost $post)
+    public function delete(Post $post)
     {
-        //$this->denyAccessUnlessGranted(MicroPostVoter::DELETE,$post);
+        //$this->denyAccessUnlessGranted(PostVoter::DELETE,$post);
         /*
-        if (!$this->authorizationChecker->isGranted(MicroPostVoter::DELETE,$post)){
+        if (!$this->authorizationChecker->isGranted(PostVoter::DELETE,$post)){
             throw new UnauthorizedHttpException();
         }
         /**/
         $this->entityManager->remove($post);
         $this->entityManager->flush();
         $this->flashBag->add('info', 'Micro Post was Deleted');
-        return $this->redirectToRoute('micro_post_index');
+        return $this->redirectToRoute('post_index');
     }
 
     /**
-     * @Route("/edit/{id}", name="micro_post_edit")
+     * @Route("/edit/{id}", name="post_edit")
      * @Security("is_granted('edit', post)", message="Access Denied")
-     * @param MicroPost $post
+     * @param Post $post
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function edit(MicroPost $post, Request $request)
+    public function edit(Post $post, Request $request)
     {
-        //$this->denyAccessUnlessGranted(MicroPostVoter::EDIT,$post);
+        //$this->denyAccessUnlessGranted(PostVoter::EDIT,$post);
         /*
-        if (!$this->authorizationChecker->isGranted(MicroPostVoter::EDIT,$post)){
+        if (!$this->authorizationChecker->isGranted(PostVoter::EDIT,$post)){
             throw new UnauthorizedHttpException();
         }
         /**/
-        $form = $this->createForm(MicroPostType::class,$post);
+        $form = $this->createForm(PostType::class,$post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->persist($post);
             $this->entityManager->flush();
-            return $this->redirectToRoute('micro_post_post',['id' => $post->getId()]);
+            return $this->redirectToRoute('post_post',['id' => $post->getId()]);
         }
-        return $this->render('micro-post/edit.html.twig',[
+        return $this->render('post/edit.html.twig',[
             'form' => $form->createView(),
         ]);
     }
 
     /**
-     * @Route("/{id}", name="micro_post_post")
+     * @Route("/{id}", name="post_post")
      * @param $post
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function post(MicroPost $post)
+    public function post(Post $post)
     {
-        // $post = $this->microPostRepository->find($id);
-        return $this->render('micro-post/show.html.twig',[
+        // $post = $this->postRepository->find($id);
+        return $this->render('post/show.html.twig',[
             'post' => $post
         ]);
     }
