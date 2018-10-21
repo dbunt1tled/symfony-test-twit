@@ -9,6 +9,7 @@
 namespace App\Document;
 
 
+use App\Document\Traits\EnabledFieldTrait;
 use App\Document\Traits\SluggableTrait;
 use App\Document\Traits\TimestampableTrait;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
@@ -19,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Post
 {
-    use TimestampableTrait, SluggableTrait;
+    use TimestampableTrait, SluggableTrait, EnabledFieldTrait;
 
     /**
      * @MongoDB\Id

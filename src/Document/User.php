@@ -9,6 +9,7 @@
 namespace App\Document;
 
 
+use App\Document\Traits\EnabledFieldTrait;
 use App\Document\Traits\TimestampableTrait;
 use App\Hydrator\Hydro;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -25,7 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class User implements UserInterface, \Serializable
 {
-    use TimestampableTrait;
+    use TimestampableTrait,EnabledFieldTrait;
 
     const ROLE_USER = 'ROLE_USER';
     const ROLE_MODERATOR = 'ROLE_MODERATOR';
@@ -75,10 +76,7 @@ class User implements UserInterface, \Serializable
      * )
      */
     protected $plainPassword;
-    /**
-     * @MongoDB\Field(type="boolean")
-     */
-    protected $enabled;
+
 
     /**
      * @MongoDB\Field(type="string", nullable=true)
@@ -100,7 +98,6 @@ class User implements UserInterface, \Serializable
 
     public function __construct()
     {
-        $this->enabled = false;
         $this->roles = [self::ROLE_USER];
         $this->preferences = new UserPreferences();
         $this->posts = new ArrayCollection();
@@ -112,24 +109,6 @@ class User implements UserInterface, \Serializable
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getEnabled()
-    {
-        return $this->enabled;
-    }
-
-    /**
-     * @param bool $enabled
-     * @return User
-     */
-    public function setEnabled(bool $enabled): self
-    {
-        $this->enabled = $enabled;
-        return $this;
     }
 
     public function eraseCredentials()

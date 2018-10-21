@@ -66,10 +66,14 @@ class PostController extends AbstractController
             $usersToFollow = count($posts) === 0 ? $this->userRepository->findAllWithMoreThan4PostsExceptUser($currentUser) : [];
         } else {
             //$posts = $this->postRepository->findBy([],['created_at'=>'DESC']);
-            $posts = $this->postRepository->getPosts(1,20,true);
+            //$posts = $this->postRepository->getPosts(1,20,true);
+            $posts = $this->postRepository->getPostsWithUsers(1,20,true);
+            dump($posts);
+            die();
             foreach ($posts as $key => $post){
-                dump($key,$post->getUser()->getFirstName());
+                dump($key,$post);
             }
+            die();
         }
 
         return $this->render('post/index.html.twig',[

@@ -49,6 +49,7 @@ class AppMongoFixtures extends Fixture implements ContainerAwareInterface
             $post = new Post();
             $post->setText($this->faker->text(400))
                 ->setTitle($this->faker->sentence)
+                ->setEnabled($this->faker->boolean)
                 ->setUser($this->getReference($this->users[array_rand($this->users)]));
 
             $manager->persist($post);
