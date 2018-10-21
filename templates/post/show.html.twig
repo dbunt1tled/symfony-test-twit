@@ -6,7 +6,7 @@
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-grey pb-2 mb-0">{{ 'Show'|trans }} Micro Post</h6>
         {% if post %}
-            {{ include('/micro-post/post.html.twig', {'post': post}) }}
+            {{ include('/post/post.html.twig', {'post': post}) }}
 
             {% set isLiked = post.getLikedBy.contains(app.user) %}
             <div class="pt-2">

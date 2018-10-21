@@ -68,12 +68,6 @@ class PostController extends AbstractController
             //$posts = $this->postRepository->findBy([],['created_at'=>'DESC']);
             //$posts = $this->postRepository->getPosts(1,20,true);
             $posts = $this->postRepository->getPostsWithUsers(1,20,true);
-            dump($posts);
-            die();
-            foreach ($posts as $key => $post){
-                dump($key,$post);
-            }
-            die();
         }
 
         return $this->render('post/index.html.twig',[
@@ -109,14 +103,13 @@ class PostController extends AbstractController
         /*if (!$this->authorizationChecker->isGranted('ROLE_USER')){
             throw new UnauthorizedHttpException();
         }/**/
-        $Post = new Post();
-        $form = $this->createForm(PostType::class,$Post);
+        $post = new Post();
+        $form = $this->createForm(PostType::class,$post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $Post->setUser($this->getUser());
-            $this->entityManager->persist($Post);
-            $this->entityManager->flush();
+            $post->setUser($this->getUser());
+            $this->postRepository->save($post);
             return $this->redirectToRoute('post_index');
         }
         return $this->render('post/add.html.twig',[
@@ -162,8 +155,7 @@ class PostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($post);
-            $this->entityManager->flush();
+            $this->postRepository->save($post);
             return $this->redirectToRoute('post_post',['id' => $post->getId()]);
         }
         return $this->render('post/edit.html.twig',[

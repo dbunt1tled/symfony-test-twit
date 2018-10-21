@@ -66,10 +66,6 @@ class PostRepository extends DocumentRepository
         $qb->match()
                 ->field('user.$id')
                 ->equals(new \MongoId("5bcae27f591a302433165efc"))
-            ->project()
-                ->field('_id')
-                ->field('user.$id')
-                ->field('enabled')
         ;
         return iterator_to_array($qb->execute(['cursor' => []]));
     }
@@ -100,7 +96,18 @@ class PostRepository extends DocumentRepository
                         ],
                     ],
                 ]],
-                [ '$lookup' => ['from' => 'User','localField' => 'userobj.id','foreignField' => '_id','as' => 'joinedUser']],
+                [ '$lookup' => ['from' => 'User','localField' => 'userobj.id','foreignField' => '_id','as' => 'user']],
+                [ '$project' => ['text' => 1,'title' => 1, 'slug' => 1, 'createdAt' => 1, 'updatedAt' => 1,
+                    'user' => [
+                        '$arrayElemAt' => ['$user',0],
+                    ],
+                ]],
+                ['$addFields' => ['user.fullName' => [
+                     '$concat' => [ '$user.firstName', ' ', '$user.lastName' ]
+                    ]
+                ]],
+                ['$addFields' => ['user.username' => '$user.email']],
+                ['$addFields' => ['id' => '$_id']],
                 ['$skip' => $offset],
                 ['$limit' => $limit],
             ],

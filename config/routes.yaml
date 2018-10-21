@@ -9,6 +9,9 @@ MongoTest:
   resource: 'App\Controller\MongoTestController'
   type: annotation
 
+Post:
+  resource: 'App\Controller\PostController'
+  type: annotation
 MicroPost:
   resource: 'App\Controller\MicroPostController'
   type: annotation

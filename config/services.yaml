@@ -81,6 +81,12 @@ services:
         arguments: # Note that this argument is passed to factory method (getRepository) not the service instance
             - App\Document\Post
 
+    doctrine_mongo_db_param_converter:
+        class: Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter
+        tags:
+        - { name: request.param_converter, converter: doctrine.odm }
+        arguments: ['@doctrine_mongodb']
+
     Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler:
       arguments:
             #- 'mysql:dbname=sym_prj'
