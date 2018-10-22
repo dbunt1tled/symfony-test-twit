@@ -101,6 +101,7 @@ class User implements UserInterface, \Serializable
         $this->roles = [self::ROLE_USER];
         $this->preferences = new UserPreferences();
         $this->posts = new ArrayCollection();
+        $this->enabled = false;
     }
 
     /**

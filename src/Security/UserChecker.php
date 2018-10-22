@@ -25,7 +25,7 @@ class UserChecker implements UserCheckerInterface
      */
     public function checkPreAuth(UserInterface $user)
     {
-        if (!$user instanceof User || !$user instanceof MUser) {
+        if (!$user instanceof User && !$user instanceof MUser) {
 
             return;
         }
@@ -54,7 +54,7 @@ class UserChecker implements UserCheckerInterface
      */
     public function checkPostAuth(UserInterface $user)
     {
-        if (!$user instanceof User || !$user instanceof MUser) {
+        if (!$user instanceof User && !$user instanceof MUser) {
             return;
         }
 

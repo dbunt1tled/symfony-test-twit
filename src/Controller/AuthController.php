@@ -112,7 +112,7 @@ class AuthController extends AbstractController
             $userRegisterEvent = new UserRegisterEvent($user);
             $this->eventDispatcher->dispatch(UserRegisterEvent::NAME, $userRegisterEvent);
 
-            return $this->redirectToRoute('micro_post_index');
+            return $this->redirectToRoute('post_index');
         }
 
         return $this->render('auth/register.html.twig',[

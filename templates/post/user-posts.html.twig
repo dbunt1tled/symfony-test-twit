@@ -1,7 +1,7 @@
 {# @var posts #}
 {# @var user #}
 {% extends 'base.html.twig' %}
-{% block title %} Micro Posts Page {% endblock %}
+{% block title %}Posts Page {% endblock %}
 
 {% block body %}
     <div class="card-group py-2">
@@ -11,7 +11,7 @@
                     {{ user.fullName }}
                     <small class="text-muted">. @{{ user.username }}</small>
                 </h5>
-                {% if (app.user != null ) and ( user != app.user ) %}
+                {% if (app.user != null ) and (user.followers) and ( user != app.user ) %}
                     {% if user.followers.contains(app.user) %}
                         <a href="{{ path('following_unfollow',{'id':user.id}) }}" class="btn btn-outline-danger">UnFollow</a>
                     {% else %}
@@ -24,28 +24,36 @@
     <div class="card-group py-2 p-2">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">{{ 'Followers' |  transchoice(user.followers|length) }}</h5>
+                {% if user.followers is defined %}
+                    <h5 class="card-title">{{ 'Followers' |  transchoice(user.followers|length) }}</h5>
+                {% endif %}
             </div>
             <ul class="list-group list-group-flush p-2">
-                {% for follower in user.followers %}
-                    <li class="list-group-item">
-                        <a href="{{ path('micro_post_user', {'username':follower.username}) }}">@{{ follower.username }}</a>
-                    </li>
-                {% endfor %}
+                {% if (user.followers is defined) %}
+                    {% for follower in user.followers %}
+                        <li class="list-group-item">
+                            <a href="{{ path('micro_post_user', {'username':follower.username}) }}">@{{ follower.username }}</a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
             </ul>
         </div>
     </div>
     <div class="card-group py-2 p-2">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">{{ 'Followings' |  transchoice(user.following|length) }}</h5>
+                {% if user.following is defined %}
+                    <h5 class="card-title">{{ 'Followings' |  transchoice(user.following|length) }}</h5>
+                {% endif %}
             </div>
             <ul class="list-group list-group-flush p-2">
-                {% for following in user.following %}
-                    <li class="list-group-item">
-                        <a href="{{ path('micro_post_user', {'username':following.username}) }}">@{{ following.username }}</a>
-                    </li>
-                {% endfor %}
+                {% if (user.followers is defined) %}
+                    {% for following in user.following %}
+                        <li class="list-group-item">
+                            <a href="{{ path('micro_post_user', {'username':following.username}) }}">@{{ following.username }}</a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
             </ul>
         </div>
     </div>
@@ -53,7 +61,7 @@
         <h6 class="border-bottom border-grey pb-2 mb-0">{{ 'Recent Updates'|trans }}</h6>
         {% if posts is iterable %}
             {% for post in posts %}
-                {{ include('/micro-post/post.html.twig', {'post': post}) }}
+                {{ include('/post/blocks/user_post.html.twig', {'user': user,'post': post}) }}
                 <small class="d-block text-right mt-3">
                     <a href="{{ path('micro_post_post', {'id':post.id}) }}">{{ 'Show'|trans }}</a>
                     {% if is_granted('edit', post) %}

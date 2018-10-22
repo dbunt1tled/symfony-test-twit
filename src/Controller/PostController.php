@@ -77,15 +77,14 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/user/{username}", name="post_user")
+     * @Route("/user/{email}", name="post_user")
      * @param User $userWithPosts
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function userPosts(User $userWithPosts)
     {
-        //$posts = $this->postRepository->findBy(['user' => $userWithPosts],['created_at'=>'DESC']);
-        $posts = $userWithPosts->getPosts(); //This method not sorted
-
+        $posts = $this->postRepository->findBy(['user' => $userWithPosts],['created_at'=>'DESC']);
+        //$posts = $userWithPosts->getPosts(); //This method not sorted
         return $this->render('post/user-posts.html.twig',[
             'posts' => $posts,
             'user' => $userWithPosts,

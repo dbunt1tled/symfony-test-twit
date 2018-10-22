@@ -2,7 +2,7 @@
 {# @var usersToFollow #}
 
 {% extends 'base.html.twig' %}
-{% block title %} Micro Posts Page {% endblock %}
+{% block title %} Posts Page {% endblock %}
 
 {% block body %}
     <div class="my-3 p-3 bg-white rounded box-shadow">
@@ -17,7 +17,7 @@
         <h6 class="border-bottom border-grey pb-2 mb-0">Recent Updates</h6>
         {% if posts is iterable %}
             {% for post in posts %}
-                {{ include('/post/post.html.twig', {'post': post}) }}
+                {{ include('/post/blocks/post.html.twig', {'post': post}) }}
                 <small class="d-block text-right mt-3">
                     <a href="{{ path('post_post', {'id':post.id}) }}">{{ 'Show'|trans }}</a>
                     {% if is_granted('edit', post) %}
