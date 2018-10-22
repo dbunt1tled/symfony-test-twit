@@ -14,6 +14,7 @@ use App\Document\Traits\SluggableTrait;
 use App\Document\Traits\TimestampableTrait;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * @MongoDB\Document(repositoryClass="App\Repositories\PostRepository")
  * @MongoDB\HasLifecycleCallbacks

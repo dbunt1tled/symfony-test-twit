@@ -11,11 +11,9 @@ namespace App\Document;
 
 use App\Document\Traits\EnabledFieldTrait;
 use App\Document\Traits\TimestampableTrait;
-use App\Hydrator\Hydro;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
-use MongoDB\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -96,12 +94,32 @@ class User implements UserInterface, \Serializable
     /** @MongoDB\ReferenceMany(targetDocument="Post", mappedBy="user") */
     private $posts;
 
+    /**
+     * @MongoDB\@ReferenceMany(targetDocument="User", mappedBy="following")
+     */
+    private $followers;
+
+    /**
+     * @MongoDB(targetEntity="User", inversedBy="followers")
+     * @MongoDB\JoinTable(name="following",
+     *      joinColumns={
+     *          @MongoDB\JoinColumn(name="user_id", referencedColumnName="id")
+     *      },
+     *      inverseJoinColumns={
+     *          @MongoDB\JoinColumn(name="following_user_id", referencedColumnName="id")
+     *      }
+     * )
+     */
+    private $following;
+
     public function __construct()
     {
         $this->roles = [self::ROLE_USER];
         $this->preferences = new UserPreferences();
         $this->posts = new ArrayCollection();
         $this->enabled = false;
+        $this->followers = new ArrayCollection();
+        $this->following = new ArrayCollection();
     }
 
     /**

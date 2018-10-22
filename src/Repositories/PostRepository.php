@@ -50,6 +50,20 @@ class PostRepository extends DocumentRepository
         $this->dm->flush();
     }
 
+    /**
+     * @param string $field
+     * @param string $data
+     *
+     * @return array|null|object
+     */
+    public function findOneByProperty($field, $data)
+    {
+        return
+            $this->dm->createQueryBuilder(Post::class)
+                ->field($field)->equals($data)
+                ->getQuery()
+                ->getSingleResult();
+    }
 
     public function getPosts(int $page = 1, int $limit = 20, bool $asArray = false)
     {
