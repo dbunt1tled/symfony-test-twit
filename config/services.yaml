@@ -96,5 +96,9 @@ services:
     App\EventListener\LikeNotificationSubscriber:
         tags:
             - { name: doctrine.event_subscriber, event: onFlush, connection: default }
+
+    App\EventListener\LikeMNotificationSubscriber:
+        tags:
+        - { name: doctrine_mongodb.odm.event_subscriber, event: onFlush, connection: default }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

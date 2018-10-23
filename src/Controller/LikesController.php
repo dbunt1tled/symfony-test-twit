@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Document\Post;
 use App\Entity\MicroPost;
 use App\Entity\User;
+use App\Document\User as MUser;
+use App\Repositories\PostRepository;
 use App\Repository\MicroPostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -42,10 +44,15 @@ class LikesController extends AbstractController
      * @var FlashBagInterface
      */
     private $flashBag;
+    /**
+     * @var PostRepository
+     */
+    private $postRepository;
 
     public function __construct(
         MicroPostRepository $microPostRepository,
         SessionInterface $session,
+        PostRepository $postRepository,
         EntityManagerInterface $entityManager,
         AuthorizationCheckerInterface $authorizationChecker,
         FlashBagInterface $flashBag
@@ -56,6 +63,7 @@ class LikesController extends AbstractController
         $this->entityManager = $entityManager;
         $this->authorizationChecker = $authorizationChecker;
         $this->flashBag = $flashBag;
+        $this->postRepository = $postRepository;
     }
 
     /**
@@ -104,14 +112,13 @@ class LikesController extends AbstractController
      */
     public function mLike(Post $post)
     {
-        /** @var User $currentUser */
+        /** @var MUser $currentUser */
         $currentUser = $this->getUser();
-        if(!$currentUser instanceof User) {
+        if(!$currentUser instanceof MUser) {
             return $this->json([], Response::HTTP_UNAUTHORIZED);
         }
         $post->like($currentUser);
-        $this->entityManager->persist($post);
-        $this->entityManager->flush();
+        $this->postRepository->save($post);
         return $this->json([
             'count' => $post->getLikedBy()->count(),
         ], Response::HTTP_OK);
@@ -123,14 +130,13 @@ class LikesController extends AbstractController
      */
     public function mUnLike(Post $post)
     {
-        /** @var User $currentUser */
+        /** @var MUser $currentUser */
         $currentUser = $this->getUser();
-        if(!$currentUser instanceof User) {
+        if(!$currentUser instanceof MUser) {
             return $this->json([], Response::HTTP_OK);
         }
         $post->unLike($currentUser);
-        $this->entityManager->persist($post);
-        $this->entityManager->flush();
+        $this->postRepository->save($post);
         return $this->json([
             'count' => $post->getLikedBy()->count(),
         ], Response::HTTP_OK);

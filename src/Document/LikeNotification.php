@@ -16,7 +16,7 @@ class LikeNotification extends Notification
     private $post;
 
     /**
-     * @MongoDB\ReferenceMany(targetDocument="App\Document\User")
+     * @MongoDB\ReferenceMany(targetDocument="User")
      */
     private $likedBy;
 
@@ -32,7 +32,7 @@ class LikeNotification extends Notification
      * @param Post|null $post
      * @return LikeNotification
      */
-    public function setMicroPost(?Post $post): self
+    public function setPost(?Post $post): self
     {
         $this->post = $post;
         return $this;

@@ -6,14 +6,14 @@
     <div class="my-3 p-3 bg-white rounded box-shadow">
         <h6 class="border-bottom border-grey pb-2 mb-0">{{ 'Show'|trans }} Post</h6>
         {% if post %}
-            {{ include('/post/post.html.twig', {'post': post}) }}
+            {{ include('/post/blocks/post.html.twig', {'post': post}) }}
 
             {% set isLiked = post.getLikedBy.contains(app.user) %}
             <div class="pt-2">
-                    <button class="btn btn-outline-secondary btn-sm" id="unLikeBtn" {% if not isLiked %} style="display: none" {% endif %}><i class="fal fa-heart"></i>{{ 'UnLike'|trans }}
+                    <button class="btn btn-outline-secondary btn-sm" id="unLikeBtn" {% if not isLiked %} style="display: none" {% endif %}><i class="fa fa-heart"></i>{{ 'UnLike'|trans }}
                         <span class="badge badge-secondary" id="likesUnLike">{{ post.getLikedBy.count }}</span>
                     </button>
-                    <button class="btn btn-outline-danger btn-sm" id="likeBtn" {% if isLiked %} style="display: none" {% endif %}><i class="fas fa-heart"></i>{{ 'Like'|trans }}
+                    <button class="btn btn-outline-danger btn-sm" id="likeBtn" {% if isLiked %} style="display: none" {% endif %}><i class="fa fa-heart-o"></i>{{ 'Like'|trans }}
                         <span class="badge badge-danger" id="likesLike">{{ post.getLikedBy.count }}</span>
                     </button>
             </div>

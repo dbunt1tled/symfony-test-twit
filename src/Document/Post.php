@@ -12,6 +12,8 @@ namespace App\Document;
 use App\Document\Traits\EnabledFieldTrait;
 use App\Document\Traits\SluggableTrait;
 use App\Document\Traits\TimestampableTrait;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -53,6 +55,11 @@ class Post
     public function getId()
     {
         return $this->id;
+    }
+
+    public function __construct()
+    {
+        $this->likedBy = new ArrayCollection();
     }
     /**
      * @return string
@@ -113,6 +120,17 @@ class Post
     {
         return $this->likedBy;
     }
-
+    public function like(User $user)
+    {
+        if(!$this->likedBy->contains($user)) {
+            $this->likedBy->add($user);
+        }
+    }
+    public function unLike(User $user)
+    {
+        if($this->likedBy->contains($user)) {
+            $this->likedBy->removeElement($user);
+        }
+    }
 
 }
