@@ -1,10 +1,10 @@
 {# @var post #}
 {% extends 'base.html.twig' %}
-{% block title %} Micro Posts Show Page {% endblock %}
+{% block title %} Posts Show Page {% endblock %}
 
 {% block body %}
     <div class="my-3 p-3 bg-white rounded box-shadow">
-        <h6 class="border-bottom border-grey pb-2 mb-0">{{ 'Show'|trans }} Micro Post</h6>
+        <h6 class="border-bottom border-grey pb-2 mb-0">{{ 'Show'|trans }} Post</h6>
         {% if post %}
             {{ include('/post/post.html.twig', {'post': post}) }}
 
@@ -26,8 +26,8 @@
     <script>
         let likeButton = document.getElementById('likeBtn');
         let unLikeButton = document.getElementById('unLikeBtn');
-        addOnClick(likeButton,unLikeButton, document.getElementById('likesUnLike'),'{{ path('likes_like',{'id': post.id}) }}' );
-        addOnClick(unLikeButton,likeButton, document.getElementById('likesLike'),'{{ path('likes_unlike',{'id': post.id}) }}' );
+        addOnClick(likeButton,unLikeButton, document.getElementById('likesUnLike'),'{{ path('likes_m_like',{'id': post.id}) }}' );
+        addOnClick(unLikeButton,likeButton, document.getElementById('likesLike'),'{{ path('likes_m_unlike',{'id': post.id}) }}' );
         function switchButton(button, oppositeButton) {
             button.disabled = false;
             button.style.display = 'none';

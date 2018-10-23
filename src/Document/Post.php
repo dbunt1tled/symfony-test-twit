@@ -45,6 +45,8 @@ class Post
     /** @MongoDB\ReferenceOne(targetDocument="User", inversedBy="posts") */
     private $user;
 
+    /** @MongoDB\ReferenceMany(targetDocument="User", inversedBy="postsLiked") */
+    private $likedBy;
     /**
      * @return mixed
      */
@@ -104,5 +106,13 @@ class Post
         $this->user = $user;
         return $this;
     }
+    /**
+     * @return Collection
+     */
+    public function getLikedBy()
+    {
+        return $this->likedBy;
+    }
+
 
 }

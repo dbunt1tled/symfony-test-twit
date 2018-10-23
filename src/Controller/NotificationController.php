@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Notification;
 use App\Entity\User;
+use App\Document\User as MUser;
+use App\Document\Notification as MNotification;
 use App\Repository\NotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -40,9 +42,14 @@ class NotificationController extends AbstractController
      * @var FlashBagInterface
      */
     private $flashBag;
+    /**
+     * @var \App\Repositories\NotificationRepository
+     */
+    private $notificationMRepository;
 
     public function __construct(
         NotificationRepository $notificationRepository,
+        \App\Repositories\NotificationRepository $notificationMRepository,
         SessionInterface $session,
         EntityManagerInterface $entityManager,
         AuthorizationCheckerInterface $authorizationChecker,
@@ -54,6 +61,7 @@ class NotificationController extends AbstractController
         $this->entityManager = $entityManager;
         $this->authorizationChecker = $authorizationChecker;
         $this->flashBag = $flashBag;
+        $this->notificationMRepository = $notificationMRepository;
     }
 
     /**
@@ -108,5 +116,54 @@ class NotificationController extends AbstractController
         return $this->redirectToRoute('notification_all');
     }
 
+    /**
+     * @Route("/m-all", name="notification_m_all")
+     */
+    public function mNotification()
+    {
+        /** @var MUser $user */
+        $user = $this->getUser();
+        $notifications = $this->notificationMRepository->findBy(['seen'=>false,'user'=>$user]);
+        return $this->render('notification/m-notification.html.twig',[
+            'notifications' => $notifications,
+        ]);
+    }
+    /**
+     * @Route("/m-unread-count", name="notification_m_unread")
+     */
+    public function mUnreadCount()
+    {
+        /** @var MUser $user */
+        $user = $this->getUser();
+        $count = (int) $this->notificationMRepository->findUnSeenByUser($user);
+        return $this->json([
+            'count' => $count
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/m-acknowledge/{id}", name="notification_m_acknowledge")
+     * @param MNotification $notification
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function mAcknowledge(MNotification $notification)
+    {
+        $notification->setSeen(true);
+        $this->notificationMRepository->save($notification);
+        return $this->redirectToRoute('notification_m_all');
+    }
+
+    /**
+     * @Route("/m-acknowledge-all", name="notification_m_acknowledge_all")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function mAcknowledgeAll()
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $this->notificationMRepository->markAllAsReadByUser($user);
+        $this->entityManager->flush();
+        return $this->redirectToRoute('notification_m_all');
+    }
 
 }

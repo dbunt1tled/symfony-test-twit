@@ -25,7 +25,7 @@
                 <ul class="navbar-nav px-3">
                     {% if is_granted('ROLE_USER') %}
                         <li class="nav-item text-nowrap border-right border-secondary">
-                            <a class="nav-link" href="{{ path('notification_all') }}">
+                            <a class="nav-link" href="{{ path('notification_m_all') }}">
                                 {{ 'Notifications' |trans }}
                                 <span class="badge badge-light" id="notification-count">
                                     <i class="fa fa-circle fa-circle-o-notch fa-spin"></i>
@@ -67,7 +67,7 @@
 {% if is_granted('ROLE_USER') %}
     <script>
         function fetchNotificationCount() {
-            fetch('{{ path('notification_unread',{'credentials': 'include'}) }}')
+            fetch('{{ path('notification_m_unread',{'credentials': 'include'}) }}')
                 .then(response => {
                     response.json().then(value => {
                         document.getElementById('notification-count').innerText = value.count;

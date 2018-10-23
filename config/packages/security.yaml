@@ -50,7 +50,7 @@ security:
                 password_parameter: login[password]
                 csrf_parameter: login[_token]
                 csrf_token_generator: security.csrf.token_manager
-                default_target_path: micro_post_index
+                default_target_path: post_index
                 #success_handler: autentificate.login.success
                 #failure_handler: autentificate.login.failure
                 # always_use_default_target_path: true

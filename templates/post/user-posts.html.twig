@@ -1,7 +1,7 @@
 {# @var posts #}
 {# @var user #}
 {% extends 'base.html.twig' %}
-{% block title %}Posts Page {% endblock %}
+{% block title %}Posts Page {{ user.fullName }}{% endblock %}
 
 {% block body %}
     <div class="card-group py-2">
@@ -13,9 +13,9 @@
                 </h5>
                 {% if (app.user != null ) and (user.followers) and ( user != app.user ) %}
                     {% if user.followers.contains(app.user) %}
-                        <a href="{{ path('following_unfollow',{'id':user.id}) }}" class="btn btn-outline-danger">UnFollow</a>
+                        <a href="{{ path('following_m_unfollow',{'id':user.id}) }}" class="btn btn-outline-danger">UnFollow</a>
                     {% else %}
-                        <a href="{{ path('following_follow',{'id':user.id}) }}" class="btn btn-outline-primary">Follow</a>
+                        <a href="{{ path('following_m_follow',{'id':user.id}) }}" class="btn btn-outline-primary">Follow</a>
                     {% endif %}
                 {% endif %}
             </div>
@@ -32,7 +32,7 @@
                 {% if (user.followers is defined) %}
                     {% for follower in user.followers %}
                         <li class="list-group-item">
-                            <a href="{{ path('micro_post_user', {'username':follower.username}) }}">@{{ follower.username }}</a>
+                            <a href="{{ path('post_user', {'email':follower.username}) }}">@{{ follower.username }}</a>
                         </li>
                     {% endfor %}
                 {% endif %}
@@ -50,7 +50,7 @@
                 {% if (user.followers is defined) %}
                     {% for following in user.following %}
                         <li class="list-group-item">
-                            <a href="{{ path('micro_post_user', {'username':following.username}) }}">@{{ following.username }}</a>
+                            <a href="{{ path('post_user', {'email':following.username}) }}">@{{ following.username }}</a>
                         </li>
                     {% endfor %}
                 {% endif %}
@@ -63,12 +63,12 @@
             {% for post in posts %}
                 {{ include('/post/blocks/user_post.html.twig', {'user': user,'post': post}) }}
                 <small class="d-block text-right mt-3">
-                    <a href="{{ path('micro_post_post', {'id':post.id}) }}">{{ 'Show'|trans }}</a>
+                    <a href="{{ path('post_post', {'id':post.id}) }}">{{ 'Show'|trans }}</a>
                     {% if is_granted('edit', post) %}
-                        <a href="{{ path('micro_post_edit',{'id': post.id}) }}">{{ 'Edit'|trans }}</a>
+                        <a href="{{ path('post_edit',{'id': post.id}) }}">{{ 'Edit'|trans }}</a>
                     {% endif %}
                     {% if is_granted('delete', post) %}
-                        <a href="{{ path('micro_post_delete',{'id': post.id}) }}">{{ 'Delete'|trans }}</a>
+                        <a href="{{ path('post_delete',{'id': post.id}) }}">{{ 'Delete'|trans }}</a>
                     {% endif %}
                 </small>
             {% endfor %}

@@ -62,8 +62,10 @@ class PostController extends AbstractController
         $currentUser = $this->getUser();
         $usersToFollow = [];
         if($currentUser instanceof User) {
-            $posts = $this->postRepository->findAllByUsers($currentUser->getFollowing());
+            /*$posts = $this->postRepository->findAllByUsers($currentUser->getFollowing());
             $usersToFollow = count($posts) === 0 ? $this->userRepository->findAllWithMoreThan4PostsExceptUser($currentUser) : [];
+            /**/
+            $posts = $this->postRepository->getPostsWithUsers(1,20,true);
         } else {
             //$posts = $this->postRepository->findBy([],['created_at'=>'DESC']);
             //$posts = $this->postRepository->getPosts(1,20,true);

@@ -37,7 +37,7 @@ class PostRepository extends DocumentRepository
         $this->dbName = getenv('MONGODB_DB');
         $connection = $dm->getConnection();
 
-        $this->connection = $connection->getMongo();
+        $this->connection = $connection->getMongoClient();
         $this->db = $this->connection->selectDB($this->dbName);
     }
 

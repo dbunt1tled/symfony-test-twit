@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Document\User as MUser;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -38,9 +39,14 @@ class FollowingController extends AbstractController
      * @var FlashBagInterface
      */
     private $flashBag;
+    /**
+     * @var \App\Repositories\UserRepository
+     */
+    private $userRepositoryM;
 
     public function __construct(
         UserRepository $userRepository,
+        \App\Repositories\UserRepository $userRepositoryM,
         SessionInterface $session,
         EntityManagerInterface $entityManager,
         AuthorizationCheckerInterface $authorizationChecker,
@@ -52,6 +58,7 @@ class FollowingController extends AbstractController
         $this->entityManager = $entityManager;
         $this->authorizationChecker = $authorizationChecker;
         $this->flashBag = $flashBag;
+        $this->userRepositoryM = $userRepositoryM;
     }
 
     /**
@@ -90,4 +97,42 @@ class FollowingController extends AbstractController
         }
         return $this->redirectToRoute('micro_post_user',['username'=>$userToUnFollow->getUsername()]);
     }
+
+    /**
+     * @Route("/m-follow/{id}", name="following_m_follow")
+     * @param MUser $userToFollow
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function mFollow(MUser $userToFollow)
+    {
+        /**
+         * @var MUser $currentUser
+         */
+        $currentUser = $this->getUser();
+        if ($userToFollow !== $currentUser) {
+            $currentUser->follow($userToFollow);
+            $this->userRepositoryM->save($currentUser);
+        }
+
+        return $this->redirectToRoute('post_user',['email'=>$userToFollow->getUsername()]);
+    }
+
+    /**
+     * @Route("/m-unfollow/{id}", name="following_m_unfollow")
+     * @param MUser $userToUnFollow
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function mUnFollow(MUser $userToUnFollow)
+    {
+        /**
+         * @var MUser $currentUser
+         */
+        $currentUser = $this->getUser();
+        if ($userToUnFollow !== $currentUser) {
+            $currentUser->getFollowing()->removeElement($userToUnFollow);
+            $this->userRepositoryM->save($currentUser);
+        }
+        return $this->redirectToRoute('post_user',['email'=>$userToUnFollow->getUsername()]);
+    }
+
 }

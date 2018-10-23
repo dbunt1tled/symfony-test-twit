@@ -10,6 +10,7 @@ namespace App\Repositories;
 
 
 use App\Document\Notification;
+use App\Document\User;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\DocumentRepository;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
@@ -35,5 +36,29 @@ class NotificationRepository extends DocumentRepository
     {
         $this->dm->persist($notification);
         $this->dm->flush();
+    }
+
+    public function findUnSeenByUser(User $user)
+    {
+        $qb = $this->dm->createQueryBuilder(User::class);
+        return $qb->field('user')->equals($user)
+            ->field('seen')->equals(0)
+            ->getQuery()
+            ->count();
+    }
+
+    /**
+     * @param User $user
+     * @return mixed
+     * @throws \Doctrine\ODM\MongoDB\MongoDBException
+     */
+    public function markAllAsReadByUser(User $user)
+    {
+        $qb = $this->dm->createQueryBuilder(Notification::class);
+        return $qb->findAndUpdate()
+            ->field('user')->equals($user)
+            ->field('seen')->set(true)
+            ->getQuery()
+            ->execute();
     }
 }

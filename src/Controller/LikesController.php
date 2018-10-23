@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Document\Post;
 use App\Entity\MicroPost;
 use App\Entity\User;
 use App\Repository\MicroPostRepository;
@@ -95,4 +96,45 @@ class LikesController extends AbstractController
             'count' => $post->getLikedBy()->count(),
         ], Response::HTTP_OK);
     }
+
+    /**
+     * @Route("/m-like/{id}", name="likes_m_like")
+     * @param Post $post
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function mLike(Post $post)
+    {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        if(!$currentUser instanceof User) {
+            return $this->json([], Response::HTTP_UNAUTHORIZED);
+        }
+        $post->like($currentUser);
+        $this->entityManager->persist($post);
+        $this->entityManager->flush();
+        return $this->json([
+            'count' => $post->getLikedBy()->count(),
+        ], Response::HTTP_OK);
+    }
+    /**
+     * @Route("/m-unlike/{id}", name="likes_m_unlike")
+     * @param Post $post
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function mUnLike(Post $post)
+    {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        if(!$currentUser instanceof User) {
+            return $this->json([], Response::HTTP_OK);
+        }
+        $post->unLike($currentUser);
+        $this->entityManager->persist($post);
+        $this->entityManager->flush();
+        return $this->json([
+            'count' => $post->getLikedBy()->count(),
+        ], Response::HTTP_OK);
+    }
+
+
 }

@@ -12,6 +12,7 @@ namespace App\Document;
 use App\Document\Traits\EnabledFieldTrait;
 use App\Document\Traits\TimestampableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 use Doctrine\Bundle\MongoDBBundle\Validator\Constraints\Unique as MongoDBUnique;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -94,23 +95,14 @@ class User implements UserInterface, \Serializable
     /** @MongoDB\ReferenceMany(targetDocument="Post", mappedBy="user") */
     private $posts;
 
-    /**
-     * @MongoDB\@ReferenceMany(targetDocument="User", mappedBy="following")
-     */
+    /** @MongoDB\ReferenceMany(targetDocument="User", mappedBy="following") */
     private $followers;
 
-    /**
-     * @MongoDB(targetEntity="User", inversedBy="followers")
-     * @MongoDB\JoinTable(name="following",
-     *      joinColumns={
-     *          @MongoDB\JoinColumn(name="user_id", referencedColumnName="id")
-     *      },
-     *      inverseJoinColumns={
-     *          @MongoDB\JoinColumn(name="following_user_id", referencedColumnName="id")
-     *      }
-     * )
-     */
+    /** @MongoDB\ReferenceMany(targetDocument="User", inversedBy="followers") */
     private $following;
+
+    /** @MongoDB\ReferenceMany(targetDocument="Post", mappedBy="likedBy") */
+    private $postsLiked;
 
     public function __construct()
     {
@@ -120,6 +112,7 @@ class User implements UserInterface, \Serializable
         $this->enabled = false;
         $this->followers = new ArrayCollection();
         $this->following = new ArrayCollection();
+        $this->postsLiked = new ArrayCollection();
     }
 
     /**
@@ -379,4 +372,38 @@ class User implements UserInterface, \Serializable
         return $this->posts;
     }
 
+    /**
+     * @return Collection
+     */
+    public function getFollowers()
+    {
+        return $this->followers;
+    }
+    /**
+     * @return Collection
+     */
+    public function getFollowing()
+    {
+        return $this->following;
+    }
+
+    /**
+     * @param User $follower
+     * @return User
+     */
+    public function follow(User $follower): self
+    {
+        if(!$this->getFollowing()->contains($follower)) {
+            $this->getFollowing()->add($follower);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getPostsLiked()
+    {
+        return $this->postsLiked;
+    }
 }
