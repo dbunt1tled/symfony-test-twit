@@ -44,11 +44,11 @@ class LikeMNotificationSubscriber implements EventSubscriber
             }
 
             $insertDiff = $collectionUpdate->getInsertDiff();
-dump($insertDiff);
+
             if(!count($insertDiff)) {
                 return;
             }
-            dump($post);
+
             $notification = new LikeNotification();
             $notification->setUser($post->getUser())
                 ->setPost($post)

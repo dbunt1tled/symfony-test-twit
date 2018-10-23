@@ -7,6 +7,7 @@ use App\Entity\MicroPost;
 use App\Entity\User;
 use App\Document\User as MUser;
 use App\Repositories\PostRepository;
+use App\Repositories\UserRepository;
 use App\Repository\MicroPostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -48,11 +49,16 @@ class LikesController extends AbstractController
      * @var PostRepository
      */
     private $postRepository;
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
 
     public function __construct(
         MicroPostRepository $microPostRepository,
         SessionInterface $session,
         PostRepository $postRepository,
+        UserRepository $userRepository,
         EntityManagerInterface $entityManager,
         AuthorizationCheckerInterface $authorizationChecker,
         FlashBagInterface $flashBag
@@ -64,6 +70,7 @@ class LikesController extends AbstractController
         $this->authorizationChecker = $authorizationChecker;
         $this->flashBag = $flashBag;
         $this->postRepository = $postRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -112,6 +119,10 @@ class LikesController extends AbstractController
      */
     public function mLike(Post $post)
     {
+        if(!$post->getUser()->__isInitialized()){
+            $user = $this->userRepository->getByOneId(new \MongoId($post->getUser()->getId()));
+            $post->setUser($user);
+        }
         /** @var MUser $currentUser */
         $currentUser = $this->getUser();
         if(!$currentUser instanceof MUser) {

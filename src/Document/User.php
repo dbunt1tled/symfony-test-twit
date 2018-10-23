@@ -365,7 +365,7 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getPosts()
     {
@@ -373,14 +373,14 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @return Collection
+     * @return ArrayCollection
      */
     public function getFollowers()
     {
         return $this->followers;
     }
     /**
-     * @return Collection
+     * @return ArrayCollection
      */
     public function getFollowing()
     {
@@ -400,7 +400,7 @@ class User implements UserInterface, \Serializable
     }
 
     /**
-     * @return Collection
+     * @return ArrayCollection
      */
     public function getPostsLiked()
     {

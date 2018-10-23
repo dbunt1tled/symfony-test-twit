@@ -60,9 +60,23 @@ class PostRepository extends DocumentRepository
     {
         return
             $this->dm->createQueryBuilder(Post::class)
+                ->eagerCursor(true)
                 ->field($field)->equals($data)
                 ->getQuery()
                 ->getSingleResult();
+    }
+
+    /**
+     * @param $data
+     * @return array|null|object
+     * @throws \MongoException
+     */
+    public function findOneById($data)
+    {
+        if (!($data instanceof \MongoId)) {
+            $data = new \MongoId((string)$data);
+        }
+        return $this->findOneByProperty('_id', $data);
     }
 
     public function getPosts(int $page = 1, int $limit = 20, bool $asArray = false)

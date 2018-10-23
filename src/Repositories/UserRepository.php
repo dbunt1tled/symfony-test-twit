@@ -45,4 +45,13 @@ class UserRepository extends DocumentRepository
 
 
     }
+    public function getByOneId($id)
+    {
+        return $this->createQueryBuilder()
+            ->field('id')->equals($id)
+            ->getQuery()
+            ->getSingleResult();
+
+
+    }
 }
