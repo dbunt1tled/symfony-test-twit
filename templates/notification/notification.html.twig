@@ -14,9 +14,9 @@
                     {% for notification in notifications %}
                         <li class="list-group-item">
                             {% if notification is like %}
-                                <a href="{{ path('micro_post_user',{'username': notification.likedBy.username}) }}">{{ notification.likedBy.username }}</a>
+                                <a href="{{ path('post_user',{'username': notification.likedBy.username}) }}">{{ notification.likedBy.username }}</a>
                                 likes yours
-                                <a href="{{ path('micro_post_post',{'id': notification.microPost.id}) }}">post</a>
+                                <a href="{{ path('post_post',{'id': notification.microPost.id}) }}">post</a>
                                 <a class="btn btn-primary btn-sm" href="{{ path('notification_acknowledge',{'id': notification.id}) }}">OK</a>
                             {% endif %}
                         </li>

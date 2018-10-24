@@ -46,6 +46,9 @@ class Post
     /** @MongoDB\ReferenceOne(targetDocument="User", inversedBy="posts") */
     private $user;
 
+    /** @MongoDB\ReferenceOne(targetDocument="Category", inversedBy="posts") */
+    private $category;
+
     /** @MongoDB\ReferenceMany(targetDocument="User", inversedBy="postsLiked") */
     private $likedBy;
     /**
@@ -109,9 +112,28 @@ class Post
      * @param $user
      * @return Post
      */
-    public function setUser($user): self
+    public function setUser(User $user): self
     {
         $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getCategory()
+    {
+        $this->category = $this->category ?: new ArrayCollection();
+        return $this->category;
+    }
+
+    /**
+     * @param $category
+     * @return Post
+     */
+    public function setCategory(Category $category): self
+    {
+        $this->category = $category;
         return $this;
     }
     /**

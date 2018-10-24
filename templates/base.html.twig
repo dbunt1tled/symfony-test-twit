@@ -17,7 +17,7 @@
                 <ul class="navbar-nav px-3">
                     {% if is_granted('ROLE_USER') %}
                         <li class="nav-item text-nowrap">
-                            <a class="nav-link" href="{{ path('micro_post_add') }}">{{ 'Add new'|trans }}</a>
+                            <a class="nav-link" href="{{ path('post_add') }}">{{ 'Add new'|trans }}</a>
                         </li>
                     {% endif %}
                 </ul>

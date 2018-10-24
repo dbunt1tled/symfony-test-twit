@@ -9,9 +9,11 @@
 namespace App\Controller;
 
 
+use App\Document\Category;
 use App\Document\LikeNotification;
 use App\Document\Post;
 use App\Document\User;
+use App\Repositories\CategoryRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\PostRepository;
 use App\Repositories\UserRepository;
@@ -45,18 +47,26 @@ class MongoTestController extends Controller
      * @var NotificationRepository
      */
     private $notificationRepository;
+    /**
+     * @var CategoryRepository
+     */
+    private $categoryRepository;
 
     /**
      * MongoTestController constructor.
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param TokenGenerator $tokenGenerator
      * @param UserRepository $userRepository
+     * @param PostRepository $postRepository
+     * @param CategoryRepository $categoryRepository
+     * @param NotificationRepository $notificationRepository
      */
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
         TokenGenerator $tokenGenerator,
         UserRepository $userRepository,
         PostRepository $postRepository,
+        CategoryRepository $categoryRepository,
         NotificationRepository $notificationRepository
     )
     {
@@ -65,6 +75,7 @@ class MongoTestController extends Controller
         $this->userRepository = $userRepository;
         $this->postRepository = $postRepository;
         $this->notificationRepository = $notificationRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     /**
@@ -117,5 +128,28 @@ class MongoTestController extends Controller
             ->setPost($post)
             ->setLikedBy($this->getUser());
         $this->notificationRepository->save($notification);
+    }
+
+    /**
+     * @Route("/mongoTest3")
+     */
+    public function mongoTest3()
+    {
+        $posts = iterator_to_array($this->postRepository->getPosts());
+        $food = new Category();
+        $food->setTitle('Food');
+        for ( $i = 0; $i < 3; $i++) {
+            $food->addPost($posts[array_rand($posts)]);
+        }
+        $this->categoryRepository->save($food);
+        $fruits = new Category();
+        $fruits->setTitle('Fruits');
+        $fruits->setParent($food);
+        for ( $i = 0; $i < 3; $i++) {
+            $fruits->addPost($posts[array_rand($posts)]);
+        }
+        $this->categoryRepository->save($fruits);
+        dump($fruits->getPosts());
+        die("\n");
     }
 }

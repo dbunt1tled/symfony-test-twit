@@ -27,8 +27,8 @@ class LikeMNotificationSubscriber implements EventSubscriber
     }
     public function onFlush(OnFlushEventArgs $args)
     {
-        $em = $args->getDocumentManager();
-        $uow = $em->getUnitOfWork();
+        $dm = $args->getDocumentManager();
+        $uow = $dm->getUnitOfWork();
         /** @var PersistentCollection $collectionUpdates */
         $collectionUpdates = $uow->getScheduledCollectionUpdates();
         foreach ($collectionUpdates as $collectionUpdate) {
@@ -52,9 +52,9 @@ class LikeMNotificationSubscriber implements EventSubscriber
             $notification->setUser($post->getUser())
                 ->setPost($post)
                 ->setLikedBy(reset($insertDiff));
-            $em->persist($notification);
-            $uow->computeChangeSet($em->getClassMetadata(LikeNotification::class),$notification);
-            //$em->flush();
+            $dm->persist($notification);
+            $uow->computeChangeSet($dm->getClassMetadata(LikeNotification::class),$notification);
+            //$dm->flush();
         }
     }
 

@@ -72,6 +72,36 @@ services:
             $autoGenerate: 1
     Doctrine\ODM\MongoDB\Hydrator\HydratorFactory: '@mongodb.odm.hydrator_factory'
 
+    gedmo.listener.tree:
+        class: Gedmo\Tree\TreeListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+            - { name: doctrine_mongodb.odm.event_subscriber }
+        calls:
+            - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
+    gedmo.listener.translatable:
+        class: Gedmo\Translatable\TranslatableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ '@annotation_reader' ] ]
+            - [ setDefaultLocale, [ '%locale%' ] ]
+            - [ setTranslationFallback, [ false ] ]
+    gedmo.listener.loggable:
+        class: Gedmo\Loggable\LoggableListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
+        calls:
+            - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
+    gedmo.listener.sluggable:
+        class: Gedmo\Sluggable\SluggableListener
+        tags:
+        - { name: doctrine.event_subscriber, connection: default }
+        calls:
+        - [ setAnnotationReader, [ '@annotation_reader' ] ]
+
     App\Repositories\UserRepository:
         factory: ["@doctrine_mongodb", getRepository]
         arguments: # Note that this argument is passed to factory method (getRepository) not the service instance
@@ -80,7 +110,10 @@ services:
         factory: ["@doctrine_mongodb", getRepository]
         arguments: # Note that this argument is passed to factory method (getRepository) not the service instance
             - App\Document\Post
-
+    App\Repositories\CategoryRepository:
+        factory: ["@doctrine_mongodb", getRepository]
+        arguments: # Note that this argument is passed to factory method (getRepository) not the service instance
+        - App\Document\Category
     doctrine_mongo_db_param_converter:
         class: Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter
         tags:
@@ -99,6 +132,8 @@ services:
 
     App\EventListener\LikeMNotificationSubscriber:
         tags:
-        - { name: doctrine_mongodb.odm.event_subscriber, event: onFlush, connection: default }
+            - { name: doctrine_mongodb.odm.event_subscriber, event: onFlush, connection: default }
+
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
