@@ -40,9 +40,9 @@ class NotificationRepository extends DocumentRepository
 
     public function findUnSeenByUser(User $user)
     {
-        $qb = $this->dm->createQueryBuilder(User::class);
+        $qb = $this->dm->createQueryBuilder(Notification::class);
         return $qb->field('user')->equals($user)
-            ->field('seen')->equals(0)
+            ->field('seen')->equals(false)
             ->getQuery()
             ->count();
     }

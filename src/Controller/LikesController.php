@@ -119,10 +119,10 @@ class LikesController extends AbstractController
      */
     public function mLike(Post $post)
     {
-        if(!$post->getUser()->__isInitialized()){
+        /*if(!$post->getUser()->__isInitialized()){
             $user = $this->userRepository->getByOneId(new \MongoId($post->getUser()->getId()));
             $post->setUser($user);
-        }
+        }/**/
         /** @var MUser $currentUser */
         $currentUser = $this->getUser();
         if(!$currentUser instanceof MUser) {

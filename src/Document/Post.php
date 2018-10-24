@@ -97,10 +97,11 @@ class Post
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
     public function getUser()
     {
+        $this->user = $this->user ?: new ArrayCollection();
         return $this->user;
     }
 
@@ -118,6 +119,7 @@ class Post
      */
     public function getLikedBy()
     {
+        $this->likedBy = $this->likedBy ?: new ArrayCollection();
         return $this->likedBy;
     }
     public function like(User $user)

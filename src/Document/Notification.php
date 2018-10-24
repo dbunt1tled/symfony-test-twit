@@ -20,7 +20,7 @@ abstract class Notification
     private $id;
 
     /**
-     * @MongoDB\ReferenceMany(targetDocument="User")
+     * @MongoDB\ReferenceOne(targetDocument="User")
      */
     private $user;
 
@@ -32,7 +32,6 @@ abstract class Notification
     public function __construct()
     {
         $this->seen = false;
-        $this->user = new ArrayCollection();
     }
 
     public function getId()
@@ -40,9 +39,6 @@ abstract class Notification
         return $this->id;
     }
 
-    /**
-     * @return Collection
-     */
     public function getUser()
     {
         return $this->user;

@@ -9,8 +9,10 @@
 namespace App\Controller;
 
 
+use App\Document\LikeNotification;
 use App\Document\Post;
 use App\Document\User;
+use App\Repositories\NotificationRepository;
 use App\Repositories\PostRepository;
 use App\Repositories\UserRepository;
 use App\Security\TokenGenerator;
@@ -39,6 +41,10 @@ class MongoTestController extends Controller
      * @var PostRepository
      */
     private $postRepository;
+    /**
+     * @var NotificationRepository
+     */
+    private $notificationRepository;
 
     /**
      * MongoTestController constructor.
@@ -50,13 +56,15 @@ class MongoTestController extends Controller
         UserPasswordEncoderInterface $passwordEncoder,
         TokenGenerator $tokenGenerator,
         UserRepository $userRepository,
-        PostRepository $postRepository
+        PostRepository $postRepository,
+        NotificationRepository $notificationRepository
     )
     {
         $this->passwordEncoder = $passwordEncoder;
         $this->tokenGenerator = $tokenGenerator;
         $this->userRepository = $userRepository;
         $this->postRepository = $postRepository;
+        $this->notificationRepository = $notificationRepository;
     }
 
     /**
@@ -96,5 +104,18 @@ class MongoTestController extends Controller
         dump($post);
         die();
         return $this->json(['Status' => 'OK']);
+    }
+
+    /**
+     * @Route("/mongoTest2")
+     */
+    public function mongoTest2()
+    {
+        $post = $this->postRepository->findOneById('5bcd88d54c21bb5408640f80');
+        $notification = new LikeNotification();
+        $notification->setUser($post->getUser())
+            ->setPost($post)
+            ->setLikedBy($this->getUser());
+        $this->notificationRepository->save($notification);
     }
 }

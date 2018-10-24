@@ -31,7 +31,6 @@ class LikeMNotificationSubscriber implements EventSubscriber
         $uow = $em->getUnitOfWork();
         /** @var PersistentCollection $collectionUpdates */
         $collectionUpdates = $uow->getScheduledCollectionUpdates();
-        dump($collectionUpdates);
         foreach ($collectionUpdates as $collectionUpdate) {
             $post = $collectionUpdate->getOwner();
 
@@ -54,8 +53,6 @@ class LikeMNotificationSubscriber implements EventSubscriber
                 ->setPost($post)
                 ->setLikedBy(reset($insertDiff));
             $em->persist($notification);
-            dump($notification);
-            die("\n");
             $uow->computeChangeSet($em->getClassMetadata(LikeNotification::class),$notification);
             //$em->flush();
         }

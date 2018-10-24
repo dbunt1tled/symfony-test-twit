@@ -329,6 +329,7 @@ class User implements UserInterface, \Serializable
      */
     public function getPreferences()
     {
+        $this->preferences = $this->preferences ?: new UserPreferences();
         return $this->preferences;
     }
 
@@ -369,6 +370,7 @@ class User implements UserInterface, \Serializable
      */
     public function getPosts()
     {
+        $this->posts = $this->posts ?: new ArrayCollection();
         return $this->posts;
     }
 
@@ -377,6 +379,7 @@ class User implements UserInterface, \Serializable
      */
     public function getFollowers()
     {
+        $this->followers = $this->followers ?: new ArrayCollection();
         return $this->followers;
     }
     /**
@@ -384,6 +387,7 @@ class User implements UserInterface, \Serializable
      */
     public function getFollowing()
     {
+        $this->following = $this->following ?: new ArrayCollection();
         return $this->following;
     }
 
@@ -404,6 +408,7 @@ class User implements UserInterface, \Serializable
      */
     public function getPostsLiked()
     {
+        $this->postsLiked = $this->postsLiked ?: new ArrayCollection();
         return $this->postsLiked;
     }
 }

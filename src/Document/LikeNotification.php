@@ -11,12 +11,12 @@ use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
 class LikeNotification extends Notification
 {
     /**
-     * @MongoDB\ReferenceMany(targetDocument="App\Document\Post")
+     * @MongoDB\ReferenceOne(targetDocument="App\Document\Post")
      */
     private $post;
 
     /**
-     * @MongoDB\ReferenceMany(targetDocument="User")
+     * @MongoDB\ReferenceOne(targetDocument="User")
      */
     private $likedBy;
 
