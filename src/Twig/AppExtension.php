@@ -10,6 +10,7 @@ namespace App\Twig;
 
 
 use App\Entity\LikeNotification;
+use App\Document\LikeNotification as MLikeNotification;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
@@ -48,7 +49,7 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
     public function getTests()
     {
         return [
-            new \Twig_SimpleTest('like', function ($obj){ return $obj instanceof LikeNotification;})
+            new \Twig_SimpleTest('like', function ($obj){ return (($obj instanceof LikeNotification) || ($obj instanceof MLikeNotification)) ;})
         ];
     }
 }

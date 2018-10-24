@@ -38,13 +38,22 @@ class NotificationRepository extends DocumentRepository
         $this->dm->flush();
     }
 
-    public function findUnSeenByUser(User $user)
+    public function findCountUnSeenByUser(User $user)
     {
         $qb = $this->dm->createQueryBuilder(Notification::class);
         return $qb->field('user')->equals($user)
             ->field('seen')->equals(false)
             ->getQuery()
             ->count();
+    }
+
+    public function findUnSeenByUser(User $user)
+    {
+        $qb = $this->dm->createQueryBuilder(Notification::class);
+        return $qb->field('user')->equals($user)
+            ->field('seen')->equals(false)
+            ->getQuery()
+            ->execute();
     }
 
     /**
@@ -55,7 +64,7 @@ class NotificationRepository extends DocumentRepository
     public function markAllAsReadByUser(User $user)
     {
         $qb = $this->dm->createQueryBuilder(Notification::class);
-        return $qb->findAndUpdate()
+        return $qb->updateMany()
             ->field('user')->equals($user)
             ->field('seen')->set(true)
             ->getQuery()

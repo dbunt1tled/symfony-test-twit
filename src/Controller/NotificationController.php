@@ -123,7 +123,7 @@ class NotificationController extends AbstractController
     {
         /** @var MUser $user */
         $user = $this->getUser();
-        $notifications = $this->notificationMRepository->findBy(['seen'=>false,'user'=>$user]);
+        $notifications = $this->notificationMRepository->findUnSeenByUser($user);
         return $this->render('notification/m-notification.html.twig',[
             'notifications' => $notifications,
         ]);
@@ -135,7 +135,7 @@ class NotificationController extends AbstractController
     {
         /** @var MUser $user */
         $user = $this->getUser();
-        $count = (int) $this->notificationMRepository->findUnSeenByUser($user);
+        $count = (int) $this->notificationMRepository->findCountUnSeenByUser($user);
         return $this->json([
             'count' => $count
         ], Response::HTTP_OK);
@@ -156,10 +156,11 @@ class NotificationController extends AbstractController
     /**
      * @Route("/m-acknowledge-all", name="notification_m_acknowledge_all")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \Doctrine\ODM\MongoDB\MongoDBException
      */
     public function mAcknowledgeAll()
     {
-        /** @var User $user */
+        /** @var MUser $user */
         $user = $this->getUser();
         $this->notificationMRepository->markAllAsReadByUser($user);
         $this->entityManager->flush();
