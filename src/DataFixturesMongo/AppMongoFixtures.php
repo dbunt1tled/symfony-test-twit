@@ -50,7 +50,7 @@ class AppMongoFixtures extends Fixture implements ContainerAwareInterface
     {
         for ($i = 0; $i < 5; $i++) {
             $category = new Category();
-            $category->setTitle($this->faker->sentence)
+            $category->setTitle($this->faker->sentence(2))
                 ->setDescription($this->faker->text(400))
                 ->setEnabled($this->faker->boolean);
             $this->addReference($category->getTitle(),$category);
@@ -59,7 +59,7 @@ class AppMongoFixtures extends Fixture implements ContainerAwareInterface
         }
         for ($i = 0; $i < 5; $i++) {
             $category = new Category();
-            $category->setTitle($this->faker->sentence)
+            $category->setTitle($this->faker->sentence(2))
                 ->setDescription($this->faker->text(400))
                 ->setParent($this->getReference($this->categories[array_rand($this->categories)]))
                 ->setEnabled($this->faker->boolean);
@@ -70,7 +70,7 @@ class AppMongoFixtures extends Fixture implements ContainerAwareInterface
         }
         for ($i = 0; $i < 5; $i++) {
             $category = new Category();
-            $category->setTitle($this->faker->sentence)
+            $category->setTitle($this->faker->sentence(2))
                 ->setDescription($this->faker->text(400))
                 ->setParent($this->getReference($this->categories[array_rand($this->categories)]))
                 ->setEnabled($this->faker->boolean);
@@ -80,7 +80,7 @@ class AppMongoFixtures extends Fixture implements ContainerAwareInterface
         }
         for ($i = 0; $i < 7; $i++) {
             $category = new Category();
-            $category->setTitle($this->faker->sentence)
+            $category->setTitle($this->faker->sentence(2))
                 ->setDescription($this->faker->text(400))
                 ->setParent($this->getReference($this->categories[array_rand($this->categories)]))
                 ->setEnabled($this->faker->boolean);
