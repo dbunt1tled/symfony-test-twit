@@ -38,4 +38,8 @@ class CategoryRepository extends MaterializedPathRepository
             ->getSingleResult();
     }
 
+    public function getFullTree()
+    {
+        
+    }
 }

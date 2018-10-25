@@ -28,12 +28,13 @@ class Category
 
     /**
      * @MongoDB\Id
+     * @Gedmo\TreePathSource
      */
     protected $id;
 
     /**
      * @MongoDB\Field(type="string")
-     * @Gedmo\TreePathSource
+     * //Gedmo\TreePathSource
      * @Assert\NotBlank()
      * @Assert\Length(min="10", minMessage="minimum 10 symbols")
      */
@@ -192,6 +193,24 @@ class Category
     public function getLockTime()
     {
         return $this->lockTime;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param $description
+     * @return Category
+     */
+    public function setDescription($description): self
+    {
+        $this->description = $description;
+        return $this;
     }
 
 }

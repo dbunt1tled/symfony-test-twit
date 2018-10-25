@@ -2,6 +2,7 @@
 
 namespace App\DataFixturesMongo;
 
+use App\Document\Category;
 use App\Document\Post;
 use App\Document\UserPreferences;
 use App\Document\User;
@@ -16,6 +17,7 @@ class AppMongoFixtures extends Fixture implements ContainerAwareInterface
 {
     private $faker;
     private $users = [];
+    private $categories = [];
     private $languages = ['en','ru'];
     /**
      * @var UserPasswordEncoderInterface
@@ -40,18 +42,64 @@ class AppMongoFixtures extends Fixture implements ContainerAwareInterface
     {
         $this->userPasswordEncoder = $this->container->get('security.password_encoder');
         $this->loadUsers($manager);
+        $this->loadCategories($manager);
         $this->loadPosts($manager);
+    }
+
+    private function loadCategories (ObjectManager $manager)
+    {
+        for ($i = 0; $i < 5; $i++) {
+            $category = new Category();
+            $category->setTitle($this->faker->sentence)
+                ->setDescription($this->faker->text(400))
+                ->setEnabled($this->faker->boolean);
+            $this->addReference($category->getTitle(),$category);
+            $this->categories[] = $category->getTitle();
+            $manager->persist($category);
+        }
+        for ($i = 0; $i < 5; $i++) {
+            $category = new Category();
+            $category->setTitle($this->faker->sentence)
+                ->setDescription($this->faker->text(400))
+                ->setParent($this->getReference($this->categories[array_rand($this->categories)]))
+                ->setEnabled($this->faker->boolean);
+            $this->addReference($category->getTitle(),$category);
+            $this->categories[] = $category->getTitle();
+            $manager->persist($category);
+
+        }
+        for ($i = 0; $i < 5; $i++) {
+            $category = new Category();
+            $category->setTitle($this->faker->sentence)
+                ->setDescription($this->faker->text(400))
+                ->setParent($this->getReference($this->categories[array_rand($this->categories)]))
+                ->setEnabled($this->faker->boolean);
+            $this->addReference($category->getTitle(),$category);
+            $this->categories[] = $category->getTitle();
+            $manager->persist($category);
+        }
+        for ($i = 0; $i < 7; $i++) {
+            $category = new Category();
+            $category->setTitle($this->faker->sentence)
+                ->setDescription($this->faker->text(400))
+                ->setParent($this->getReference($this->categories[array_rand($this->categories)]))
+                ->setEnabled($this->faker->boolean);
+            $this->addReference($category->getTitle(),$category);
+            $this->categories[] = $category->getTitle();
+            $manager->persist($category);
+        }
+        $manager->flush();
     }
 
     private function loadPosts (ObjectManager $manager)
     {
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 70; $i++) {
             $post = new Post();
             $post->setText($this->faker->text(400))
                 ->setTitle($this->faker->sentence)
                 ->setEnabled($this->faker->boolean)
-                ->setUser($this->getReference($this->users[array_rand($this->users)]));
-
+                ->setUser($this->getReference($this->users[array_rand($this->users)]))
+                ->setCategory($this->getReference($this->categories[array_rand($this->categories)]));
             $manager->persist($post);
         }
         $manager->flush();

@@ -1,0 +1,11 @@
+{% if categories|length > 1 %}
+    {% import _self as renderTree %}
+    <div class="wWrap">
+        <div class="h6">Categories</div>
+        <div>
+            {% for category in categories %}
+                <a class="badge badge-primary" href="{#{ path('category',{'slug': category.slug}) }#}" title="{{ category.title }}">{{ category.title }}</a>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

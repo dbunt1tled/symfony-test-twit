@@ -137,13 +137,13 @@ class MongoTestController extends Controller
     {
         $posts = iterator_to_array($this->postRepository->getPosts());
         $food = new Category();
-        $food->setTitle('Food');
+        $food->setTitle('Еда');
         for ( $i = 0; $i < 3; $i++) {
             $food->addPost($posts[array_rand($posts)]);
         }
         $this->categoryRepository->save($food);
         $fruits = new Category();
-        $fruits->setTitle('Fruits');
+        $fruits->setTitle('Фрукты');
         $fruits->setParent($food);
         for ( $i = 0; $i < 3; $i++) {
             $fruits->addPost($posts[array_rand($posts)]);
@@ -151,5 +151,13 @@ class MongoTestController extends Controller
         $this->categoryRepository->save($fruits);
         dump($fruits->getPosts());
         die("\n");
+
+    }
+    /**
+     * @Route("/mongoTest4")
+     */
+    public function mongoTest4()
+    {
+        $category = $this->categoryRepository->childrenHierarchy();
     }
 }

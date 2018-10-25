@@ -57,6 +57,11 @@
             {% block body %}{% endblock %}
         </div>
     </main>
+    <aside>
+        {% block aside %}
+            {{ WCategoriesAll() }}
+        {% endblock %}
+    </aside>
     <footer class="align-bottom row-fluid">
         <div class="container">
             <b>&copy; {{ "now"|date("Y") }}</b> <span class="text-muted">unt1tled@ua.fm</span>
