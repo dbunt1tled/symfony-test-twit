@@ -54,14 +54,17 @@
     <main role="main" class="flex-fill container main">
         {{ include('/blocks/alert.html.twig') }}
         <div class="row">
-            {% block body %}{% endblock %}
+            <section class="col-10">
+                {% block body %}{% endblock %}
+            </section>
+            <aside class="col-2">
+                {% block aside %}
+                    {{ WCategoriesAll() }}
+                {% endblock %}
+            </aside>
         </div>
     </main>
-    <aside>
-        {% block aside %}
-            {{ WCategoriesAll() }}
-        {% endblock %}
-    </aside>
+
     <footer class="align-bottom row-fluid">
         <div class="container">
             <b>&copy; {{ "now"|date("Y") }}</b> <span class="text-muted">unt1tled@ua.fm</span>
