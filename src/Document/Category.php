@@ -53,6 +53,7 @@ class Category
     /**
      * @Gedmo\TreePath(separator="|")
      * @MongoDB\Field(type="string")
+     * @MongoDB\UniqueIndex(order="asc")
      */
     private $path;
 

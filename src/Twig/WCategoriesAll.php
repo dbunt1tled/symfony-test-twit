@@ -31,21 +31,7 @@ class WCategoriesAll extends \Twig_Extension
     }
     public function WCategoriesAll(\Twig_Environment $engine)
     {
-        $options = array(
-            'decorate' => true,
-            'rootOpen' => '<ul>',
-            'rootClose' => '</ul>',
-            'childOpen' => '<li>',
-            'childClose' => '</li>',
-            'nodeDecorator' => function($node) {
-                return '<a href="/'.$node['slug'].'">'.$node['title'].'</a>';
-            }
-        );
-        $htmlTree = $this->categoryRepository->childrenHierarchy(
-            null, /* starting from root nodes */
-            false, /* false: load all children, true: only direct */
-            $options
-        );
-        return $engine->render('widgets/categories/w-categories-all/w-categories-all.html.twig',compact('htmlTree'));
+        $tree = $this->categoryRepository->getFullTree();
+        return $engine->render('widgets/categories/w-categories-all/w-categories-all.html.twig',compact('tree'));
     }
 }

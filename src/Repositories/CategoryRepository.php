@@ -40,6 +40,9 @@ class CategoryRepository extends MaterializedPathRepository
 
     public function getFullTree()
     {
-        
+        return $this->createQueryBuilder()
+            ->sort('path')
+            ->getQuery()
+            ->execute();
     }
 }

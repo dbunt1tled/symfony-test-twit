@@ -1,12 +1,21 @@
-{% if htmlTree|length > 1 %}
+{% if tree|length > 1 %}
     <div class="wWrap">
         <div class="h5">Categories</div>
-        {#
         <div id="accordian">
-            {{ htmlTree|raw }}
+            <ul>
+                {% set oldNode = 0 %}
+                {% for node in tree %}
+                    <li>
+                        <h3><a href="#"><i class="fa fa-lg fa-tachometer"></i>{{ node.title }}</a></h3>
+                        {% if node.level > oldNode %}
+
+                        {% endif %}
+
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
-        #}
-        <div id="accordian">
+        <!--div id="accordian">
             <ul>
                 <li>
                     <h3><a href="#"><i class="fa fa-lg fa-tachometer"></i>Dashboard</a></h3>
@@ -78,6 +87,6 @@
                     </ul>
                 </li>
             </ul>
-        </div>
+        </div-->
     </div>
 {% endif %}
