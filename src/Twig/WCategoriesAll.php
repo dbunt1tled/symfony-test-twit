@@ -31,7 +31,7 @@ class WCategoriesAll extends \Twig_Extension
     }
     public function WCategoriesAll(\Twig_Environment $engine)
     {
-        $tree = $this->categoryRepository->getFullTree();
+        $tree = $this->categoryRepository->getFullTreeArray();
         return $engine->render('widgets/categories/w-categories-all/w-categories-all.html.twig',compact('tree'));
     }
 }

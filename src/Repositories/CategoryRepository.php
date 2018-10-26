@@ -17,9 +17,20 @@ use Gedmo\Tree\Document\MongoDB\Repository\MaterializedPathRepository;
 
 class CategoryRepository extends MaterializedPathRepository
 {
+    /** @var \MongoClient  */
+    private $db;
+    private $dbName;
+    private $connection;
+
+    private $childrenIndex = '__children';
     public function __construct(DocumentManager $em, UnitOfWork $uow, ClassMetadata $class)
     {
         parent::__construct($em, $uow, $class);
+        $this->dbName = getenv('MONGODB_DB');
+        $connection = $em->getConnection();
+
+        $this->connection = $connection->getMongoClient();
+        $this->db = $this->connection->selectDB($this->dbName);
     }
     /**
      * @param Category $category
@@ -44,5 +55,57 @@ class CategoryRepository extends MaterializedPathRepository
             ->sort('path')
             ->getQuery()
             ->execute();
+    }
+    public function getFullTreeRaw()
+    {
+        $query = [
+            'aggregate' => 'Category',
+            'pipeline' => [
+                //[ '$match' => ['enabled'=> true]],
+                [ '$sort' => ['path' => 1]]
+            ],
+            'cursor' => [],/**/
+        ];
+        return $this->executeJsAll($query);
+    }
+    public function getFullTreeArray()
+    {
+        $nestedTree = array();
+        $tree = $this->getFullTreeRaw();
+        if($tree) {
+            $stack = array();
+            foreach ($tree as $id => $node) {
+                $item = (array)$node;
+                $item[$this->childrenIndex] = array();
+                $l = count($stack);
+                while ($l > 0 && $stack[$l - 1]['level'] >= $item['level']) {
+                    array_pop($stack);
+                    $l--;
+                }
+                if ($l == 0) {
+                    // Assigning the root child
+                    $i = count($nestedTree);
+                    $nestedTree[$i] = $item;
+                    $stack[] = &$nestedTree[$i];
+                } else {
+                    // Add child to parent
+                    $i = count($stack[$l - 1][$this->childrenIndex]);
+                    $stack[$l - 1][$this->childrenIndex][$i] = $item;
+                    $stack[] = &$stack[$l - 1][$this->childrenIndex][$i];
+                }
+            }
+        }
+        /**/
+        return $nestedTree;
+    }
+    /**
+     * @param $query
+     * @return array|\MongoCommandCursor
+     */
+    public function executeJsAll($query)
+    {
+        $cursor = new \MongoCommandCursor($this->connection, $this->dbName, $query);
+        $cursor->setReadPreference($this->connection->getReadPreference());
+        return iterator_to_array($cursor);
     }
 }

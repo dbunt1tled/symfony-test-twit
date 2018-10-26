@@ -75,6 +75,8 @@ class Category
      */
     private $lockTime;
 
+    public $__children = [];
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
