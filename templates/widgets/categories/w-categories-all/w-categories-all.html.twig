@@ -3,9 +3,9 @@
         {% import _self as self %}
         <li>
             {% if(category.level == 1 ) %}
-                <h3><a href="#"><i class="fa fa-lg fa-tachometer"></i>{{ category.title }}</a></h3>
+                <h3><a href="{{ path('category_post_list', {'slug':category.slug}) }}"><i class="fa fa-lg fa-tachometer"></i>{{ category.title }}</a></h3>
             {% else %}
-                <a href="#">{{ category.title }}</a>
+                <a href="{{ path('category_post_list', {'slug':category.slug}) }}">{{ category.title }}</a>
             {% endif %}
             {% if category.__children|length %}
                 <ul>

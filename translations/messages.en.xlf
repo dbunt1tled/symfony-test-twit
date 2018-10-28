@@ -14,6 +14,14 @@
                 <source>tip</source>
                 <target>TIP</target>
             </trans-unit>
+            <trans-unit id="Category">
+                <source>Category</source>
+                <target>Category</target>
+            </trans-unit>
+            <trans-unit id="category_empty">
+                <source>category_empty</source>
+                <target>Category is empty</target>
+            </trans-unit>
             <trans-unit id="not_available">
                 <source>not_available</source>
                 <target>Not available</target>

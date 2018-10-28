@@ -21,8 +21,17 @@ class CategoryRepository extends MaterializedPathRepository
     private $db;
     private $dbName;
     private $connection;
+    private $categoryCollection;
 
     private $childrenIndex = '__children';
+
+    /**
+     * CategoryRepository constructor.
+     * @param DocumentManager $em
+     * @param UnitOfWork $uow
+     * @param ClassMetadata $class
+     * @throws \Exception
+     */
     public function __construct(DocumentManager $em, UnitOfWork $uow, ClassMetadata $class)
     {
         parent::__construct($em, $uow, $class);
@@ -31,6 +40,7 @@ class CategoryRepository extends MaterializedPathRepository
 
         $this->connection = $connection->getMongoClient();
         $this->db = $this->connection->selectDB($this->dbName);
+        $this->categoryCollection = $this->db->selectCollection('Category');
     }
     /**
      * @param Category $category
@@ -58,16 +68,19 @@ class CategoryRepository extends MaterializedPathRepository
     }
     public function getFullTreeRaw()
     {
+        return $this->categoryCollection->find([/*'enabled'=>true/**/])->sort(['path' => 1]);
+        /*
         $query = [
             'aggregate' => 'Category',
             'pipeline' => [
                 //[ '$match' => ['enabled'=> true]],
                 [ '$sort' => ['path' => 1]]
             ],
-            'cursor' => [],/**/
+            'cursor' => [],
         ];
-        return $this->executeJsAll($query);
+        return $this->executeJsAll($query);/**/
     }
+
     public function getFullTreeArray()
     {
         $nestedTree = array();

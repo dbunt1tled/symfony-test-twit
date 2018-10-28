@@ -9,6 +9,7 @@
 namespace App\Repositories;
 
 
+use App\Document\Category;
 use App\Document\Post;
 use App\Repositories\Traits\PagerTrait;
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -64,6 +65,33 @@ class PostRepository extends DocumentRepository
                 ->field($field)->equals($data)
                 ->getQuery()
                 ->getSingleResult();
+    }
+
+    /**
+     * @param $field
+     * @param $data
+     * @return mixed
+     * @throws \Doctrine\ODM\MongoDB\MongoDBException
+     */
+    public function findByProperty($field, $data)
+    {
+        return
+            $this->dm->createQueryBuilder(Post::class)
+                ->eagerCursor(true)
+                ->field($field)->equals($data)
+                ->getQuery()
+                ->execute();
+    }
+
+    /**
+     * @param Category $category
+     * @return mixed
+     * @throws \Doctrine\ODM\MongoDB\MongoDBException
+     * @throws \MongoException
+     */
+    public function findByCategory(Category $category)
+    {
+        return $this->findByProperty('category.$id',new \MongoId($category->getId()));
     }
 
     /**

@@ -1,0 +1,18 @@
+{# @var \App\Document\Post posts #}
+{# @var \App\Document\Category category #}
+{% extends 'base.html.twig' %}
+{% block title %} Posts Show Page {% endblock %}
+
+{% block body %}
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+        <h4 class="border-bottom border-grey pb-2 mb-0">{{ 'Category'|trans }}: {{ category.title }}</h4>
+        <p>{{ category.description }}</p>
+        {% if posts %}
+            {% for post in posts %}
+                {{ include('/post/blocks/post.html.twig', {'post': post}) }}
+            {% endfor %}
+        {% else %}
+            {{ 'category_empty'|trans }}
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{# @var posts #}
+{# @var usersToFollow #}
+
+{% extends 'base.html.twig' %}
+{% block title %} Posts Page {% endblock %}
+
+{% block body %}
+    <div class="my-3 p-3 bg-white rounded box-shadow">
+        {% if usersToFollow|length >0 %}
+            <p>You currently do not follow anyone, you might these users interesting: </p>
+            <ul class="list-group list-group-flush">
+                {% for userToFollow in usersToFollow  %}
+                    <li class="list-group-item"><a href="{{ path('post_user',{'username':userToFollow.username}) }}">@{{ userToFollow.username }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <h6 class="border-bottom border-grey pb-2 mb-0">Recent Updates</h6>
+        {% if posts is iterable %}
+            {% for post in posts %}
+                {{ include('/post/blocks/post.html.twig', {'post': post}) }}
+                <small class="d-block text-right mt-3">
+                    <a href="{{ path('post_post', {'id':post.id}) }}">{{ 'Show'|trans }}</a>
+                    {% if is_granted('edit', post) %}
+                        <a href="{{ path('post_edit',{'id': post.id}) }}">{{ 'Edit'|trans }}</a>
+                    {% endif %}
+                    {% if is_granted('delete', post) %}
+                        <a href="{{ path('post_delete',{'id': post.id}) }}">{{ 'Delete'|trans }}</a>
+                    {% endif %}
+                </small>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}

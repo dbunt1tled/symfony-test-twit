@@ -10,6 +10,14 @@
                 <source>tip</source>
                 <target>СОВЕТ</target>
             </trans-unit>
+            <trans-unit id="Category">
+                <source>Category</source>
+                <target>Категория</target>
+            </trans-unit>
+            <trans-unit id="category_empty">
+                <source>category_empty</source>
+                <target>В категории нет записей</target>
+            </trans-unit>
             <trans-unit id="not_available">
                 <source>not_available</source>
                 <target>Недоступно</target>

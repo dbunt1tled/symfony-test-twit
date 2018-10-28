@@ -12,6 +12,11 @@ MongoTest:
 Post:
   resource: 'App\Controller\PostController'
   type: annotation
+
+Category:
+  resource: 'App\Controller\CategoryController'
+  type: annotation
+
 MicroPost:
   resource: 'App\Controller\MicroPostController'
   type: annotation
