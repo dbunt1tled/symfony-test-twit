@@ -8,7 +8,9 @@ Auth:
 MongoTest:
   resource: 'App\Controller\MongoTestController'
   type: annotation
-
+Search:
+  resource: 'App\Controller\SearchController'
+  type: annotation
 Post:
   resource: 'App\Controller\PostController'
   type: annotation

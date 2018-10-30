@@ -18,6 +18,10 @@
                 <source>category_empty</source>
                 <target>В категории нет записей</target>
             </trans-unit>
+            <trans-unit id="search_empty">
+                <source>search_empty</source>
+                <target>Извините но по вашему запросу ничего не найдено.</target>
+            </trans-unit>
             <trans-unit id="not_available">
                 <source>not_available</source>
                 <target>Недоступно</target>

@@ -172,6 +172,67 @@ class PostRepository extends DocumentRepository
         return $this->executeJsAll($query);
     }
 
+    public function findInBd(string $term)
+    {
+        $query = [
+            'aggregate' => 'Post',
+            'pipeline' => [
+                    ['$limit' => 1],
+                    [
+                        '$facet' => [
+                            'c1' => [
+                                [ '$lookup' => [
+                                    'from' => 'User',
+                                    'pipeline' => [
+                                        [ '$match' => ['enabled'=> true]],
+                                    ],
+                                    'as' => 'searchUser'
+                                ],
+                                ],
+                            ],
+                            'c2' => [
+                                [ '$lookup' => [
+                                    'from' => 'Post',
+                                    'pipeline' => [
+                                        [ '$match' => ['enabled'=> true]],
+                                    ],
+                                    'as' => 'searchPost'
+                                ],
+                                ],
+                            ],
+                            'c3' => [
+                                [ '$lookup' => [
+                                    'from' => 'Category',
+                                    'pipeline' => [
+                                        [ '$match' => ['enabled'=> true]],
+                                    ],
+                                    'as' => 'searchCategory'
+                                ],
+                                ],
+                            ],
+                        ]
+                    ],
+                    [ '$project' => ['data' => [
+                        '$concatArrays' => [ '$c1', '$c2', '$c3'/**/]
+                    ]]],
+                    [ '$unwind' => '$data' ],
+                    [ '$replaceRoot' => [ 'newRoot'=> '$data' ] ],
+                    [ '$project' =>  [ 'searchUser' => 1,'searchPost' => 1,'searchCategory' => 1, ] ],
+            ],
+            'cursor' => [],
+        ];
+        $result = $this->executeJsAll($query);
+        if($result) {
+            $res = [];
+            foreach ($result as $var) {
+                $v = end($var);
+                $k = key($var);
+                $res[$k] = $v;
+            }
+            $result = $res;
+        }
+        return $result;
+    }
     /**
      * @param $query
      * @return array|\MongoCommandCursor

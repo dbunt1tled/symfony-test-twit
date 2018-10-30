@@ -9,6 +9,7 @@ use App\Form\PostType;
 use App\Repositories\CategoryRepository;
 use App\Repositories\PostRepository;
 use App\Repositories\UserRepository;
+use App\Services\SearchService;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,61 +17,48 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * Class CategoryController
  * @package App\Controller
- * @Route("/category")
+ * @Route("/search")
  */
-class CategoryController extends AbstractController
+class SearchController extends AbstractController
 {
+
     /**
-     * @var PostRepository
+     * @var SearchService
      */
-    private $postRepository;
+    private $searchService;
     /**
-     * @var SessionInterface
+     * @var TranslatorInterface
      */
-    private $session;
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
-    /**
-     * @var FlashBagInterface
-     */
-    private $flashBag;
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryRepository;
+    private $translator;
 
     public function __construct(
-        PostRepository $postRepository,
-        UserRepository $userRepository,
-        CategoryRepository $categoryRepository,
-        SessionInterface $session,
-        AuthorizationCheckerInterface $authorizationChecker,
-        FlashBagInterface $flashBag
+        SearchService $searchService,
+        TranslatorInterface $translator
     )
     {
-        $this->postRepository = $postRepository;
-        $this->session = $session;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->flashBag = $flashBag;
-        $this->userRepository = $userRepository;
-        $this->categoryRepository = $categoryRepository;
+        $this->searchService = $searchService;
+        $this->translator = $translator;
     }
 
     /**
-     * @Route("/", name="category_index")
+     * @param string $term
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @Route("/find/{term}", name="search_ajax")
      */
-    public function index()
+    public function ajax(string $term)
     {
+
+        if(empty($term)) {
+            return $this->json(['result'=> $this->translator->trans('search_empty')]);
+        }
+        $result = $this->searchService->findTermInBd($term);
+
+        return $this->json(['result'=> '1']);
     }
 
     /**
