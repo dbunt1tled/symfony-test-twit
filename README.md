@@ -6,4 +6,5 @@ STACK
 ------------
 
  - Symfony 4.1
+ - Translate
  - MongoDB

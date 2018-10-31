@@ -16,7 +16,7 @@
                             {% if notification is like %}
                                 <a href="{{ path('post_user',{'email': notification.likedBy.username}) }}">{{ notification.likedBy.username }}</a>
                                 likes yours
-                                <a href="{{ path('post_post',{'id': notification.post.id}) }}">post</a>
+                                <a href="{{ path('post_post',{'slug': notification.post.slug}) }}">post</a>
                                 <a class="btn btn-primary btn-sm" href="{{ path('notification_m_acknowledge',{'id': notification.id}) }}">OK</a>
                             {% endif %}
                         </li>

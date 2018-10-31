@@ -14,6 +14,10 @@
                 <a class="navbar-brand" href="{{ path('post_index') }}" title="Blog">
                     <img data-src="holder.js/120x32?text=Blog&bg=e83e8c&fg=fff&size=8" title="Blog" alt="logo Blog">
                 </a>
+                <div class="form-inline my-2 my-lg-0">
+                    <input class="form-control mr-sm-2 typeahead" id="searchBlog" type="search" placeholder="{{ 'menu.search'| trans }}" aria-label="Search">
+                    <!--button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button-->
+                </div>
                 <ul class="navbar-nav px-3">
                     {% if is_granted('ROLE_USER') %}
                         <li class="nav-item text-nowrap">

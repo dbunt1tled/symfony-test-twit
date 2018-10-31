@@ -19,7 +19,7 @@
             {% for post in posts %}
                 {{ include('/post/blocks/post.html.twig', {'post': post}) }}
                 <small class="d-block text-right mt-3">
-                    <a href="{{ path('post_post', {'id':post.id}) }}">{{ 'Show'|trans }}</a>
+                    <a href="{{ path('post_post', {'slug':post.slug}) }}">{{ 'Show'|trans }}</a>
                     {% if is_granted('edit', post) %}
                         <a href="{{ path('post_edit',{'id': post.id}) }}">{{ 'Edit'|trans }}</a>
                     {% endif %}

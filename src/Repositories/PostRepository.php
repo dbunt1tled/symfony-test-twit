@@ -184,7 +184,12 @@ class PostRepository extends DocumentRepository
                                 [ '$lookup' => [
                                     'from' => 'User',
                                     'pipeline' => [
-                                        [ '$match' => ['enabled'=> true]],
+                                        ['$match' => [
+                                            '$or' => [
+                                                ['firstName'=> new \MongoRegex('/.*'.$term.'.*/i')],
+                                                ['lastName'=> new \MongoRegex('/.*'.$term.'.*/i')],
+                                            ],
+                                        ]],
                                     ],
                                     'as' => 'searchUser'
                                 ],
@@ -194,7 +199,12 @@ class PostRepository extends DocumentRepository
                                 [ '$lookup' => [
                                     'from' => 'Post',
                                     'pipeline' => [
-                                        [ '$match' => ['enabled'=> true]],
+                                        ['$match' => [
+                                            '$or' => [
+                                                ['title'=> new \MongoRegex('/.*'.$term.'.*/i')],
+                                                ['slug'=> new \MongoRegex('/.*'.$term.'.*/i')],
+                                            ],
+                                        ]],
                                     ],
                                     'as' => 'searchPost'
                                 ],
@@ -204,7 +214,12 @@ class PostRepository extends DocumentRepository
                                 [ '$lookup' => [
                                     'from' => 'Category',
                                     'pipeline' => [
-                                        [ '$match' => ['enabled'=> true]],
+                                        ['$match' => [
+                                            '$or' => [
+                                                ['title'=> new \MongoRegex('/.*'.$term.'.*/i')],
+                                                ['slug'=> new \MongoRegex('/.*'.$term.'.*/i')],
+                                            ],
+                                        ]],
                                     ],
                                     'as' => 'searchCategory'
                                 ],

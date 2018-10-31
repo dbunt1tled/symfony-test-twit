@@ -58,7 +58,7 @@ class SearchController extends AbstractController
         }
         $result = $this->searchService->findTermInBd($term);
 
-        return $this->json(['result'=> '1']);
+        return $this->json($result);
     }
 
     /**

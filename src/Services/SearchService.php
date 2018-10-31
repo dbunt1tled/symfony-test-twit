@@ -14,6 +14,7 @@ use App\Repositories\PostRepository;
 use App\Repositories\UserRepository;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class SearchService
 {
@@ -37,12 +38,17 @@ class SearchService
      * @var FlashBagInterface
      */
     private $flashBag;
+    /**
+     * @var UrlGeneratorInterface
+     */
+    private $urlGenerator;
 
     public function __construct(
         PostRepository $postRepository,
         UserRepository $userRepository,
         CategoryRepository $categoryRepository,
         SessionInterface $session,
+        UrlGeneratorInterface $urlGenerator,
         FlashBagInterface $flashBag
     )
     {
@@ -51,6 +57,7 @@ class SearchService
         $this->categoryRepository = $categoryRepository;
         $this->session = $session;
         $this->flashBag = $flashBag;
+        $this->urlGenerator = $urlGenerator;
     }
     public function findTermInBd(string $term)
     {
@@ -58,11 +65,35 @@ class SearchService
         if(!$result){
             return false;
         }
-        dump($result);
-        die;
-        foreach ($result as $value) {
-            dump($value);
+        $res = [];
+        foreach ($result as $key => $value) {
+            switch($key) {
+                case 'searchUser':
+                        foreach ($value as $user) {
+                            $res[] = [
+                                'text' => $user['firstName'].' '.$user['firstName'],
+                                'link' => $this->urlGenerator->generate('post_user',['email'=> $user['email']])
+                            ];
+                        }
+                    break;
+                case 'searchPost':
+                    foreach ($value as $post) {
+                        $res[] = [
+                            'text' => $post['title'],
+                            'link' => $this->urlGenerator->generate('post_post',['slug'=> $post['slug']])
+                        ];
+                    }
+                    break;
+                case 'searchCategory':
+                    foreach ($value as $category) {
+                        $res[] = [
+                            'text' => $category['title'],
+                            'link' => $this->urlGenerator->generate('category_post_list',['slug'=> $category['slug']])
+                        ];
+                    }
+                    break;
+            }
         }
-        die;
+        return $res;
     }
 }

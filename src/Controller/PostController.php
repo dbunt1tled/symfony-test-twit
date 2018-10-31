@@ -157,7 +157,7 @@ class PostController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->postRepository->save($post);
-            return $this->redirectToRoute('post_post',['id' => $post->getId()]);
+            return $this->redirectToRoute('post_post',['slug' => $post->getSlug()]);
         }
         return $this->render('post/edit.html.twig',[
             'form' => $form->createView(),
@@ -165,7 +165,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="post_post")
+     * @Route("/{slug}", name="post_post")
      * @param $post
      * @return \Symfony\Component\HttpFoundation\Response
      */
