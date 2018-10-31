@@ -174,6 +174,14 @@ class PostRepository extends DocumentRepository
 
     public function findInBd(string $term)
     {
+        $where = [];
+        $where[] = new \MongoRegex('/.*'.$term.'.*/xsi');
+        if (mb_strpos($term,' ') !== false) {
+            $term = explode(' ',$term);
+            foreach ($term as $val) {
+                $where[] = new \MongoRegex('/.*'.$val.'.*/xsi');
+            }
+        }
         $query = [
             'aggregate' => 'Post',
             'pipeline' => [
@@ -186,10 +194,12 @@ class PostRepository extends DocumentRepository
                                     'pipeline' => [
                                         ['$match' => [
                                             '$or' => [
-                                                ['firstName'=> new \MongoRegex('/.*'.$term.'.*/i')],
-                                                ['lastName'=> new \MongoRegex('/.*'.$term.'.*/i')],
+                                                ['firstName'=> ['$in' => $where]],
+                                                ['lastName'=> ['$in' => $where]],
+                                                ['email'=> ['$in' => $where]],
                                             ],
                                         ]],
+                                        ['$limit' => 10],
                                     ],
                                     'as' => 'searchUser'
                                 ],
@@ -201,10 +211,11 @@ class PostRepository extends DocumentRepository
                                     'pipeline' => [
                                         ['$match' => [
                                             '$or' => [
-                                                ['title'=> new \MongoRegex('/.*'.$term.'.*/i')],
-                                                ['slug'=> new \MongoRegex('/.*'.$term.'.*/i')],
+                                                ['title'=> ['$in' => $where]],
+                                                ['text'=> ['$in' => $where]],
                                             ],
                                         ]],
+                                        ['$limit' => 10],
                                     ],
                                     'as' => 'searchPost'
                                 ],
@@ -216,10 +227,11 @@ class PostRepository extends DocumentRepository
                                     'pipeline' => [
                                         ['$match' => [
                                             '$or' => [
-                                                ['title'=> new \MongoRegex('/.*'.$term.'.*/i')],
-                                                ['slug'=> new \MongoRegex('/.*'.$term.'.*/i')],
+                                                ['title'=> ['$in' => $where]],
+                                                ['description'=> ['$in' => $where]],
                                             ],
                                         ]],
+                                        ['$limit' => 10],
                                     ],
                                     'as' => 'searchCategory'
                                 ],
@@ -228,7 +240,7 @@ class PostRepository extends DocumentRepository
                         ]
                     ],
                     [ '$project' => ['data' => [
-                        '$concatArrays' => [ '$c1', '$c2', '$c3'/**/]
+                        '$concatArrays' => [ '$c1', '$c2', '$c3']
                     ]]],
                     [ '$unwind' => '$data' ],
                     [ '$replaceRoot' => [ 'newRoot'=> '$data' ] ],

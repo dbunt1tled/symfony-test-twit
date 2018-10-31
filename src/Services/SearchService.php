@@ -71,7 +71,7 @@ class SearchService
                 case 'searchUser':
                         foreach ($value as $user) {
                             $res[] = [
-                                'text' => $user['firstName'].' '.$user['firstName'],
+                                'text' => $user['firstName'].' '.$user['lastName'],
                                 'link' => $this->urlGenerator->generate('post_user',['email'=> $user['email']])
                             ];
                         }

@@ -7,14 +7,16 @@ try {
     require('holderjs');
     var Bloodhound = require('bloodhound-js');
     require('typeahead.js');
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('[data-toggle="popover"]').popover();
     })
     //require('summernote/dist/summernote-bs4');
-} catch (e) {}
+} catch (e) {
+}
 
-$(document).ready(function() {
-    $("#accordian a").click(function() {
+$(document).ready(function () {
+    let searchField = $('#searchBlog');
+    $("#accordian a").click(function () {
         var link = $(this);
         var closest_ul = link.closest("ul");
         var parallel_active_links = closest_ul.find(".active")
@@ -22,7 +24,7 @@ $(document).ready(function() {
         var link_status = closest_li.hasClass("active");
         var count = 0;
 
-        closest_ul.find("ul").slideUp(function() {
+        closest_ul.find("ul").slideUp(function () {
             if (++count == closest_ul.find("ul").length)
                 parallel_active_links.removeClass("active");
         });
@@ -49,26 +51,29 @@ $(document).ready(function() {
         }
     });
 
-    $('.typeahead').typeahead({
-        highlight: true,
-        hint: true,
-        minLength: 1,
-    },{
-        source: searchResult,
-        display: 'text',
-        name: 'usersList',
-        limit: 100,
-        templates: {
-            empty: [
-                '<div class="list-group search-results-dropdown"><div class="list-group-item">Nothing found.</div></div>'
-            ],
-            header: [
-                '<div class="list-group search-results-dropdown">'
+    searchField.typeahead({
+            highlight: true,
+            hint: true,
+            minLength: 1,
+        }, {
+            source: searchResult,
+            display: 'text',
+            name: 'usersList',
+            limit: 100,
+            templates: {
+                empty: [
+                    '<div class="list-group search-results-dropdown"><div class="list-group-item">Nothing found.</div></div>'
                 ],
-            suggestion: function (e) {
-                    return '<a href="' + e.link + '" class="list-group-item">' + e.text + '</a>';
+                header: [
+                    '<div class="list-group search-results-dropdown">'
+                ],
+                suggestion: function (e) {
+                    return '<span class="list-group-item">' + e.text + '</span>';
                 }
-            }
-    }
-    );/**/
+            },
+        }
+    );
+    searchField.on('typeahead:selected', function (e, item) {
+        return window.location.href = item.link;
+    });
 })
