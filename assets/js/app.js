@@ -16,7 +16,7 @@ try {
 
 $(document).ready(function () {
     let searchField = $('#searchBlog');
-    $("#accordian a").click(function () {
+    $("#accordian span.wrapA").click(function () {
         var link = $(this);
         var closest_ul = link.closest("ul");
         var parallel_active_links = closest_ul.find(".active")

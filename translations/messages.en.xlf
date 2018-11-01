@@ -18,6 +18,10 @@
                 <source>Category</source>
                 <target>Category</target>
             </trans-unit>
+            <trans-unit id="Categories">
+                <source>Categories</source>
+                <target>Categories</target>
+            </trans-unit>
             <trans-unit id="search_empty">
                 <source>search_empty</source>
                 <target>Sorry, but the requested resource was not found on this site.</target>

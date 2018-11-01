@@ -3,9 +3,9 @@
         {% import _self as self %}
         <li>
             {% if(category.level == 1 ) %}
-                <h3><a href="{{ path('category_post_list', {'slug':category.slug}) }}"><i class="fa fa-lg fa-tachometer"></i>{{ category.title }}</a></h3>
+                <h3><span class="wrapA"><a href="{{ path('category_post_list', {'slug':category.slug}) }}"><!--i class="fa fa-lg fa-tachometer"></i-->{{ category.title }}</a></span></h3>
             {% else %}
-                <a href="{{ path('category_post_list', {'slug':category.slug}) }}">{{ category.title }}</a>
+                <span class="wrapA"><a href="{{ path('category_post_list', {'slug':category.slug}) }}">{{ category.title }}</a></span>
             {% endif %}
             {% if category.__children|length %}
                 <ul>
@@ -18,7 +18,7 @@
     {% endmacro %}
     {% from _self import recursiveCategory %}
     <div class="wWrap">
-        <div class="h5">Categories</div>
+        <div class="h5">{{ 'Categories'|trans }}</div>
         <div id="accordian">
             <ul>
                 {% set oldNode = 0 %}
