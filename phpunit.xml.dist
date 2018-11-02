@@ -20,6 +20,12 @@
         <env name="MONGODB_URL" value="mongodb://localhost:27017"/>
         <env name="MONGODB_DB" value="symfony"/>
         <!-- ###- doctrine/mongodb-odm-bundle ### -->
+
+        <!-- ###+ lexik/jwt-authentication-bundle ### -->
+        <env name="JWT_SECRET_KEY" value="%kernel.project_dir%/config/jwt/private.pem"/>
+        <env name="JWT_PUBLIC_KEY" value="%kernel.project_dir%/config/jwt/public.pem"/>
+        <env name="JWT_PASSPHRASE" value="99c91fa99522c5c83782bdc2e1a0c6b4"/>
+        <!-- ###- lexik/jwt-authentication-bundle ### -->
     </php>
 
     <testsuites>

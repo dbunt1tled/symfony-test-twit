@@ -52,6 +52,14 @@ class PostRepository extends DocumentRepository
     }
 
     /**
+     * @param Post $post
+     */
+    public function remove(Post $post)
+    {
+        $this->dm->remove($post);
+        $this->dm->flush();
+    }
+    /**
      * @param string $field
      * @param string $data
      *

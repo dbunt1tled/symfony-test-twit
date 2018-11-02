@@ -1,20 +1,27 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use App\Document\Post;
 use App\Document\User;
 use App\Form\PostType;
 use App\Repositories\PostRepository;
 use App\Repositories\UserRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+/**
+ * Class PostController
+ * @package App\Controller
+ * @Route("/api/posts")
+ */
 class PostController extends AbstractController
 {
     /**
@@ -54,7 +61,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/", name="post_index")
+     * @Route("/", name="api_post_index")
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function index()
@@ -79,7 +86,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/user/{email}", name="post_user")
+     * @Route("/user/{email}", name="api_post_user")
      * @param User $userWithPosts
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -94,7 +101,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/add", name="post_add")
+     * @Route("/add", name="api_post_add")
      * @param Request $request
      * @Security("is_granted('ROLE_USER')", message="Access Denied")
      * @return \Symfony\Component\HttpFoundation\Response
@@ -118,7 +125,7 @@ class PostController extends AbstractController
         ]);
     }
     /**
-     * @Route("/delete/{id}", name="post_delete")
+     * @Route("/delete/{id}", name="api_post_delete")
      * @Security("is_granted('delete', post)", message="Access Denied")
      * @param Post $post
      * @return \Symfony\Component\HttpFoundation\Response
@@ -137,7 +144,7 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/edit/{id}", name="post_edit")
+     * @Route("/edit/{id}", name="api_post_edit")
      * @Security("is_granted('edit', post)", message="Access Denied")
      * @param Post $post
      * @param Request $request
@@ -164,15 +171,18 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/{slug}", name="post_post")
+     * @Route("/{slug}", name="api_post_post")
+     * @Method({"GET"})
      * @param $post
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function post(Post $post)
     {
         // $post = $this->postRepository->find($id);
-        return $this->render('post/show.html.twig',[
-            'post' => $post
-        ]);
+        $postVO = new \App\ValueObjects\Api\Post($post);
+        header('Content-Type: cli');
+        dump($post);
+        die("\n");
+        return $this->json($postVO, Response::HTTP_OK);
     }
 }

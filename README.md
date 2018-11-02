@@ -6,5 +6,5 @@ STACK
 ------------
 
  - Symfony 4.1
- - Translate
+ - JWT
  - MongoDB
