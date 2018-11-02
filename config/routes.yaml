@@ -4,6 +4,9 @@
 api_login_check:
   path: /api/login_check
 
+Api:
+  resource: 'App\Controller\Api\PostController'
+  type: annotation
 Auth:
   resource: 'App\Controller\AuthController'
   type: annotation
