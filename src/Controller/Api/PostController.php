@@ -181,8 +181,6 @@ class PostController extends AbstractController
         // $post = $this->postRepository->find($id);
         $postVO = new \App\ValueObjects\Api\Post($post);
         header('Content-Type: cli');
-        dump($post);
-        die("\n");
         return $this->json($postVO, Response::HTTP_OK);
     }
 }
