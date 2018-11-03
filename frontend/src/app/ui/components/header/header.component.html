@@ -1,0 +1,46 @@
+<header>
+  <nav class="navbar navbar-expand-sm navbar-light bg-light mainMenu">
+    <div class="container">
+      <a class="navbar-brand" href="/" title="Blog">
+        <img data-src="holder.js/120x32?text=Blog&bg=e83e8c&fg=fff&size=8" title="Blog" alt="logo Blog">
+      </a>
+      <div class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2 typeahead" id="searchBlog" type="search" placeholder="Search" aria-label="Search">
+      </div>
+      <ul class="navbar-nav px-3">
+        <li *ngFor="let link of links" class="nav-item text-nowrap">
+          <a class="nav-link" [routerLink]="link.url" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{
+            link.label }}</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+          <a class="nav-link" href="#">Add new</a>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap border-right border-secondary">
+          <a class="nav-link" href="#">Notifications
+            <span class="badge badge-light" id="notification-count">
+                                    <i class="fa fa-circle fa-circle-o-notch fa-spin"></i>
+                                </span>
+          </a>
+        </li>
+        <li class="nav-item text-nowrap">
+          <a class="nav-link" href="#">username</a>
+        </li>
+        <li class="nav-item text-nowrap">
+          <a class="nav-link" href="#">Logout</a>
+        </li>
+        <li class="nav-item text-nowrap">
+          <a class="nav-link" href="#">Login</a>
+        </li>
+        <li class="nav-item text-nowrap">
+          <a class="nav-link" href="#">Login</a>
+        </li>
+      </ul>
+    </div>
+
+  </nav>
+</header>
