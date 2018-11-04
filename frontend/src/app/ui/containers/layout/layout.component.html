@@ -1,7 +1,14 @@
-<wrapper id="page-container" class="d-flex flex-column">
+<div id="page-container" class="d-flex flex-column">
   <app-header></app-header>
-  <div class="container my-5 py-5">
-    1111
-  </div>
+  <main role="main" class="flex-fill container main">
+    <div class="row">
+      <section class="col-10">
+        <router-outlet></router-outlet>
+      </section>
+      <aside class="col-2">
+        Categories
+      </aside>
+    </div>
+  </main>
   <app-footer></app-footer>
-</wrapper>
+</div>
