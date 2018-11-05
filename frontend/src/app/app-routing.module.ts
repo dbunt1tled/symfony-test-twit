@@ -8,8 +8,7 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [{
       path: '',
-      pathMatch: 'full',
-      redirectTo: '/'
+      loadChildren: './blog/blog.module#BlogModule'
     }],
   }
 ];
