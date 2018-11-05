@@ -8,3 +8,4 @@ STACK
  - Symfony 4.1
  - JWT
  - MongoDB
+ - Angular frontend
