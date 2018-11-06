@@ -14,14 +14,32 @@ class Post
     public $id;
     public $text;
     public $title;
-    private $user;
-    private $category;
-    private $likedBy;
+    public $user;
+    public $category;
+    public $likedBy;
     public $createdAt;
     public $slug;
     public $enabled;
 
-    public function __construct(\App\Document\Post $post)
+    /**
+     * Post constructor.
+     * @param \App\Document\Post|array|null $post
+     */
+    public function __construct($post)
+    {
+        if (is_object($post)) {
+            $this->setByObject($post);
+        } elseif (is_array($post)) {
+            $this->setByArray($post);
+        }
+
+    }
+
+    /**
+     * @param \App\Document\Post $post
+     * @return $this
+     */
+    public function setByObject(\App\Document\Post $post)
     {
         $this->id = $post->getId();
         $this->text = $post->getText();
@@ -32,6 +50,24 @@ class Post
         $this->likedBy = $post->getLikedBy();
         $this->slug = $post->getSlug();
         $this->enabled = $post->getEnabled();
-
+        return $this;
+    }
+    /**
+     * @param array $post
+     * @return $this
+     */
+    public function setByArray(array $post)
+    {
+        $post['user']['fullName'] = $post['user']['firstName'] . ' ' . $post['user']['lastName'];
+        $this->id = $post['id'];
+        $this->text = $post['text'];
+        $this->title = $post['title'];
+        $this->user = $post['user'];
+        //$this->category = $post->getCategory();
+        $this->createdAt = $post['createdAt'];
+        //$this->likedBy = $post->getLikedBy();
+        $this->slug = $post['slug'];
+        $this->enabled = $post['enabled'];
+        return $this;
     }
 }

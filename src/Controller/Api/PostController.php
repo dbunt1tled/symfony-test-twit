@@ -61,28 +61,31 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/", name="api_post_index")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @Route("/", name="api_posts")
+     * @param Request $request
+     * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $currentUser = $this->getUser();
         $usersToFollow = [];
+        $page = (int)$request->get('page',1);
+        $limit = (int)$request->get('limit',20);
         if($currentUser instanceof User) {
             /*$posts = $this->postRepository->findAllByUsers($currentUser->getFollowing());
             $usersToFollow = count($posts) === 0 ? $this->userRepository->findAllWithMoreThan4PostsExceptUser($currentUser) : [];
             /**/
-            $posts = $this->postRepository->getPostsWithUsers(1,20,true);
+            $posts = $this->postRepository->getPostsWithUsers($page,$limit,true);
         } else {
             //$posts = $this->postRepository->findBy([],['created_at'=>'DESC']);
             //$posts = $this->postRepository->getPosts(1,20,true);
-            $posts = $this->postRepository->getPostsWithUsers(1,20,true);
+            $posts = $this->postRepository->getPostsWithUsers($page,$limit,true);
         }
+        $posts1 = array_map(function ($val){
+            return new \App\ValueObjects\Api\Post($val);
+        },$posts);
 
-        return $this->render('post/index.html.twig',[
-            'posts' => $posts,
-            'usersToFollow' => $usersToFollow,
-        ]);
+        return $this->json($posts1,Response::HTTP_OK);
     }
 
     /**

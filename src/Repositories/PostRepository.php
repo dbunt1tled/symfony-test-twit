@@ -141,7 +141,7 @@ class PostRepository extends DocumentRepository
             'pipeline' => [
                 //[ '$match' => ['user.$id'=> new \MongoId("5bc8bf55591a3027e22d9d72")]],
                 [ '$match' => ['enabled'=> true]],
-                [ '$project' => ['text' => 1,'title' => 1, 'slug' => 1, 'createdAt' => 1, 'updatedAt' => 1,
+                [ '$project' => ['text' => 1,'title' => 1, 'slug' => 1, 'createdAt' => 1, 'updatedAt' => 1, 'enabled' => 1,
                     'userobj' => [
                         '$arrayToObject' => [
                             '$map' => [
@@ -161,7 +161,7 @@ class PostRepository extends DocumentRepository
                     ],
                 ]],
                 [ '$lookup' => ['from' => 'User','localField' => 'userobj.id','foreignField' => '_id','as' => 'user']],
-                [ '$project' => ['text' => 1,'title' => 1, 'slug' => 1, 'createdAt' => 1, 'updatedAt' => 1,
+                [ '$project' => ['text' => 1,'title' => 1, 'slug' => 1, 'createdAt' => 1, 'updatedAt' => 1, 'enabled' => 1,
                     'user' => [
                         '$arrayElemAt' => ['$user',0],
                     ],

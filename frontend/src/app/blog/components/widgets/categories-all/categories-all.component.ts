@@ -8,6 +8,7 @@ import {BlogService} from '../../../services/blog.service';
 })
 export class CategoriesAllComponent implements OnInit {
   categories: any;
+  loaded: boolean = false;
   constructor(
     private _blogService: BlogService,
   ) { }
@@ -19,6 +20,7 @@ export class CategoriesAllComponent implements OnInit {
   {
     this._blogService.getCategoriesTreeAll().subscribe(categories => {
       this.categories = categories;
+      this.loaded = true;
     })
   }
 }

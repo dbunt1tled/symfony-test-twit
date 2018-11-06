@@ -89,6 +89,7 @@ security:
     access_control:
     - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api/category/tree-all, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api/posts, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY}
     - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY}

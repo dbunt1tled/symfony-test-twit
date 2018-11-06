@@ -4,7 +4,7 @@
       <span class="wrapA" (click)="onClick($event)"><a [href]="child.slug">{{child.title }}</a></span>
     </div>
     <span class="wrapA" (click)="onClick($event)" *ngIf="((!child.hasOwnProperty('level')) || (child.hasOwnProperty('level') && child.level > 1)) && child.__children">
-      <a [href]="child.slug">{{child.title }}</a>
+      <a [href]="child.slug">{{ child.title }}</a>
     </span>
     <a *ngIf="!child.__children" [href]="child.slug">{{child.title }}</a>
     <app-tree-node  [node]="child.__children"></app-tree-node>

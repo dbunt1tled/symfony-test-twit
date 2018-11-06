@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {BlogService} from '../../services/blog.service';
 
 @Component({
   selector: 'app-posts',
@@ -7,9 +8,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PostsComponent implements OnInit {
 
-  constructor() { }
+  private posts: any;
+  private loaded: boolean = false;
+  constructor(
+    private _blogService: BlogService,
+  ) { }
 
   ngOnInit() {
+    this.getPosts();
   }
 
+  getPosts() {
+    this._blogService.getPosts(1,20).subscribe(posts => {
+      this.posts = posts;
+      this.loaded = true;
+    });
+  }
 }
