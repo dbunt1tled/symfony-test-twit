@@ -6,10 +6,10 @@ import { RouterModule } from '@angular/router';
 import { FooterComponent } from './components/footer/footer.component';
 import { CategoriesAllComponent } from '../blog/components/widgets/categories-all/categories-all.component';
 import { TreeNodeComponent } from '../blog/components/widgets/blocks/tree-node/tree-node.component';
-import {BlogModule} from '../blog/blog.module';
+import {NotificationComponent} from '../blog/components/widgets/notification/notification.component';
 
 @NgModule({
-  declarations: [LayoutComponent, HeaderComponent, FooterComponent,CategoriesAllComponent, TreeNodeComponent],
+  declarations: [LayoutComponent, HeaderComponent, FooterComponent,CategoriesAllComponent, TreeNodeComponent,NotificationComponent],
   imports: [
     CommonModule,
     RouterModule
