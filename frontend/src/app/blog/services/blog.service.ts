@@ -8,7 +8,6 @@ import {UserLogin} from '../models/auth/user-login';
 })
 export class BlogService {
   apiClient: string = environment.blogApi;
-  token: string = '';
   constructor(
     private _http: HttpClient
   ) { }
@@ -18,12 +17,13 @@ export class BlogService {
    * @param limit
    */
   getPosts(page: number, limit: number) {
-    return this._http.get(`${this.apiClient}/posts?page=${page}&limit=${limit}&apiKey=${this.token}`);
+    return this._http.get(`${this.apiClient}/posts?page=${page}&limit=${limit}`);
   }
   getCategoriesTreeAll() {
-    return this._http.get(`${this.apiClient}/category/tree-all?apiKey=${this.token}`);
+    return this._http.get(`${this.apiClient}/category/tree-all`);
   }
   loginCheck(user: UserLogin) {
     return this._http.post(`${this.apiClient}/login_check`,user);
   }
+
 }

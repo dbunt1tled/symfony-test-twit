@@ -25,9 +25,12 @@ export class TokenManagerService {
       token = storedToken.token;
     }
     catch(err) {
-      console.error(err);
+      //console.error(err);
       return false;
     }
     return token;
+  }
+  public removeToken() {
+    return localStorage.removeItem(this.tokenKey);
   }
 }

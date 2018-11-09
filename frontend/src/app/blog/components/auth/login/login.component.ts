@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {UserLogin} from '../../../models/auth/user-login';
-import {BlogService} from '../../../services/blog.service';
-import {TokenManagerService} from '../../../../guard/Token/token-manager.service';
+import {AuthService} from '../../../../http/auth/auth.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -18,8 +17,7 @@ export class LoginComponent implements OnInit {
   password: string;
   constructor(
     private _fb: FormBuilder,
-    private _blogService: BlogService,
-    private _tokenService: TokenManagerService,
+    private _authService: AuthService,
     private _router: Router,
   ) { }
 
@@ -38,11 +36,11 @@ export class LoginComponent implements OnInit {
     }
     let valuesForm = this.loginForm.value;
     let user: UserLogin = {username: valuesForm.username, password: valuesForm.password};
-    this._blogService.loginCheck(user).subscribe(token => {
-      this._tokenService.setToken(token);
-      /*this._flashMessage.show('Success Login User ' + this.loginForm.controls.email.value,
-        { cssClass: 'alert-success', closeOnClick: true, showCloseBtn: true, timeout: 3000 });/**/
-      this._router.navigate(['/']);
+    this._authService.login(user)
+      .then(token => {
+        this._router.navigate(['/']);
+      }).catch(err => {
+        console.log('Wrong login data');
     });
   }
 
