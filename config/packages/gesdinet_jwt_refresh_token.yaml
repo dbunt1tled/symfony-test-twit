@@ -1,0 +1,5 @@
+gesdinet_jwt_refresh_token:
+    ttl: 2592000
+    user_identity_field: email
+    firewall: api
+    manager_type: mongodb

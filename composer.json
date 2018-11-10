@@ -10,6 +10,7 @@
         "ext-json": "*",
         "alcaeus/mongo-php-adapter": "^1.1",
         "doctrine/mongodb-odm-bundle": "^3.5",
+        "gesdinet/jwt-refresh-token-bundle": "^0.5.3",
         "jms/serializer-bundle": "^2.4",
         "lexik/jwt-authentication-bundle": "^2.6",
         "mongodb/mongodb": "^1.4",

@@ -134,6 +134,12 @@ services:
         tags:
             - { name: doctrine_mongodb.odm.event_subscriber, event: onFlush, connection: default }
 
-
+    acme_api.event.jwt_created_listener:
+        class: App\EventListener\JWT\JWTListener
+        arguments: [ '@request_stack' ]
+        tags:
+        - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
+        - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded }
+        - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
