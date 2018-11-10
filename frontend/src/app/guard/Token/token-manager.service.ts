@@ -16,19 +16,30 @@ export class TokenManagerService {
     if(!storedToken) throw 'no token found';
     return storedToken;
   }
-  public getToken() {
+  private getData(key) {
     // let currentTime:number = (new Date()).getTime();
-    let token = null;
+    let data = null;
     try {
       let storedToken = JSON.parse(this.getTokenFromStorage());
       // if(storedToken.ttl < currentTime) throw 'invalid token found';
-      token = storedToken.token;
+      if(storedToken.hasOwnProperty(key)) {
+        data = storedToken[key];
+      }
     }
     catch(err) {
       //console.error(err);
-      return false;
+      return null;
     }
-    return token;
+    return data;
+  }
+  public getToken() {
+    return this.getData('token');
+  }
+  public getUserName() {
+    return this.getData('username');
+  }
+  public getRefreshToken() {
+    return this.getData('refresh_token');
   }
   public removeToken() {
     return localStorage.removeItem(this.tokenKey);

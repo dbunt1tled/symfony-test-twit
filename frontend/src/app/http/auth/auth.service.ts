@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {UserLogin} from '../../blog/models/auth/user-login';
 import {BlogService} from '../../blog/services/blog.service';
 import {TokenManagerService} from '../../guard/Token/token-manager.service';
+import {of} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -38,5 +39,8 @@ export class AuthService {
     return new Promise( (resolve, reject) => {
       resolve(!!this._tokenService.getToken());
     });
+  }
+  getUserName() {
+    return of(this._tokenService.getUserName());
   }
 }

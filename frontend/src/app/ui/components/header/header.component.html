@@ -24,7 +24,7 @@
           <app-notification></app-notification>
         </li>
         <li *ngIf="isLogin" class="nav-item text-nowrap">
-          <a class="nav-link" href="#">username</a>
+          <a class="nav-link" href="#">{{userName}}</a>
         </li>
         <li *ngIf="isLogin" class="nav-item text-nowrap">
           <a class="nav-link" href="#" (click)="logout()">Logout</a>

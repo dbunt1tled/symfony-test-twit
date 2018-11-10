@@ -19,7 +19,13 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this._authService.isLogin().then( (status) => {
-     this.isLogin = status;
+     return this.isLogin = status;
+    }).then( status => {
+      if(status){
+        this._authService.getUserName().subscribe(name => {
+          this.userName = name;
+        });
+      }
     });
   }
 
