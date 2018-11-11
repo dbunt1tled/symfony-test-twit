@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import {UserLogin} from '../models/auth/user-login';
+import {RefreshToken} from '../models/auth/refresh-token';
 
 @Injectable({
   providedIn: 'root'
@@ -25,5 +26,7 @@ export class BlogService {
   loginCheck(user: UserLogin) {
     return this._http.post(`${this.apiClient}/login_check`,user);
   }
-
+  refreshToken(refreshToken: RefreshToken) {
+    return this._http.post(`${this.apiClient}/token/refresh`,refreshToken);
+  }
 }

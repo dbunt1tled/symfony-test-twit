@@ -3,6 +3,7 @@ import {UserLogin} from '../../blog/models/auth/user-login';
 import {BlogService} from '../../blog/services/blog.service';
 import {TokenManagerService} from '../../guard/Token/token-manager.service';
 import {of} from 'rxjs';
+import {RefreshToken} from '../../blog/models/auth/refresh-token';
 
 @Injectable({
   providedIn: 'root'
@@ -42,5 +43,8 @@ export class AuthService {
   }
   getUserName() {
     return of(this._tokenService.getUserName());
+  }
+  refreshToken(refreshToken: RefreshToken) {
+    return this._blogService.refreshToken(refreshToken);
   }
 }

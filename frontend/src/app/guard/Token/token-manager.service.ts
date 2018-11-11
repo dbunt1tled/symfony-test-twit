@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {RefreshToken} from '../../blog/models/auth/refresh-token';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +40,10 @@ export class TokenManagerService {
     return this.getData('username');
   }
   public getRefreshToken() {
-    return this.getData('refresh_token');
+    let token: RefreshToken = {
+      refresh_token: this.getData('refresh_token'),
+    };
+    return token;
   }
   public removeToken() {
     return localStorage.removeItem(this.tokenKey);
