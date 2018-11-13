@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import {UserLogin} from '../models/auth/user-login';
 import {RefreshToken} from '../models/auth/refresh-token';
+import {Token} from '../models/auth/token';
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +25,9 @@ export class BlogService {
     return this._http.get(`${this.apiClient}/category/tree-all`);
   }
   loginCheck(user: UserLogin) {
-    return this._http.post(`${this.apiClient}/login_check`,user);
+    return this._http.post<Token>(`${this.apiClient}/login_check`,user);
   }
   refreshToken(refreshToken: RefreshToken) {
-    return this._http.post(`${this.apiClient}/token/refresh`,refreshToken);
+    return this._http.post<Token>(`${this.apiClient}/token/refresh`,refreshToken);
   }
 }

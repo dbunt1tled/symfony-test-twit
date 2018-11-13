@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {TokenManagerService} from '../../guard/Token/token-manager.service';
+import {Observable, from} from 'rxjs';
+import {AuthService} from '../auth/auth.service';
+import {switchMap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -9,19 +10,23 @@ import {TokenManagerService} from '../../guard/Token/token-manager.service';
 export class AuthInterceptService implements HttpInterceptor{
 
   constructor(
-    private _tokenManager: TokenManagerService,
+    private _authService: AuthService,
   ) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    let tokenKey = this._tokenManager.getToken();
-    if (!tokenKey) {
-      return next.handle(request);
-    }
-    let token = request.clone({
-      setHeaders: {
-        'Authorization': `Bearer ${tokenKey}`,
-      }
-    });
-    return next.handle(token);
+    return from(this._authService.isLogin()).pipe(
+      switchMap(token => {
+        if(!!token) {
+          let tokenNew = request.clone({
+            setHeaders: {
+              'Authorization': `Bearer ${token.token}`,
+            }
+          });
+          return next.handle(tokenNew);
+        }else{
+          return next.handle(request);
+        }
+
+      }));
   }
 }

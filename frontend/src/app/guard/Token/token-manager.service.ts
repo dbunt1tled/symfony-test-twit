@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import {RefreshToken} from '../../blog/models/auth/refresh-token';
+import {Token} from '../../blog/models/auth/token';
+//import {AuthService} from '../../http/auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -7,10 +9,13 @@ import {RefreshToken} from '../../blog/models/auth/refresh-token';
 export class TokenManagerService {
 
   private tokenKey: string = 'app_token';
-  constructor() { }
+  constructor(
+    //private _authService: AuthService,
+  ) { }
 
-  public setToken(content:Object) {
+  public setToken(content:Token) {
     localStorage.setItem(this.tokenKey, JSON.stringify(content));
+    // this._authService.updateLoginData(content);
   }
   private getTokenFromStorage() {
     let storedToken:string = localStorage.getItem(this.tokenKey);
@@ -33,6 +38,14 @@ export class TokenManagerService {
     }
     return data;
   }
+  public getFullToken(): Token {
+    try {
+      return JSON.parse(this.getTokenFromStorage());
+    }
+    catch(err) {
+      return null;
+    }
+  }
   public getToken() {
     return this.getData('token');
   }
@@ -46,6 +59,7 @@ export class TokenManagerService {
     return token;
   }
   public removeToken() {
-    return localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.tokenKey);
+    // this._authService.updateLoginData(null);
   }
 }

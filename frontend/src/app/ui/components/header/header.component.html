@@ -23,16 +23,16 @@
         <li class="nav-item text-nowrap border-right border-secondary">
           <app-notification></app-notification>
         </li>
-        <li *ngIf="isLogin" class="nav-item text-nowrap">
+        <li *ngIf="userName" class="nav-item text-nowrap">
           <a class="nav-link" href="#">{{userName}}</a>
         </li>
-        <li *ngIf="isLogin" class="nav-item text-nowrap">
+        <li *ngIf="userName" class="nav-item text-nowrap">
           <a class="nav-link" href="#" (click)="logout()">Logout</a>
         </li>
-        <li *ngIf="!isLogin" class="nav-item text-nowrap">
+        <li *ngIf="!userName" class="nav-item text-nowrap">
           <a class="nav-link" href="/login">Login</a>
         </li>
-        <li *ngIf="!isLogin" class="nav-item text-nowrap">
+        <li *ngIf="!userName" class="nav-item text-nowrap">
           <a class="nav-link" href="/register">Register</a>
         </li>
       </ul>
