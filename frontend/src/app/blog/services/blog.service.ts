@@ -35,4 +35,7 @@ export class BlogService {
   refreshToken(refreshToken: RefreshToken) {
     return this._http.post<Token>(`${this.apiClient}/token/refresh`,refreshToken);
   }
+  confirm(token: string) {
+    return this._http.get<StatusRegister>(`${this.apiClient}/auth/confirm/${token}`);
+  }
 }

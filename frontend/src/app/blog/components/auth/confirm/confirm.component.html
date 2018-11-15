@@ -1,0 +1,12 @@
+<h2>Confirm Account</h2>
+<div class="col-6 d-block mx-auto mt-3">
+  <div *ngIf="status.status == null" class="text-center"><i class="fa fa-circle fa-circle-o-notch fa-spin"></i></div>
+  <div *ngIf="status.status == true" class="text-center">
+    <h5>Congratulations!</h5>
+    <p>Dear, {{ status.message }}. Your account is confirmed! You can now sign in <a href="/login">here</a></p>
+  </div>
+  <div *ngIf="status.status == false" class="text-center">
+    <h5>Oops!</h5>
+    <p>{{ status.message }}</p>
+  </div>
+</div>

@@ -92,7 +92,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
     - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/api/auth/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: ^/api/auth, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api/token/refresh, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api/category/tree-all, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api/posts, roles: IS_AUTHENTICATED_ANONYMOUSLY }

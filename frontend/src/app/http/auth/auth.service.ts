@@ -3,9 +3,7 @@ import {UserLogin} from '../../blog/models/auth/user-login';
 import {BlogService} from '../../blog/services/blog.service';
 import {TokenManagerService} from '../../guard/Token/token-manager.service';
 import {BehaviorSubject, of} from 'rxjs';
-import {RefreshToken} from '../../blog/models/auth/refresh-token';
 import {Token} from '../../blog/models/auth/token';
-import {Router} from '@angular/router';
 import {UserRegister} from '../../blog/models/auth/user-register';
 import {StatusRegister} from '../../blog/models/auth/status-register';
 
@@ -17,7 +15,6 @@ export class AuthService {
   constructor(
     private _blogService: BlogService,
     private _tokenService: TokenManagerService,
-    private _router: Router,
   ) { }
 
   login(user: UserLogin) {
@@ -37,6 +34,22 @@ export class AuthService {
       });
     });
   }
+
+  confirm(token: string) {
+    return new Promise( (resolve, reject) => {
+      let resultStatus: StatusRegister = {'status':false, 'message':'Fail'};
+      this._blogService.confirm(token).subscribe( status => {
+        if(status.status) {
+          resolve(status);
+        } else {
+          resolve(status);
+        }/**/
+      }, (error) => {
+        reject(resultStatus);
+      });
+    });
+  }
+
   register(user: UserRegister) {
     return new Promise( (resolve, reject) => {
       let resultStatus: StatusRegister = {'status':false, 'message':'Fail'};

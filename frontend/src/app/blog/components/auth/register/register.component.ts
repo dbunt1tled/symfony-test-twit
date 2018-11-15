@@ -23,7 +23,7 @@ export class RegisterComponent implements OnInit {
       firstName: ['', [Validators.required, Validators.minLength(this.minSymbols)]],
       lastName: ['', [Validators.required, Validators.minLength(this.minSymbols)]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(this.minSymbols)]],
+      plainPassword: ['', [Validators.required, Validators.minLength(this.minSymbols)]],
       confirmPassword: ['', [Validators.required]],
     }, {validator: this.checkPasswords});
   }
@@ -32,9 +32,9 @@ export class RegisterComponent implements OnInit {
 
   checkPasswords (group: FormGroup) {
     let valuesForm = group.value;
-    const password = valuesForm.password;
+    const plainPassword = valuesForm.plainPassword;
     const confirmPassword = valuesForm.confirmPassword;
-    return password === confirmPassword ? null : {notSame: true}
+    return plainPassword === confirmPassword ? null : {notSame: true}
   }
   onSubmit() {
     this.submitted = true;
@@ -46,16 +46,25 @@ export class RegisterComponent implements OnInit {
       email: valuesForm.email,
       firstName: valuesForm.firstName,
       lastName: valuesForm.lastName,
-      plainPassword: valuesForm.password,
+      plainPassword: valuesForm.plainPassword,
     };
-    console.log(user);
     this._authService.register(user)
       .then((status: StatusRegister) =>{
-        console.log(status);
-        return false
         if(status.status) {
           this._authService.redirectToLogin();
         }else{
+          if(typeof status.message === 'object') {
+            for(let index in status.message) {
+              if (this.registerForm.controls[index]) {
+                this.registerForm.controls[index].setErrors({'incorrect': status.message[index]});
+              }else{
+                console.log('Error: ' + index + ' (' + status.message[index] + ')');
+              }
+            }
+          }
+          if(typeof status.message === 'string') {
+            console.log('Error: ' + status.message);
+          }
           return false;
         }
       })

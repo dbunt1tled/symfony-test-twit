@@ -7,9 +7,10 @@ import { DateFromSecPipe } from './pipes/date-from-sec.pipe';
 import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { ConfirmComponent } from './components/auth/confirm/confirm.component';
 
 @NgModule({
-  declarations: [PostsComponent, PostComponent, DateFromSecPipe, LoginComponent, RegisterComponent],
+  declarations: [PostsComponent, PostComponent, DateFromSecPipe, LoginComponent, RegisterComponent, ConfirmComponent],
   imports: [
     CommonModule,
     BlogRoutingModule,

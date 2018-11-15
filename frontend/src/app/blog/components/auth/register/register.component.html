@@ -7,6 +7,7 @@
       <div class="d-block invalid-feedback" *ngIf="submitted && getField.firstName.errors">
         <div *ngIf="getField.firstName.errors?.required">First Name is required</div>
         <div *ngIf="getField.firstName.errors?.minlength">First Name must be at least {{ minSymbols }} characters</div>
+        <div *ngIf="getField.firstName.errors?.incorrect">{{getField.firstName.errors?.incorrect}}</div>
       </div>
     </div>
 
@@ -16,6 +17,7 @@
       <div class="d-block invalid-feedback" *ngIf="submitted && getField.firstName.errors">
         <div *ngIf="getField.lastName.errors?.required">First Name is required</div>
         <div *ngIf="getField.lastName.errors?.minlength">Last Name must be at least {{ minSymbols }} characters</div>
+        <div *ngIf="getField.lastName.errors?.incorrect">{{getField.lastName.errors?.incorrect}}</div>
       </div>
     </div>
 
@@ -25,20 +27,22 @@
       <div class="d-block invalid-feedback" *ngIf="submitted && getField.email.errors">
         <div *ngIf="getField.email.errors?.required">Email is required</div>
         <div *ngIf="getField.email.errors?.email">Email wrong format</div>
+        <div *ngIf="getField.email.errors?.incorrect">{{getField.email.errors?.incorrect}}</div>
       </div>
     </div>
     <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.password.errors }" formControlName="password" id="password" name="password" required>
-      <div class="d-block invalid-feedback" *ngIf="submitted && getField.password.errors">
-        <div *ngIf="getField.password.errors?.required">Password is required</div>
+      <label for="plainPassword">Password</label>
+      <input type="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.plainPassword.errors }" formControlName="plainPassword" id="plainPassword" name="plainPassword" required>
+      <div class="d-block invalid-feedback" *ngIf="submitted && getField.plainPassword.errors">
+        <div *ngIf="getField.plainPassword.errors?.required">Password is required</div>
+        <div *ngIf="getField.plainPassword.errors?.incorrect">{{getField.plainPassword.errors?.incorrect}}</div>
       </div>
     </div>
     <div class="form-group">
       <label for="confirmPassword">Confirm Password</label>
       <input type="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.confirmPassword.errors }" formControlName="confirmPassword" id="confirmPassword" name="confirmPassword" required>
-      <div class="d-block invalid-feedback" *ngIf="submitted && (getField.confirmPassword.errors || registerForm.hasError('notSame'))">
-        <div *ngIf="submitted && registerForm.hasError('notSame')">Passwords do not match</div>
+      <div class="d-block invalid-feedback" *ngIf="submitted && (getField.confirmPassword.errors || registerForm.hasError('notSame') || registerForm.hasError('incorrect'))">
+        <div *ngIf="registerForm.hasError('notSame')">Passwords do not match</div>
         <div *ngIf="getField.confirmPassword.errors?.required">Confirm Password is required</div>
       </div>
     </div>
