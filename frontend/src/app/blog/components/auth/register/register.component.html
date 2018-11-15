@@ -1,3 +1,49 @@
-<p>
-  register works!
-</p>
+<h2>Register on Site</h2>
+<div class="col-6 d-block mx-auto mt-3">
+  <form novalidate [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="firstName">First Name</label>
+      <input type="text" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.firstName.errors }" formControlName="firstName" id="firstName" name="firstName" required>
+      <div class="d-block invalid-feedback" *ngIf="submitted && getField.firstName.errors">
+        <div *ngIf="getField.firstName.errors?.required">First Name is required</div>
+        <div *ngIf="getField.firstName.errors?.minlength">First Name must be at least {{ minSymbols }} characters</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="lastName">Last Name</label>
+      <input type="text" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.lastName.errors }" formControlName="lastName" id="lastName" name="lastName" required>
+      <div class="d-block invalid-feedback" *ngIf="submitted && getField.firstName.errors">
+        <div *ngIf="getField.lastName.errors?.required">First Name is required</div>
+        <div *ngIf="getField.lastName.errors?.minlength">Last Name must be at least {{ minSymbols }} characters</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.email.errors }" formControlName="email" id="email" name="email" required>
+      <div class="d-block invalid-feedback" *ngIf="submitted && getField.email.errors">
+        <div *ngIf="getField.email.errors?.required">Email is required</div>
+        <div *ngIf="getField.email.errors?.email">Email wrong format</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.password.errors }" formControlName="password" id="password" name="password" required>
+      <div class="d-block invalid-feedback" *ngIf="submitted && getField.password.errors">
+        <div *ngIf="getField.password.errors?.required">Password is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <input type="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.confirmPassword.errors }" formControlName="confirmPassword" id="confirmPassword" name="confirmPassword" required>
+      <div class="d-block invalid-feedback" *ngIf="submitted && (getField.confirmPassword.errors || registerForm.hasError('notSame'))">
+        <div *ngIf="submitted && registerForm.hasError('notSame')">Passwords do not match</div>
+        <div *ngIf="getField.confirmPassword.errors?.required">Confirm Password is required</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <button class="btn btn-primary btn-block">Register</button>
+    </div>
+  </form>
+</div>

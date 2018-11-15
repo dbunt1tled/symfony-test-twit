@@ -6,6 +6,8 @@ import {BehaviorSubject, of} from 'rxjs';
 import {RefreshToken} from '../../blog/models/auth/refresh-token';
 import {Token} from '../../blog/models/auth/token';
 import {Router} from '@angular/router';
+import {UserRegister} from '../../blog/models/auth/user-register';
+import {StatusRegister} from '../../blog/models/auth/status-register';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +20,7 @@ export class AuthService {
     private _router: Router,
   ) { }
 
-  login (user: UserLogin) {
+  login(user: UserLogin) {
     return new Promise( (resolve, reject) => {
       this._blogService.loginCheck(user).subscribe(token => {
         if(!!token) {
@@ -35,7 +37,21 @@ export class AuthService {
       });
     });
   }
-  logout () {
+  register(user: UserRegister) {
+    return new Promise( (resolve, reject) => {
+      let resultStatus: StatusRegister = {'status':false, 'message':'Fail'};
+      this._blogService.register(user).subscribe( status => {
+        if(status.status) {
+          resolve(status);
+        } else {
+          resolve(status);
+        }/**/
+      }, (error) => {
+        reject(resultStatus);
+      });
+    });
+  }
+  logout() {
     return new Promise( (resolve, reject) => {
       this._tokenService.removeToken();
       this.updateLoginData(null);
@@ -64,15 +80,17 @@ export class AuthService {
     });
   }
   redirectToLogin() {
-    if(this._router.url !== 'login'){
+    window.location.href = '/login';
+    /*if(this._router.url !== 'login'){
       return this._router.navigate(['login']);
-    }
+    }/**/
     return false;
   }
   redirectToMain() {
-    if(this._router.url !== ''){
+    window.location.href = '/';
+    /*if(this._router.url !== ''){
       return this._router.navigate(['/']);
-    }
+    }/**/
     return false;
   }
 }

@@ -1,20 +1,23 @@
-<form novalidate [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-  <div class="form-group">
-    <label for="username">Email</label>
-    <input type="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.username.errors }" formControlName="username" id="username" name="username" required>
-    <div class="d-block invalid-feedback" *ngIf="submitted && getField.username.errors">
-      <div *ngIf="getField.username.errors.required">Email is required</div>
-      <div *ngIf="getField.username.errors.email">Email wrong format</div>
+<h2>Login to your Account</h2>
+<div class="col-6 d-block mx-auto mt-3">
+  <form novalidate [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="username">Email</label>
+      <input type="email" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.username.errors }" formControlName="username" id="username" name="username" required>
+      <div class="d-block invalid-feedback" *ngIf="submitted && getField.username.errors">
+        <div *ngIf="getField.username.errors?.required">Email is required</div>
+        <div *ngIf="getField.username.errors?.email">Email wrong format</div>
+      </div>
     </div>
-  </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input type="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.password.errors }" formControlName="password" id="password" name="password" required>
-    <div class="d-block invalid-feedback" *ngIf="submitted && getField.password.errors">
-      <div *ngIf="getField.password.errors.required">Password is required</div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.password.errors }" formControlName="password" id="password" name="password" required>
+      <div class="d-block invalid-feedback" *ngIf="submitted && getField.password.errors">
+        <div *ngIf="getField.password.errors?.required">Password is required</div>
+      </div>
     </div>
-  </div>
-  <div class="form-group">
-    <button class="btn btn-primary btn-block">Login</button>
-  </div>
-</form>
+    <div class="form-group">
+      <button class="btn btn-primary btn-block">Login</button>
+    </div>
+  </form>
+</div>

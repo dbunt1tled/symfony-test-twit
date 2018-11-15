@@ -46,12 +46,6 @@ export class TokenManagerService {
       return null;
     }
   }
-  public getToken() {
-    return this.getData('token');
-  }
-  public getUserName() {
-    return this.getData('username');
-  }
   public getRefreshToken() {
     let token: RefreshToken = {
       refresh_token: this.getData('refresh_token'),

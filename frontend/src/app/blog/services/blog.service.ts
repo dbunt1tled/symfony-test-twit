@@ -4,6 +4,8 @@ import { environment } from '../../../environments/environment';
 import {UserLogin} from '../models/auth/user-login';
 import {RefreshToken} from '../models/auth/refresh-token';
 import {Token} from '../models/auth/token';
+import {UserRegister} from '../models/auth/user-register';
+import {StatusRegister} from '../models/auth/status-register';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +28,9 @@ export class BlogService {
   }
   loginCheck(user: UserLogin) {
     return this._http.post<Token>(`${this.apiClient}/login_check`,user);
+  }
+  register(user: UserRegister) {
+    return this._http.post<StatusRegister>(`${this.apiClient}/auth/register`,user);
   }
   refreshToken(refreshToken: RefreshToken) {
     return this._http.post<Token>(`${this.apiClient}/token/refresh`,refreshToken);
