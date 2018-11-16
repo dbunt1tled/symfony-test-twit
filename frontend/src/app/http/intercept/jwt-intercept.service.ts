@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import {Observable, of, throwError} from 'rxjs';
+import {catchError, flatMap} from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({
@@ -17,18 +17,19 @@ export class JwtInterceptService  implements HttpInterceptor{
     return next.handle(request).pipe(catchError(err => {
       if (err.status === 401) {
         // auto logout if 401 response returned from api
-        this._authService.isLogin().subscribe(token =>{
-          if(!!token){
-            this._authService.refreshToken().then( status => {
-              if(status) {
-                return this._authService.redirectToMain();
-              } else {
-                return this._authService.redirectToLogin();
+        this._authService.isLogin()
+          .pipe(
+            flatMap( token =>{
+              if(!!token){
+                return this._authService.refreshToken();
               }
-            }).catch(error => {
-              return this._authService.redirectToLogin();
-            });
+              return of(false)
+            })
+          ).subscribe( (status:any) => {
+          if(!!status) {
+            return this._authService.redirectToMain();
           }
+          return this._authService.redirectToLogin();
         });
       }
       const error = err.error.message || err.statusText;

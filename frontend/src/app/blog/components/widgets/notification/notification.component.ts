@@ -18,11 +18,6 @@ export class NotificationComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    /*this._authService.isLogin().subscribe(token => {
-      if(!!token){
-        this.userName = token.username;
-      }
-    });/**/
     this._authService.isLogin()
       .pipe(
         flatMap( token =>{
