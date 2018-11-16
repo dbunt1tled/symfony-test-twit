@@ -6,6 +6,7 @@ import {BehaviorSubject, of} from 'rxjs';
 import {Token} from '../../blog/models/auth/token';
 import {UserRegister} from '../../blog/models/auth/user-register';
 import {StatusRegister} from '../../blog/models/auth/status-register';
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ export class AuthService {
   constructor(
     private _blogService: BlogService,
     private _tokenService: TokenManagerService,
+    private _router: Router,
   ) { }
 
   login(user: UserLogin) {
