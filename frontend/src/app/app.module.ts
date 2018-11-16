@@ -7,6 +7,7 @@ import { UiModule } from './ui/ui.module';
 import {httpInterceptorProviders} from './http/intercept';
 import {HttpClientModule} from '@angular/common/http';
 import {AuthGuard} from './guard/auth/auth.guard';
+import {FlashMessagesModule} from 'angular2-flash-messages';
 
 @NgModule({
   declarations: [

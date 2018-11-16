@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {UserLogin} from '../../../models/auth/user-login';
 import {AuthService} from '../../../../http/auth/auth.service';
+import {FlashMessagesService} from 'angular2-flash-messages';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private _fb: FormBuilder,
     private _authService: AuthService,
+    private _flashMessage: FlashMessagesService,
   ) { }
 
   ngOnInit() {
@@ -36,6 +38,8 @@ export class LoginComponent implements OnInit {
       .then(token => {
         this._authService.redirectToMain();
       }).catch(err => {
+      this._flashMessage.show('Wrong login data',
+        {cssClass: 'alert-danger', closeOnClick: true, showCloseBtn: true, timeout: 3000 });
         console.log('Wrong login data');
     });
   }

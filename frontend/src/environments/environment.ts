@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  blogApi: 'http://first.local/api'
+  blogApi: 'http://rest.local/api'
 };
 
 /*
