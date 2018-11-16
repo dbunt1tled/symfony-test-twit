@@ -38,4 +38,7 @@ export class BlogService {
   confirm(token: string) {
     return this._http.get<StatusRegister>(`${this.apiClient}/auth/confirm/${token}`);
   }
+  notificationCountUnread() {
+    return this._http.get(`${this.apiClient}/notification/m-unread-count`);
+  }
 }
