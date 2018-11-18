@@ -1,6 +1,6 @@
-<a *ngIf="userName !== null" class="nav-link" href="#">
+<a *ngIf="userName !== null" class="nav-link" href="/notification/all">
   Notifications
-  <span class="badge badge-light" id="notification-count">
+  <span class="badge badge-secondary" style="background-color: #E83E8C;" id="notification-count">
     <i *ngIf="count === null" class="fa fa-circle fa-circle-o-notch fa-spin"></i>
     <strong *ngIf="count !== null">{{count}}</strong>
   </span>

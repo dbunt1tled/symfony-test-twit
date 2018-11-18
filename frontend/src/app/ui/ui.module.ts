@@ -8,9 +8,10 @@ import { CategoriesAllComponent } from '../blog/components/widgets/categories-al
 import { TreeNodeComponent } from '../blog/components/widgets/blocks/tree-node/tree-node.component';
 import {NotificationComponent} from '../blog/components/widgets/notification/notification.component';
 import {FlashMessagesModule} from 'angular2-flash-messages';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 @NgModule({
-  declarations: [LayoutComponent, HeaderComponent, FooterComponent,CategoriesAllComponent, TreeNodeComponent,NotificationComponent],
+  declarations: [LayoutComponent, HeaderComponent, FooterComponent,CategoriesAllComponent, TreeNodeComponent,NotificationComponent, SpinnerComponent],
   imports: [
     CommonModule,
     FlashMessagesModule.forRoot(),

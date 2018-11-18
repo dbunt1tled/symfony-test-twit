@@ -6,6 +6,7 @@ import {RefreshToken} from '../models/auth/refresh-token';
 import {Token} from '../models/auth/token';
 import {UserRegister} from '../models/auth/user-register';
 import {StatusRegister} from '../models/auth/status-register';
+import {UnreadNotifications} from '../models/auth/unread-notifications';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,9 @@ export class BlogService {
   getPosts(page: number, limit: number) {
     return this._http.get(`${this.apiClient}/posts?page=${page}&limit=${limit}`);
   }
+  getPost(slug: string) {
+    return this._http.get(`${this.apiClient}/posts/${slug}`);
+  }
   getCategoriesTreeAll() {
     return this._http.get(`${this.apiClient}/category/tree-all`);
   }
@@ -38,7 +42,17 @@ export class BlogService {
   confirm(token: string) {
     return this._http.get<StatusRegister>(`${this.apiClient}/auth/confirm/${token}`);
   }
-  notificationCountUnread() {
-    return this._http.get(`${this.apiClient}/notification/m-unread-count`);
+  getNotificationUnreadCount() {
+    return this._http.get(`${this.apiClient}/notification/unread-count`);
   }
+  getNotificationUnreadAll() {
+    return this._http.get<UnreadNotifications>(`${this.apiClient}/notification/all`);
+  }
+  notificationMarkAsReadAll() {
+    return this._http.post(`${this.apiClient}/notification/acknowledge-all`,{});
+  }
+  notificationMarkAsRead(id) {
+    return this._http.post(`${this.apiClient}/notification/acknowledge`,{id:id});
+  }
+
 }

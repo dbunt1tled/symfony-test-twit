@@ -23,7 +23,7 @@ export class NotificationComponent implements OnInit {
         flatMap( token =>{
           if(!!token){
             this.userName = token.username;
-            return this._blogService.notificationCountUnread();
+            return this._blogService.getNotificationUnreadCount();
           }
           return of(false)
         })

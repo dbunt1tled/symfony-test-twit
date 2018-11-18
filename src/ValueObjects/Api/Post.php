@@ -44,10 +44,24 @@ class Post
         $this->id = $post->getId();
         $this->text = $post->getText();
         $this->title = $post->getTitle();
-        $this->user = $post->getUser();
-        $this->category = $post->getCategory();
+        $user = $post->getUser();
+        $this->user = null;
+        if(is_object($user)) {
+            $this->user = new User($user);
+        }
+        $this->category = null;
+        $category = $post->getCategory();
+        if(is_object($category)) {
+            $this->category = new Category($category);
+        }
         $this->createdAt = $post->getCreatedAt();
-        $this->likedBy = $post->getLikedBy();
+        $this->likedBy = [];
+        $likedBy = $post->getLikedBy();
+        if(!empty($likedBy)) {
+            foreach ($likedBy as $user) {
+                array_push($this->likedBy,new User($user));
+            }
+        }
         $this->slug = $post->getSlug();
         $this->enabled = $post->getEnabled();
         return $this;
@@ -58,16 +72,32 @@ class Post
      */
     public function setByArray(array $post)
     {
-        $post['user']['fullName'] = $post['user']['firstName'] . ' ' . $post['user']['lastName'];
-        $this->id = $post['id'];
-        $this->text = $post['text'];
-        $this->title = $post['title'];
-        $this->user = $post['user'];
-        //$this->category = $post->getCategory();
-        $this->createdAt = $post['createdAt'];
-        //$this->likedBy = $post->getLikedBy();
-        $this->slug = $post['slug'];
-        $this->enabled = $post['enabled'];
+        if(isset($post['id'])) {
+            $this->id = (string)$post['id'];
+        }elseif(isset($post['_id'])) {
+            $this->id = (string)$post['_id'];
+        }
+        $this->text = $post['text']??$post['text'];
+        $this->title = $post['title']??$post['title'];
+        $this->user = null;
+        if(isset($post['user']['id'])|| isset($post['user']['_id'])) {
+            $this->user = new User($post['user']);
+        }
+        $this->category = null;
+        if(isset($post['category']['id'])|| isset($post['category']['_id'])) {
+            $this->category = new Category($post['category']);
+        }
+        $this->createdAt = $post['createdAt']??$post['createdAt'];
+        $this->likedBy = [];
+        if(!empty($post['likedBy'])) {
+            foreach ($post['likedBy'] as $user) {
+                if(isset($user['id'])|| isset($user['_id'])) {
+                    array_push($this->likedBy,new User($user));
+                }
+            }
+        }
+        $this->slug = $post['slug']??$post['slug'];
+        $this->enabled = $post['enabled']??$post['enabled'];
         return $this;
     }
 }

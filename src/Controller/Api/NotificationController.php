@@ -2,19 +2,18 @@
 
 namespace App\Controller\Api;
 
-use App\Entity\Notification;
-use App\Entity\User;
-use App\Document\User as MUser;
-use App\Document\Notification as MNotification;
-use App\Repository\NotificationRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Document\User;
+use App\Document\Notification;
+use App\Repositories\NotificationRepository;
+use App\ValueObjects\Api\Status;
+use Doctrine\Common\Collections\ArrayCollection;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
  * @Route("/api/notification")
@@ -26,42 +25,12 @@ class NotificationController extends AbstractController
      * @var NotificationRepository
      */
     private $notificationRepository;
-    /**
-     * @var SessionInterface
-     */
-    private $session;
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
-    /**
-     * @var FlashBagInterface
-     */
-    private $flashBag;
-    /**
-     * @var \App\Repositories\NotificationRepository
-     */
-    private $notificationMRepository;
 
     public function __construct(
-        NotificationRepository $notificationRepository,
-        \App\Repositories\NotificationRepository $notificationMRepository,
-        SessionInterface $session,
-        EntityManagerInterface $entityManager,
-        AuthorizationCheckerInterface $authorizationChecker,
-        FlashBagInterface $flashBag
+        NotificationRepository $notificationRepository
     )
     {
         $this->notificationRepository = $notificationRepository;
-        $this->session = $session;
-        $this->entityManager = $entityManager;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->flashBag = $flashBag;
-        $this->notificationMRepository = $notificationMRepository;
     }
 
     /**
@@ -71,7 +40,7 @@ class NotificationController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $count = $this->notificationRepository->findUnSeenByUser($user);
+        $count = (int) $this->notificationRepository->findCountUnSeenByUser($user);
         return $this->json([
             'count' => $count
         ], Response::HTTP_OK);
@@ -79,92 +48,80 @@ class NotificationController extends AbstractController
 
     /**
      * @Route("/all", name="api_notification_all")
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function notification()
     {
         /** @var User $user */
         $user = $this->getUser();
-        $notifications = $this->notificationRepository->findBy(['seen'=>false,'user'=>$user]);
-        return $this->render('notification/notification.html.twig',[
-            'notifications' => $notifications,
-        ]);
-    }
 
-    /**
-     * @Route("/acknowledge/{id}", name="api_notification_acknowledge")
-     * @param Notification $notification
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function acknowledge(Notification $notification)
-    {
-        $notification->setSeen(true);
-        $this->entityManager->persist($notification);
-        $this->entityManager->flush();
-        return $this->redirectToRoute('notification_all');
-    }
-
-    /**
-     * @Route("/acknowledge-all", name="api_notification_acknowledge_all")
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     */
-    public function acknowledgeAll()
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $this->notificationRepository->markAllAsReadByUser($user);
-        $this->entityManager->flush();
-        return $this->redirectToRoute('notification_all');
-    }
-
-    /**
-     * @Route("/m-all", name="api_notification_m_all")
-     */
-    public function mNotification()
-    {
-        /** @var MUser $user */
-        $user = $this->getUser();
-        $notifications = $this->notificationMRepository->findUnSeenByUser($user);
-        return $this->render('notification/m-notification.html.twig',[
-            'notifications' => $notifications,
-        ]);
-    }
-    /**
-     * @Route("/m-unread-count", name="api_notification_m_unread")
-     */
-    public function mUnreadCount()
-    {
-        /** @var MUser $user */
-        $user = $this->getUser();
-        $count = (int) $this->notificationMRepository->findCountUnSeenByUser($user);
+        $notifications = $this->notificationRepository->findUnSeenLikesByUser($user);
+        $notifications = array_map(function ($val){
+            return new \App\ValueObjects\Api\Notification($val);
+        },$notifications);
         return $this->json([
-            'count' => $count
+            'notifications' => $notifications
         ], Response::HTTP_OK);
     }
 
     /**
-     * @Route("/m-acknowledge/{id}", name="api_notification_m_acknowledge")
-     * @param MNotification $notification
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @Route("/acknowledge", name="api_notification_acknowledge")
+     * @Method({"POST"})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function mAcknowledge(MNotification $notification)
+    public function acknowledge(Request $request)
     {
-        $notification->setSeen(true);
-        $this->notificationMRepository->save($notification);
-        return $this->redirectToRoute('notification_m_all');
+        $status = new Status();
+        $content = $this->getContentAsArray($request);
+        try{
+            $notificationId = $content->get('id');
+            if(empty($notificationId)){
+                throw new \Exception('Wrong Notification');
+            }
+            $notification = $this->notificationRepository->findById($notificationId);
+            if(empty($notification)){
+                throw new \Exception('Notification not found');
+            }
+            $notification->setSeen(true);
+            $this->notificationRepository->save($notification);
+            $status->setSuccessStatus();
+        }catch (\Exception $e) {
+            $status->setFailureStatus($e->getMessage());
+        }
+        return $this->json($status, Response::HTTP_OK);
     }
 
     /**
-     * @Route("/m-acknowledge-all", name="api_notification_m_acknowledge_all")
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @throws \Doctrine\ODM\MongoDB\MongoDBException
+     * @Route("/acknowledge-all", name="api_notification_acknowledge_all")
+     * @Method({"POST"})
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function mAcknowledgeAll()
+    public function acknowledgeAll()
     {
-        /** @var MUser $user */
-        $user = $this->getUser();
-        $this->notificationMRepository->markAllAsReadByUser($user);
-        $this->entityManager->flush();
-        return $this->redirectToRoute('notification_m_all');
+        $status = new Status();
+        try{
+            /** @var User $user */
+            $user = $this->getUser();
+            $this->notificationRepository->markAllAsReadByUser($user);
+            $status->setSuccessStatus();
+        }catch (\Exception $e) {
+            $status->setFailureStatus($e->getMessage());
+        }
+        return $this->json($status, Response::HTTP_OK);
     }
 
+    protected function getContentAsArray(Request $request){
+        $content = $request->getContent();
+
+        if(empty($content)){
+            throw new BadRequestHttpException("Content is empty");
+        }
+
+        /*if(!Validator::isValidJsonString($content)){
+            throw new BadRequestHttpException("Content is not a valid json");
+        }/**/
+
+        return new ArrayCollection(json_decode($content, true));
+    }
 }

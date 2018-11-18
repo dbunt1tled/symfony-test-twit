@@ -5,6 +5,7 @@ import {PostComponent} from './components/post/post.component';
 import {LoginComponent} from './components/auth/login/login.component';
 import {RegisterComponent} from './components/auth/register/register.component';
 import {ConfirmComponent} from './components/auth/confirm/confirm.component';
+import {NotificationUnreadComponent} from './components/notification-unread/notification-unread.component';
 
 const routes: Routes = [
   {
@@ -23,6 +24,10 @@ const routes: Routes = [
   {
     path: 'confirm/:token',
     component: ConfirmComponent,
+  },
+  {
+    path: 'notification/all',
+    component: NotificationUnreadComponent,
   },
   {
     path: ':slug',

@@ -18,6 +18,11 @@ use Doctrine\ODM\MongoDB\UnitOfWork;
 
 class NotificationRepository extends DocumentRepository
 {
+    /** @var \MongoClient  */
+    private $db;
+    private $dbName;
+    private $connection;
+
     /**
      * UserRepository constructor.
      * @param DocumentManager $dm
@@ -27,6 +32,12 @@ class NotificationRepository extends DocumentRepository
     public function __construct(DocumentManager $dm, UnitOfWork $uow, ClassMetadata $classMetadata)
     {
         parent::__construct($dm, $uow, $classMetadata);
+
+        $this->dbName = getenv('MONGODB_DB');
+        $connection = $dm->getConnection();
+
+        $this->connection = $connection->getMongoClient();
+        $this->db = $this->connection->selectDB($this->dbName);
     }
 
     /**
@@ -56,6 +67,52 @@ class NotificationRepository extends DocumentRepository
             ->execute();
     }
 
+    public function findById($id)
+    {
+        if(! ($id instanceof \MongoId) ) {
+            $id = new \MongoId($id);
+        }
+        $qb = $this->dm->createQueryBuilder(Notification::class);
+        return $qb->field('id')->equals($id)
+            ->getQuery()
+            ->getSingleResult();
+    }
+    public function findUnSeenLikesByUser(User $user)
+    {
+        $query = [
+            'aggregate' => 'Notification',
+            'pipeline' => [
+                ['$match' => [
+                    '$and' => [
+                        ['type' => 'like'],
+                        ['seen' => false],
+                        ['user.$id' => new \MongoId($user->getId())]
+                    ],
+                ]],
+                ['$project' => ['_id' => 1, 'seen' => 1, 'type' => 1,
+                    'likedByObj' => $this->mongoArrayToObject('likedBy'),
+                    'postObj' => $this->mongoArrayToObject('post'),
+                    'userObj' => $this->mongoArrayToObject('user'),
+                ]],
+                    ['$lookup' => ['from' => 'User', 'localField' => 'likedByObj.id', 'foreignField' => '_id', 'as' => 'likedBy']],
+                    ['$lookup' => ['from' => 'Post', 'localField' => 'postObj.id', 'foreignField' => '_id', 'as' => 'post']],
+                    ['$project' => ['_id' => 1, 'seen' => 1, 'type' => 1,
+                        'likedBy' => [
+                            '$arrayElemAt' => ['$likedBy', 0],
+                        ],
+                        'post' => [
+                            '$arrayElemAt' => ['$post', 0],
+                        ],
+                        'user' => [
+                            '$arrayElemAt' => ['$user', 0],
+                        ],
+                    ]],
+                    ['$addFields' => ['id' => '$_id']],
+                ],
+            'cursor' => [],
+        ];
+        return $this->executeJsAll($query);
+    }
     /**
      * @param User $user
      * @return mixed
@@ -69,5 +126,41 @@ class NotificationRepository extends DocumentRepository
             ->field('seen')->set(true)
             ->getQuery()
             ->execute();
+    }
+
+    /**
+     * @param $query
+     * @return array|\MongoCommandCursor
+     */
+    public function executeJsAll($query)
+    {
+        $cursor = new \MongoCommandCursor($this->connection, $this->dbName, $query);
+        $cursor->setReadPreference($this->connection->getReadPreference());
+        return iterator_to_array($cursor);
+    }
+    public function executeJsFirst(array $query)
+    {
+        $results = $this->db->command($query);
+        return $results;
+    }
+
+    private function mongoArrayToObject(string $objName):array
+    {
+        return [
+            '$arrayToObject' => [
+                '$map' => [
+                    'input' => ['$objectToArray' => '$'.$objName],
+                    'in' => [
+                        'k' => [
+                            '$cond' => [
+                                ['$eq' => [['$substrCP' => ['$$this.k', 0, 1]], ['$literal' => '$']]],
+                                ['$substrCP' => ['$$this.k', 1, ['$strLenCP' => '$$this.k']]],
+                                '$$this.k'
+                            ]
+                        ],
+                        'v' => '$$this.v'
+                    ],
+                ],
+            ]];
     }
 }

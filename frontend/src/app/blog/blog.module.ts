@@ -8,9 +8,10 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { RegisterComponent } from './components/auth/register/register.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { ConfirmComponent } from './components/auth/confirm/confirm.component';
+import { NotificationUnreadComponent } from './components/notification-unread/notification-unread.component';
 
 @NgModule({
-  declarations: [PostsComponent, PostComponent, DateFromSecPipe, LoginComponent, RegisterComponent, ConfirmComponent],
+  declarations: [PostsComponent, PostComponent, DateFromSecPipe, LoginComponent, RegisterComponent, ConfirmComponent, NotificationUnreadComponent],
   imports: [
     CommonModule,
     BlogRoutingModule,

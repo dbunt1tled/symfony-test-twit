@@ -62,7 +62,6 @@ class Post
     public function __construct()
     {
         $this->likedBy = new ArrayCollection();
-        $this->user = new ArrayCollection();
     }
     /**
      * @return string
@@ -100,11 +99,10 @@ class Post
     }
 
     /**
-     * @return ArrayCollection
+     * @return User|null
      */
     public function getUser()
     {
-        $this->user = $this->user ?: new ArrayCollection();
         return $this->user;
     }
 
@@ -119,11 +117,10 @@ class Post
     }
 
     /**
-     * @return ArrayCollection
+     * @return Category
      */
     public function getCategory()
     {
-        $this->category = $this->category ?: new ArrayCollection();
         return $this->category;
     }
 
