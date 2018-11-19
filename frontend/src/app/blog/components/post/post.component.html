@@ -1,4 +1,5 @@
-<div class="my-3 p-3 bg-white rounded box-shadow">
+<div #spinnertag></div>
+<div *ngIf="post" class="my-3 p-3 bg-white rounded box-shadow">
   <h6 class="border-bottom border-grey pb-2 mb-0">{{post.title}}</h6>
   <div class="media text-muted pt-3">
     <img data-src="holder.js/32x32?text={{ post.user.username }}&bg=e83e8c&fg=fff&size=8" alt="img" class="mr-2 ml-2 img-thumbnail img-fluid">
@@ -10,11 +11,12 @@
     </p>
   </div>
   <div class="pt-2">
-    <button *ngIf="!isLiked" class="btn btn-outline-secondary btn-sm" id="unLikeBtn"><i class="fa fa-heart"></i>UnLike
-      <span class="badge badge-secondary" id="likesUnLike">{{ this.countLikes }}</span>
+    <button *ngIf="!isLiked" class="btn btn-outline-secondary btn-sm" (click)="like($event)"><i class="fa fa-heart-o"></i>
+      Like
+      <span class="badge badge-secondary">{{ countLikes }}</span>
     </button>
-    <button *ngIf="isLiked" class="btn btn-outline-danger btn-sm" id="likeBtn"><i class="fa fa-heart-o"></i>Like
-      <span class="badge badge-danger" id="likesLike">{{ countLikes }}</span>
+    <button *ngIf="isLiked" class="btn btn-outline-danger btn-sm" (click)="unLike($event)"><i class="fa fa-heart"></i>UnLike
+      <span class="badge badge-danger">{{ countLikes }}</span>
     </button>
   </div>
 </div>

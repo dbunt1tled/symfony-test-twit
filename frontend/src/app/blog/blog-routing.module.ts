@@ -6,6 +6,7 @@ import {LoginComponent} from './components/auth/login/login.component';
 import {RegisterComponent} from './components/auth/register/register.component';
 import {ConfirmComponent} from './components/auth/confirm/confirm.component';
 import {NotificationUnreadComponent} from './components/notification-unread/notification-unread.component';
+import {SpinnerTagComponent} from './components/spinner-tag/spinner-tag.component';
 
 const routes: Routes = [
   {
@@ -37,7 +38,7 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class BlogRoutingModule {
 }
