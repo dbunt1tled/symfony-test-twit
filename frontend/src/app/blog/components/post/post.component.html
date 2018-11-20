@@ -1,4 +1,4 @@
-<div #spinnertag></div>
+<div></div>
 <div *ngIf="post" class="my-3 p-3 bg-white rounded box-shadow">
   <h6 class="border-bottom border-grey pb-2 mb-0">{{post.title}}</h6>
   <div class="media text-muted pt-3">
@@ -11,12 +11,11 @@
     </p>
   </div>
   <div class="pt-2">
-    <button *ngIf="!isLiked" class="btn btn-outline-secondary btn-sm" (click)="like($event)"><i class="fa fa-heart-o"></i>
-      Like
-      <span class="badge badge-secondary">{{ countLikes }}</span>
-    </button>
-    <button *ngIf="isLiked" class="btn btn-outline-danger btn-sm" (click)="unLike($event)"><i class="fa fa-heart"></i>UnLike
-      <span class="badge badge-danger">{{ countLikes }}</span>
+    <button [ngClass]="{'btn btn-sm':1, 'btn-outline-secondary':!isLiked, 'btn-outline-danger':isLiked }" (click)="isLiked?unLike($event):like($event)">
+      <i [ngClass]="{'fa':1, 'fa-heart-o':!isLiked,'fa-heart':isLiked}"></i>
+       {{isLiked ? 'Unlike' : 'Like' }}
+      <span #spinnerTagWrap></span>
+      <span *ngIf="!spinnerTag" [ngClass]="{'badge':1, 'badge-secondary':!isLiked, 'badge-danger':isLiked}">{{ countLikes }}</span>
     </button>
   </div>
 </div>

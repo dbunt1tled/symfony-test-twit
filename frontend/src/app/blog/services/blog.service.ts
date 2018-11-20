@@ -54,5 +54,10 @@ export class BlogService {
   notificationMarkAsRead(id) {
     return this._http.post(`${this.apiClient}/notification/acknowledge`,{id:id});
   }
-
+  postLike(id) {
+    return this._http.post<StatusRegister>(`${this.apiClient}/likes/like`,{id:id});
+  }
+  postUnLike(id) {
+    return this._http.post<StatusRegister>(`${this.apiClient}/likes/unlike`,{id:id});
+  }
 }

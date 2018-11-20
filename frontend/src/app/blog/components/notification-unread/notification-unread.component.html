@@ -1,10 +1,10 @@
 <div class="card">
-  <div *ngIf="notifications" class="card-header">
+  <div class="card-header">
     <h5 class="card-title">Unread Notifications</h5>
   </div>
-  <div class="card-body">
+  <div *ngIf="notifications.length" class="card-body">
     <ul class="list-group list-group-flush">
-      <li class="list-group-item"><a class="btn btn-link btn-outline-info" (click)="markAll()">Mark all seen</a></li>
+      <li *ngIf="notifications.length > 1" class="list-group-item"><a class="btn btn-link btn-outline-info" (click)="markAll()">Mark all seen</a></li>
       <li *ngFor="let notification of notifications" class="list-group-item">
         <a href="/user/{{notification.likedBy.username}}">{{notification.likedBy.username}}</a>
         likes yours
@@ -13,7 +13,7 @@
       </li>
     </ul>
   </div>
-  <div *ngIf="!notifications"  class="card-body">
+  <div *ngIf="!notifications.length"  class="card-body">
     You have not Notifications
   </div>
 </div>

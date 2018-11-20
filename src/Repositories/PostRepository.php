@@ -59,20 +59,18 @@ class PostRepository extends DocumentRepository
         $this->dm->remove($post);
         $this->dm->flush();
     }
+
     /**
-     * @param string $field
-     * @param string $data
-     *
-     * @return array|null|object
+     * @param $field
+     * @param $data
+     * @return array|null|Post
      */
     public function findOneByProperty($field, $data)
     {
-        return
-            $this->dm->createQueryBuilder(Post::class)
-                ->eagerCursor(true)
-                ->field($field)->equals($data)
-                ->getQuery()
-                ->getSingleResult();
+        $qb = $this->dm->createQueryBuilder(Post::class);
+        return $qb->field($field)->equals($data)
+            ->getQuery()
+            ->getSingleResult();
     }
 
     /**
@@ -104,7 +102,7 @@ class PostRepository extends DocumentRepository
 
     /**
      * @param $data
-     * @return array|null|object
+     * @return array|null|Post
      * @throws \MongoException
      */
     public function findOneById($data)
@@ -112,7 +110,7 @@ class PostRepository extends DocumentRepository
         if (!($data instanceof \MongoId)) {
             $data = new \MongoId((string)$data);
         }
-        return $this->findOneByProperty('_id', $data);
+        return $this->findOneByProperty('id', $data);
     }
 
     public function getPosts(int $page = 1, int $limit = 20, bool $asArray = false)
