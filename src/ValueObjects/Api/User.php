@@ -17,18 +17,26 @@ class User
     public $email;
     public $username;
     public $fullName;
+    public $following;
+    public $followers;
     /**
-     * Post constructor.
-     * @param \App\Document\User|array|null $user
+     * @var bool
      */
-    public function __construct($user)
+    private $asArray;
+
+    /**
+     * User constructor.
+     * @param $user
+     * @param bool $asArray
+     */
+    public function __construct($user, $asArray = false)
     {
         if (is_object($user)) {
             $this->setByObject($user);
         } elseif (is_array($user)) {
             $this->setByArray($user);
         }
-
+        $this->asArray = $asArray;
     }
 
     /**
@@ -42,6 +50,25 @@ class User
         $this->firstName = $user->getFirstName();
         $this->username = $user->getUsername();
         $this->email = $user->getEmail();
+        $this->following = [];
+
+        $followings = $user->getFollowing();
+        if(is_object($followings)) {
+            foreach ($followings as $follow) {
+                if (is_object($follow)) {
+                    array_push($this->following,new User($follow->toArray()),true);
+                }
+            }
+        }
+        $this->followers = [];
+        $followers = $user->getFollowers();
+        if(is_object($followings)) {
+            foreach ($followers as $follow) {
+                if(is_object($follow)) {
+                    array_push($this->followers,new User($follow->toArray()));
+                }
+            }
+        }
         $this->fullName =  trim($this->firstName . ' ' . $this->lastName);
         return $this;
     }
@@ -56,10 +83,31 @@ class User
         }elseif (isset($user['_id'])) {
             $this->id = (string)$user['_id'];
         }
-        $this->lastName = $user['lastName']??$user['lastName'];
-        $this->firstName = $user['firstName']??$user['firstName'];
-        $this->email = $user['email']??$user['email'];
-        $this->username = $user['email']??$user['email'];
+        $this->lastName = $user['lastName'] ?? null;
+        $this->firstName = $user['firstName'] ?? null;
+        $this->email = $user['email'] ?? null;
+        $this->username = $user['email'] ?? null;
+        $this->following = [];
+
+        if(!empty($user['followings'])) {
+            foreach ($user['followings'] as $follow) {
+                if(is_object($follow) && $this->asArray) {
+                    array_push($this->following, null);
+                } else {
+                    array_push($this->following,new User($follow,true));
+                }
+            }
+        }
+        $this->followers = [];
+        if(!empty($user['followers']) && $this->asArray) {
+            foreach ($user['followers'] as $follow) {
+                if(is_object($follow)) {
+                    array_push($this->followers,null);
+                } else {
+                    array_push($this->followers,new User($follow));
+                }
+            }
+        }
         $this->fullName =  trim($this->firstName . ' ' . $this->lastName);
         return $this;
     }

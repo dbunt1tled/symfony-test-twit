@@ -64,15 +64,15 @@ class Notification
         }elseif (isset($notification['_id'])) {
             $this->id = (string)$notification['_id'];
         }
-        $this->type = $notification['type']??$notification['type'];
-        $this->seen = $notification['seen']??$notification['seen'];
+        $this->type = $notification['type'] ?? null;
+        $this->seen = $notification['seen'] ?? null;
         if(isset($notification['user']['id'])|| isset($notification['user']['_id'])) {
             $this->user = new User($notification['user']);
         }
-        if(isset($notification['post']['id'])|| isset($notification['post']['_id'])) {
+        if(isset($notification['post']['id']) || isset($notification['post']['_id'])) {
             $this->post = new Post($notification['post']);
         }
-        if(isset($notification['likedBy']['id'])|| isset($notification['likedBy']['_id'])) {
+        if(isset($notification['likedBy']['id']) || isset($notification['likedBy']['_id'])) {
             $this->likedBy = new User($notification['likedBy']);
         }
         return $this;

@@ -12,7 +12,7 @@ import {of} from 'rxjs';
   styleUrls: ['./post.component.sass']
 })
 export class PostComponent implements OnInit {
-  post: any;
+  public post: any;
   spinnerTag: boolean = false;
   isLiked: boolean = false;
   countLikes: any = 0;
@@ -36,9 +36,8 @@ export class PostComponent implements OnInit {
         flatMap( token =>{
           if(!!token){
             this.userName = token.username;
-            return this._blogService.getPost(slug);
           }
-          return of(false)
+          return this._blogService.getPost(slug);
         })
       ).subscribe( post =>{
       this.post = post;
@@ -69,6 +68,7 @@ export class PostComponent implements OnInit {
         this.isLiked = true;
       }else {
         console.log(status.message);
+        spinnerComponent.destroy();
       }
     });
     return false;
@@ -89,6 +89,7 @@ export class PostComponent implements OnInit {
         this.isLiked = false;
       }else {
         console.log(status.message);
+        spinnerComponent.destroy();
       }
     });
     return false;

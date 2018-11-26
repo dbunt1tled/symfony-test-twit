@@ -10,9 +10,10 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { ConfirmComponent } from './components/auth/confirm/confirm.component';
 import { NotificationUnreadComponent } from './components/notification-unread/notification-unread.component';
 import { SpinnerTagComponent } from './components/spinner-tag/spinner-tag.component';
+import { UserComponent } from './components/user/user.component';
 
 @NgModule({
-  declarations: [PostsComponent, PostComponent, DateFromSecPipe, LoginComponent, RegisterComponent, ConfirmComponent, NotificationUnreadComponent, SpinnerTagComponent],
+  declarations: [PostsComponent, PostComponent, DateFromSecPipe, LoginComponent, RegisterComponent, ConfirmComponent, NotificationUnreadComponent, SpinnerTagComponent, UserComponent],
   entryComponents: [SpinnerTagComponent],
   imports: [
     CommonModule,

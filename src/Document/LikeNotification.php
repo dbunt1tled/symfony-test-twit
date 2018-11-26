@@ -55,5 +55,9 @@ class LikeNotification extends Notification
         $this->likedBy = $likedBy;
         return $this;
     }
-
+    public function toArray() {
+        return get_object_vars($this);
+        // alternatively, you could do:
+        // return ['username' => $this->username, 'password' => '****']
+    }
 }

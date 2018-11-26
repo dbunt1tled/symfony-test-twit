@@ -7,6 +7,11 @@ api_login_check:
 gesdinet_jwt_refresh_token:
   path:     /api/token/refresh
   defaults: { _controller: gesdinet.jwtrefreshtoken:refresh }
+
+ApiFollowing:
+  resource: 'App\Controller\Api\FollowingController'
+  type: annotation
+
 ApiAuth:
   resource: 'App\Controller\Api\AuthController'
   type: annotation

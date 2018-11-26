@@ -24,4 +24,17 @@ export class PostsComponent implements OnInit {
       this.loaded = true;
     });
   }
+  setPosts(postsData) {
+    console.log(postsData);
+    if(!postsData) {
+      this._blogService.getPosts(1,20).subscribe(posts => {
+        this.posts = posts;
+        this.loaded = true;
+      });
+    }else{
+      this.posts = postsData;
+      this.loaded = true;
+    }
+    console.log(this.posts);
+  }
 }

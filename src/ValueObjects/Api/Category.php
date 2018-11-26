@@ -44,13 +44,12 @@ class Category
         $this->description = $category->getDescription();
         $this->title = $category->getTitle();
         $this->posts = [];
-        /*$posts = $category->getPosts();
+        $posts = $category->getPosts();
         if(!empty($posts)) {
             foreach ($posts as $post) {
-                array_push($this->posts,new Post($post));
+                array_push($this->posts,(new Post($post,true)));
             }
-        }/**/
-
+        }
         $parent = $category->getParent();
         if(!empty($parent)) {
             $parent = new Category($parent);
@@ -74,20 +73,20 @@ class Category
         }elseif(isset($post['_id'])) {
             $this->id = (string)$category['_id'];
         }
-        $this->description = $category['description']??$category['description'];
-        $this->title = $post['title']??$category['title'];
-        if(isset($category['parent']['id'])|| isset($category['parent']['_id'])) {
+        $this->description = $category['description'] ?? null;
+        $this->title = $post['title'] ?? null;
+        if(is_array($category) || isset($category['parent']['id'])|| isset($category['parent']['_id'])) {
             $this->parent = new Category($category['parent']);
         }
-        $this->createdAt = $post['createdAt']??$post['createdAt'];
+        $this->createdAt = $post['createdAt'] ?? null;
         $this->posts = [];
         if(!empty($post['posts'])) {
             foreach ($post['posts'] as $post) {
                 array_push($this->posts,new Post($post));
             }
         }
-        $this->slug = $post['slug']??$post['slug'];
-        $this->enabled = $post['enabled']??$post['enabled'];
+        $this->slug = $post['slug'] ?? null;
+        $this->enabled = $post['enabled'] ?? null;
         return $this;
     }
 }

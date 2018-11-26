@@ -21,12 +21,16 @@ class Post
     public $slug;
     public $enabled;
 
+    public $asArray;
+
     /**
      * Post constructor.
-     * @param \App\Document\Post|array|null $post
+     * @param $post
+     * @param bool $asArray
      */
-    public function __construct($post)
+    public function __construct($post, $asArray = false)
     {
+        $this->asArray = $asArray;
         if (is_object($post)) {
             $this->setByObject($post);
         } elseif (is_array($post)) {
@@ -47,18 +51,31 @@ class Post
         $user = $post->getUser();
         $this->user = null;
         if(is_object($user)) {
-            $this->user = new User($user);
+            if($this->asArray){
+                $this->user = new User($user->toArray());
+            }else{
+                $this->user = new User($user);
+            }
+
         }
         $this->category = null;
         $category = $post->getCategory();
+
         if(is_object($category)) {
-            $this->category = new Category($category);
+            if($this->asArray){
+                $this->category = new Category($category->toArray());
+            }else{
+                $this->category = new Category($category);
+            }
         }
         $this->createdAt = $post->getCreatedAt();
         $this->likedBy = [];
         $likedBy = $post->getLikedBy();
         if(!empty($likedBy)) {
             foreach ($likedBy as $user) {
+                if(is_object($user) && $this->asArray) {
+                    $user = $user->toArray();
+                }
                 array_push($this->likedBy,new User($user));
             }
         }
@@ -77,8 +94,8 @@ class Post
         }elseif(isset($post['_id'])) {
             $this->id = (string)$post['_id'];
         }
-        $this->text = $post['text']??$post['text'];
-        $this->title = $post['title']??$post['title'];
+        $this->text = $post['text'] ?? null;
+        $this->title = $post['title'] ?? null;
         $this->user = null;
         if(isset($post['user']['id'])|| isset($post['user']['_id'])) {
             $this->user = new User($post['user']);
@@ -87,7 +104,7 @@ class Post
         if(isset($post['category']['id'])|| isset($post['category']['_id'])) {
             $this->category = new Category($post['category']);
         }
-        $this->createdAt = $post['createdAt']??$post['createdAt'];
+        $this->createdAt = $post['createdAt'] ?? null;
         $this->likedBy = [];
         if(!empty($post['likedBy'])) {
             foreach ($post['likedBy'] as $user) {
@@ -96,8 +113,8 @@ class Post
                 }
             }
         }
-        $this->slug = $post['slug']??$post['slug'];
-        $this->enabled = $post['enabled']??$post['enabled'];
+        $this->slug = $post['slug'] ?? null;
+        $this->enabled = $post['enabled'] ?? null;
         return $this;
     }
 }

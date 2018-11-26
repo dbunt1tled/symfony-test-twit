@@ -96,11 +96,18 @@ class PostController extends AbstractController
     public function userPosts(User $userWithPosts)
     {
         $posts = $this->postRepository->findBy(['user' => $userWithPosts],['created_at'=>'DESC']);
-        //$posts = $userWithPosts->getPosts(); //This method not sorted
-        return $this->render('post/user-posts.html.twig',[
-            'posts' => $posts,
-            'user' => $userWithPosts,
-        ]);
+
+        //$posts = iterator_to_array($userWithPosts->getPosts()); //This method not sorted
+
+        $posts1 = array_map(function ($val){
+            return new \App\ValueObjects\Api\Post($val,true);
+        },$posts);
+        /**/
+        $user = new \App\ValueObjects\Api\User($userWithPosts,true);
+        return $this->json([
+            'posts' => $posts1,
+            'user' => $user,
+        ],Response::HTTP_OK);
     }
 
     /**

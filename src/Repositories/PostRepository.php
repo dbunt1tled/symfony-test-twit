@@ -159,7 +159,7 @@ class PostRepository extends DocumentRepository
                     ],
                 ]],
                 [ '$lookup' => ['from' => 'User','localField' => 'userobj.id','foreignField' => '_id','as' => 'user']],
-                [ '$project' => ['text' => 1,'title' => 1, 'slug' => 1, 'createdAt' => 1, 'updatedAt' => 1, 'enabled' => 1,
+                [ '$project' => ['text' => 1,'title' => 1, 'slug' => 1, 'createdAt' => 1, 'updatedAt' => 1, 'enabled' => 1, 'following' => 1 , 'followers' => 1,
                     'user' => [
                         '$arrayElemAt' => ['$user',0],
                     ],

@@ -5,7 +5,7 @@
     <img data-src="holder.js/32x32?text={{ post.user.username }}&bg=e83e8c&fg=fff&size=8" alt="img" class="mr-2 ml-2 img-thumbnail img-fluid">
     <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-grey">
           <span class="d-block">
-              <a [href]="post.user.username"><strong class="text-dark-grey">{{ post.user.fullName }}</strong></a> &nbsp; <span>{{ post.createdAt | dateFromSec:"en-US":"short"}}</span>
+              <a [routerLink]="['/user',post.user.username]"><strong class="text-dark-grey">{{ post.user.fullName }}</strong></a> &nbsp; <span>{{ post.createdAt | dateFromSec:"en-US":"short"}}</span>
           </span>
       {{ post.text }}
     </p>

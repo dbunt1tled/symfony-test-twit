@@ -7,6 +7,7 @@ import {Token} from '../models/auth/token';
 import {UserRegister} from '../models/auth/user-register';
 import {StatusRegister} from '../models/auth/status-register';
 import {UnreadNotifications} from '../models/auth/unread-notifications';
+import {UserPosts} from '../models/blog/user-posts';
 
 @Injectable({
   providedIn: 'root'
@@ -59,5 +60,14 @@ export class BlogService {
   }
   postUnLike(id) {
     return this._http.post<StatusRegister>(`${this.apiClient}/likes/unlike`,{id:id});
+  }
+  getUserWithPosts(username: string) {
+    return this._http.get<UserPosts>(`${this.apiClient}/posts/user/${username}`);
+  }
+  followUser(id) {
+    return this._http.post<StatusRegister>(`${this.apiClient}/following/follow`,{id:id});
+  }
+  unFollowUser(id) {
+    return this._http.post<StatusRegister>(`${this.apiClient}/following/unfollow`,{id:id});
   }
 }
