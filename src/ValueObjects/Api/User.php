@@ -56,7 +56,7 @@ class User
         if(is_object($followings)) {
             foreach ($followings as $follow) {
                 if (is_object($follow)) {
-                    array_push($this->following,new User($follow->toArray()),true);
+                    array_push($this->following,new User($follow->toArray()));
                 }
             }
         }
@@ -94,7 +94,7 @@ class User
                 if(is_object($follow) && $this->asArray) {
                     array_push($this->following, null);
                 } else {
-                    array_push($this->following,new User($follow,true));
+                    array_push($this->following,new User($follow));
                 }
             }
         }
