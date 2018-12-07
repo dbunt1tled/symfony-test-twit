@@ -17,5 +17,7 @@
       <span #spinnerTagWrap></span>
       <span *ngIf="!spinnerTag" [ngClass]="{'badge':1, 'badge-secondary':!isLiked, 'badge-danger':isLiked}">{{ countLikes }}</span>
     </button>
+    <a *ngIf="post.user.username === userName" [routerLink]="['',post.slug,'manage']" class="btn btn-sm btn-outline-warning ml-3">Edit</a>
   </div>
+
 </div>

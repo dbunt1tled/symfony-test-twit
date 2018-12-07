@@ -5,7 +5,7 @@ import {TokenManagerService} from '../../guard/Token/token-manager.service';
 import {BehaviorSubject, of} from 'rxjs';
 import {Token} from '../../blog/models/auth/token';
 import {UserRegister} from '../../blog/models/auth/user-register';
-import {StatusRegister} from '../../blog/models/auth/status-register';
+import {Status} from '../../blog/models/common/status';
 import {Router} from '@angular/router';
 
 @Injectable({
@@ -39,7 +39,7 @@ export class AuthService {
 
   confirm(token: string) {
     return new Promise( (resolve, reject) => {
-      let resultStatus: StatusRegister = {'status':false, 'message':'Fail'};
+      let resultStatus: Status = {'status':false, 'message':'Fail'};
       this._blogService.confirm(token).subscribe( status => {
         if(status.status) {
           resolve(status);
@@ -54,7 +54,7 @@ export class AuthService {
 
   register(user: UserRegister) {
     return new Promise( (resolve, reject) => {
-      let resultStatus: StatusRegister = {'status':false, 'message':'Fail'};
+      let resultStatus: Status = {'status':false, 'message':'Fail'};
       this._blogService.register(user).subscribe( status => {
         if(status.status) {
           resolve(status);

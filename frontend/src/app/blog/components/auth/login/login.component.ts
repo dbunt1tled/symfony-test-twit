@@ -12,7 +12,7 @@ import {FlashMessagesService} from 'angular2-flash-messages';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
-  submitted: boolean = false;
+  submitted = false;
   constructor(
     private _fb: FormBuilder,
     private _authService: AuthService,
@@ -32,8 +32,8 @@ export class LoginComponent implements OnInit {
     if (this.loginForm.invalid) {
       return;
     }
-    let valuesForm = this.loginForm.value;
-    let user: UserLogin = {username: valuesForm.username, password: valuesForm.password};
+    const valuesForm = this.loginForm.value;
+    const user: UserLogin = {username: valuesForm.username, password: valuesForm.password};
     this._authService.login(user)
       .then(token => {
         this._authService.redirectToMain();

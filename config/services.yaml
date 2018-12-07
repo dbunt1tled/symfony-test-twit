@@ -141,5 +141,10 @@ services:
         - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
         - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded }
         - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
+
+    #App\Form\Resolvers\Posts\CreatePostsResolver:
+    #    tags:
+    #        - { name: controller.argument_value_resolver, priority: 50 }
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -5,6 +5,7 @@ security:
         App\Document\User: bcrypt
         #for in_memory
         Symfony\Component\Security\Core\User\User: bcrypt
+        Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUser: bcrypt
         # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         #our providers

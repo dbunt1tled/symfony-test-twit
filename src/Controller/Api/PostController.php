@@ -4,18 +4,21 @@ namespace App\Controller\Api;
 
 use App\Document\Post;
 use App\Document\User;
+use App\Form\Api\DTO\PostAssembler;
+use App\Form\Api\Http\Requests\Posts\ManagePostsRequest;
 use App\Form\PostType;
+use App\Repositories\CategoryRepository;
 use App\Repositories\PostRepository;
 use App\Repositories\UserRepository;
+use App\ValueObjects\Api\Status;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
  * Class PostController
@@ -29,35 +32,29 @@ class PostController extends AbstractController
      */
     private $postRepository;
     /**
-     * @var SessionInterface
-     */
-    private $session;
-    /**
-     * @var AuthorizationCheckerInterface
-     */
-    private $authorizationChecker;
-    /**
-     * @var FlashBagInterface
-     */
-    private $flashBag;
-    /**
      * @var UserRepository
      */
     private $userRepository;
+    /**
+     * @var CategoryRepository
+     */
+    private $categoryRepository;
+    /**
+     * @var PostAssembler
+     */
+    private $postAssembler;
 
     public function __construct(
         postRepository $postRepository,
         UserRepository $userRepository,
-        SessionInterface $session,
-        AuthorizationCheckerInterface $authorizationChecker,
-        FlashBagInterface $flashBag
+        CategoryRepository $categoryRepository,
+        PostAssembler $postAssembler
     )
     {
         $this->postRepository = $postRepository;
-        $this->session = $session;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->flashBag = $flashBag;
         $this->userRepository = $userRepository;
+        $this->categoryRepository = $categoryRepository;
+        $this->postAssembler = $postAssembler;
     }
 
     /**
@@ -154,33 +151,6 @@ class PostController extends AbstractController
     }
 
     /**
-     * @Route("/edit/{id}", name="api_post_edit")
-     * @Security("is_granted('edit', post)", message="Access Denied")
-     * @param Post $post
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function edit(Post $post, Request $request)
-    {
-        //$this->denyAccessUnlessGranted(PostVoter::EDIT,$post);
-        /*
-        if (!$this->authorizationChecker->isGranted(PostVoter::EDIT,$post)){
-            throw new UnauthorizedHttpException();
-        }
-        /**/
-        $form = $this->createForm(PostType::class,$post);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->postRepository->save($post);
-            return $this->redirectToRoute('post_post',['slug' => $post->getSlug()]);
-        }
-        return $this->render('post/edit.html.twig',[
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
      * @Route("/{slug}", name="api_post_post")
      * @Method({"GET"})
      * @param $post
@@ -192,5 +162,55 @@ class PostController extends AbstractController
         $postVO = new \App\ValueObjects\Api\Post($post);
         header('Content-Type: cli');
         return $this->json($postVO, Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/{slug}/update", name="api_post_update")
+     * @Security("is_granted('edit', post)", message="Access Denied")
+     * @param Post $post
+     * @param ManagePostsRequest $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function edit(Post $post, ManagePostsRequest $request)
+    {
+        $status = new Status();
+        try {
+            $errors = $request->getErrors();
+            if (!empty($errors)) {
+                $field = key($errors);
+                $firstError = $errors[$field][0];
+                throw new BadRequestHttpException((string)$field.'::'.$firstError);
+            }
+            $this->postAssembler->updatePost($post, $request);
+            $this->postRepository->save($post);
+            $status->setSuccessStatus();
+        }catch (\Exception $e) {
+            $status->setFailureStatus($e->getMessage());
+        }
+        return $this->json($status, Response::HTTP_OK);
+    }
+
+    /**
+     * @Route("/{slug}/manage", name="api_post_manage")
+     * @Method({"GET"})
+     * @param $post
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function manage(Post $post)
+    {
+        // $post = $this->postRepository->find($id);
+        $postVO = new \App\ValueObjects\Api\Post($post,true);
+        $categories = $this->categoryRepository->getFullTree();
+        $categoriesResult = [];
+        if($categories) {
+            foreach ($categories as $category) {
+                $categoriesResult[] = new \App\ValueObjects\Api\Short\Category($category);
+            }
+        }
+        header('Content-Type: cli');
+        return $this->json([
+            'post' => $postVO,
+            'categories' => $categoriesResult,
+        ], Response::HTTP_OK);
     }
 }

@@ -6,7 +6,7 @@
  * Time: 12:42
  */
 
-namespace App\ValueObjects\Api;
+namespace App\ValueObjects\Api\Short;
 
 
 class Category
@@ -14,8 +14,6 @@ class Category
     public $id;
     public $description;
     public $title;
-    public $posts;
-    public $parent;
     public $createdAt;
     public $slug;
     public $level;
@@ -44,23 +42,9 @@ class Category
         $this->id = $category->getId();
         $this->description = $category->getDescription();
         $this->title = $category->getTitle();
-        $this->level = $category->getLevel();
-        $this->posts = [];
-        $posts = $category->getPosts();
-        if(!empty($posts)) {
-            foreach ($posts as $post) {
-                array_push($this->posts,(new Post($post->toArray(),true)));
-            }
-        }
-        $parent = $category->getParent();
-        if(!empty($parent)) {
-            $parent = new Category($parent);
-        }else {
-            $parent = null;
-        }
-        $this->parent = $parent;
         $this->createdAt = $category->getCreatedAt();
         $this->slug = $category->getSlug();
+        $this->level = $category->getLevel();
         $this->enabled = $category->getEnabled();
         return $this;
     }
@@ -76,24 +60,10 @@ class Category
             $this->id = (string)$category['_id'];
         }
         $this->description = $category['description'] ?? null;
-        $this->title = $post['title'] ?? null;
-        if(is_array($category) || isset($category['parent']['id'])|| isset($category['parent']['_id'])) {
-            $this->parent = new Category($category['parent']);
-        }
+        $this->title = $category['title'] ?? null;
         $this->createdAt = $category['createdAt'] ?? null;
-        $this->level = $category['level'] ?? null;
-        $this->posts = [];
-        if(!empty($category['posts'])) {
-            foreach ($category['posts'] as $post) {
-                if(is_object($post)) {
-                    array_push($this->posts,new Post($post->toArray()));
-                }else {
-                    array_push($this->posts,new Post($post));
-                }
-
-            }
-        }
         $this->slug = $category['slug'] ?? null;
+        $this->level = $category['level'] ?? null;
         $this->enabled = $category['enabled'] ?? null;
         return $this;
     }

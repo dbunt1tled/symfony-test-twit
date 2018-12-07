@@ -54,7 +54,7 @@ class Post
             if($this->asArray){
                 $this->user = new User($user->toArray());
             }else{
-                $this->user = new User($user);
+                $this->user = new User($user,true);
             }
 
         }
@@ -97,19 +97,20 @@ class Post
         $this->text = $post['text'] ?? null;
         $this->title = $post['title'] ?? null;
         $this->user = null;
-        if(isset($post['user']['id'])|| isset($post['user']['_id'])) {
+
+        if( is_array($post['user']) && (isset($post['user']['id'])|| isset($post['user']['_id'])) ) {
             $this->user = new User($post['user']);
         }
         $this->category = null;
-        if(isset($post['category']['id'])|| isset($post['category']['_id'])) {
+        if(isset($post['category']) && is_array($post['category']) &&  (isset($post['category']['id'])|| isset($post['category']['_id']))) {
             $this->category = new Category($post['category']);
         }
         $this->createdAt = $post['createdAt'] ?? null;
         $this->likedBy = [];
         if(!empty($post['likedBy'])) {
             foreach ($post['likedBy'] as $user) {
-                if(isset($user['id'])|| isset($user['_id'])) {
-                    array_push($this->likedBy,new User($user));
+                if(is_array($user) && (isset($user['id'])|| isset($user['_id'])) ) {
+                    array_push($this->likedBy, new User($user));
                 }
             }
         }

@@ -11,9 +11,21 @@ import { ConfirmComponent } from './components/auth/confirm/confirm.component';
 import { NotificationUnreadComponent } from './components/notification-unread/notification-unread.component';
 import { SpinnerTagComponent } from './components/spinner-tag/spinner-tag.component';
 import { UserComponent } from './components/user/user.component';
+import { PostManageComponent } from './components/post-manage/post-manage.component';
 
 @NgModule({
-  declarations: [PostsComponent, PostComponent, DateFromSecPipe, LoginComponent, RegisterComponent, ConfirmComponent, NotificationUnreadComponent, SpinnerTagComponent, UserComponent],
+  declarations: [
+    PostsComponent,
+    PostComponent,
+    DateFromSecPipe,
+    LoginComponent,
+    RegisterComponent,
+    ConfirmComponent,
+    NotificationUnreadComponent,
+    SpinnerTagComponent,
+    UserComponent,
+    PostManageComponent
+  ],
   entryComponents: [SpinnerTagComponent],
   imports: [
     CommonModule,

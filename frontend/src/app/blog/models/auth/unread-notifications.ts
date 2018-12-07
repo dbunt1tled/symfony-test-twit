@@ -1,3 +1,3 @@
 export interface UnreadNotifications {
-  notifications: null|object,
+  notifications: null|object;
 }

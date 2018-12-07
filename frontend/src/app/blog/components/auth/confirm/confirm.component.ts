@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AuthService} from '../../../../http/auth/auth.service';
-import {StatusRegister} from '../../../models/auth/status-register';
+import {Status} from '../../../models/common/status';
 import {ActivatedRoute} from '@angular/router';
 
 @Component({
@@ -10,7 +10,7 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class ConfirmComponent implements OnInit {
   private token: string = '';
-  private status: StatusRegister = {
+  private status: Status = {
     status: null,
     message: null,
   };
@@ -21,7 +21,7 @@ export class ConfirmComponent implements OnInit {
 
   ngOnInit() {
     this.token = this._activatedRoute.snapshot.params['token'];
-    this._authService.confirm(this.token).then( (status: StatusRegister) =>{
+    this._authService.confirm(this.token).then( (status: Status) =>{
       this.status = status;
     }).catch(error => {
       this.status = {

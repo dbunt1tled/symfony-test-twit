@@ -1,6 +1,6 @@
 export interface UserRegister {
-  firstName: string,
-  lastName: string,
-  email: string,
-  plainPassword:string,
+  firstName: string;
+  lastName: string;
+  email: string;
+  plainPassword:string;
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {AuthService} from '../../../../http/auth/auth.service';
 import {UserRegister} from '../../../models/auth/user-register';
-import {StatusRegister} from '../../../models/auth/status-register';
+import {Status} from '../../../models/common/status';
 
 @Component({
   selector: 'app-register',
@@ -10,9 +10,9 @@ import {StatusRegister} from '../../../models/auth/status-register';
   styleUrls: ['./register.component.sass']
 })
 export class RegisterComponent implements OnInit {
-  minSymbols: number = 3;
+  minSymbols = 3;
   registerForm: FormGroup;
-  submitted: boolean = false;
+  submitted = false;
   constructor(
     private _fb: FormBuilder,
     private _authService: AuthService,
@@ -38,26 +38,26 @@ export class RegisterComponent implements OnInit {
   }
   onSubmit() {
     this.submitted = true;
-    if(this.registerForm.invalid) {
-      return false
+    if (this.registerForm.invalid) {
+      return false;
     }
-    let valuesForm = this.registerForm.value;
-    let user: UserRegister = {
+    const valuesForm = this.registerForm.value;
+    const user: UserRegister = {
       email: valuesForm.email,
       firstName: valuesForm.firstName,
       lastName: valuesForm.lastName,
       plainPassword: valuesForm.plainPassword,
     };
     this._authService.register(user)
-      .then((status: StatusRegister) =>{
-        if(status.status) {
+      .then((status: Status) => {
+        if (status.status) {
           this._authService.redirectToLogin();
-        }else{
-          if(typeof status.message === 'object') {
-            for(let index in status.message) {
+        } else {
+          if (typeof status.message === 'object') {
+            for (const index in status.message) {
               if (this.registerForm.controls[index]) {
                 this.registerForm.controls[index].setErrors({'incorrect': status.message[index]});
-              }else{
+              } else {
                 console.log('Error: ' + index + ' (' + status.message[index] + ')');
               }
             }

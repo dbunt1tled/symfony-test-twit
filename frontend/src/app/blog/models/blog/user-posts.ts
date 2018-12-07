@@ -1,4 +1,7 @@
+import {Post} from './post';
+import {User} from './user';
+
 export interface UserPosts {
-  posts: []|null,
-  user: object,
+  posts: Post[]|null;
+  user: User;
 }

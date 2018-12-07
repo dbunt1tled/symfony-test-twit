@@ -3,7 +3,6 @@ import {BlogService} from '../../services/blog.service';
 import {ActivatedRoute} from '@angular/router';
 import {AuthService} from '../../../http/auth/auth.service';
 import {flatMap} from 'rxjs/operators';
-import {PostsComponent} from '../posts/posts.component';
 import {SpinnerTagComponent} from '../spinner-tag/spinner-tag.component';
 
 @Component({
@@ -15,11 +14,11 @@ export class UserComponent implements OnInit {
   @ViewChild('postTemplate', {read: ViewContainerRef}) viewContainerRefPost: ViewContainerRef;
   @ViewChild('spinnerTagWrap', {read: ViewContainerRef}) viewContainerRefFollow: ViewContainerRef;
 
-  spinnerTag: boolean = false;
-  userName: string = '';
+  spinnerTag = false;
+  userName = '';
   posts: any = null;
   user: any = null;
-  isFollow: boolean = false;
+  isFollow = false;
   constructor(
     private componentFactoryResolver: ComponentFactoryResolver,
     private _blogService: BlogService,
@@ -30,26 +29,26 @@ export class UserComponent implements OnInit {
 
   ngOnInit() {
 
-    let userNameView = this._activatedRoute.snapshot.params['username'];
+    const userNameView = this._activatedRoute.snapshot.params['username'];
     this._authService.isLogin()
       .pipe(
-        flatMap( token =>{
-          if(!!token){
+        flatMap( token => {
+          if (!!token) {
             this.userName = token.username;
           }
           return this._blogService.getUserWithPosts(userNameView);
         })
-      ).subscribe( data =>{
-        if(data.hasOwnProperty('posts') && data.posts.length){
+      ).subscribe( data => {
+        if (data.hasOwnProperty('posts') && data.posts.length) {
           this.posts = data.posts;
         }
-        if(data.hasOwnProperty('user') && data.user){
+        if (data.hasOwnProperty('user') && data.user) {
           this.user = data.user;
         }
-        if(this.userName) {
-          this.isFollow = this.findObjectByKey(this.user.followers,'username', this.userName);
+        if (this.userName) {
+          this.isFollow = this.findObjectByKey(this.user.followers, 'username', this.userName);
         }
-        if(this.posts) {
+        if (this.posts) {
           /*
           let componentFactory = this.componentFactoryResolver.resolveComponentFactory(PostsComponent);
           const postComponent =  this.viewContainerRefPost.createComponent(componentFactory);
@@ -61,19 +60,19 @@ export class UserComponent implements OnInit {
   }
   follow(event) {
 
-    if(!this.user.hasOwnProperty('id')) {
+    if (!this.user.hasOwnProperty('id')) {
       return false;
     }
-    let componentFactory = this.componentFactoryResolver.resolveComponentFactory(SpinnerTagComponent);
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(SpinnerTagComponent);
     const spinnerComponent =  this.viewContainerRefFollow.createComponent(componentFactory);
     this.spinnerTag = true;
     this.render.appendChild(event.target, spinnerComponent.location.nativeElement);
     this._blogService.followUser(this.user.id).subscribe(status => {
-      if(status.status) {
+      if (status.status) {
         this.spinnerTag = false;
         spinnerComponent.destroy();
         this.isFollow = true;
-      }else {
+      } else {
         console.warn(status.message);
         spinnerComponent.destroy();
       }
@@ -85,16 +84,16 @@ export class UserComponent implements OnInit {
     if(!this.user.hasOwnProperty('id')) {
       return false;
     }
-    let componentFactory = this.componentFactoryResolver.resolveComponentFactory(SpinnerTagComponent);
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(SpinnerTagComponent);
     const spinnerComponent =  this.viewContainerRefFollow.createComponent(componentFactory);
     this.spinnerTag = true;
     this.render.appendChild(event.target, spinnerComponent.location.nativeElement);
     this._blogService.unFollowUser(this.user.id).subscribe(status => {
       this.spinnerTag = false;
       spinnerComponent.destroy();
-      if(status.status) {
+      if (status.status) {
         this.isFollow = false;
-      }else {
+      } else {
         console.warn(status.message);
         spinnerComponent.destroy();
       }
@@ -104,7 +103,7 @@ export class UserComponent implements OnInit {
   findObjectByKey(array, key, value) {
     for (let i = 0; i < array.length; i++) {
       if (array[i][key] === value) {
-        //return array[i];
+        // return array[i];
         return true;
       }
     }

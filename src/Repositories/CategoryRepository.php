@@ -51,8 +51,16 @@ class CategoryRepository extends MaterializedPathRepository
         $this->dm->flush();
     }
 
+    /**
+     * @param $id
+     * @return array|object|null
+     * @throws \MongoException
+     */
     public function getByOneId($id)
     {
+        if (!($id instanceof \MongoId)) {
+            $id = new \MongoId((string)$id);
+        }
         return $this->createQueryBuilder()
             ->field('id')->equals($id)
             ->getQuery()
@@ -89,7 +97,8 @@ class CategoryRepository extends MaterializedPathRepository
             $stack = array();
             foreach ($tree as $id => $node) {
                 $item = (array)$node;
-                $item[$this->childrenIndex] = array();
+                $item['_id'] = $item['id'] = (string)$item['_id'];
+                $item[$this->childrenIndex] = [];
                 $l = count($stack);
                 while ($l > 0 && $stack[$l - 1]['level'] >= $item['level']) {
                     array_pop($stack);

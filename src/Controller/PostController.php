@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Document\Post;
 use App\Document\User;
 use App\Form\PostType;
+use App\Form\Requests\Posts\CreatePostsRequest;
 use App\Repositories\PostRepository;
 use App\Repositories\UserRepository;
 use Symfony\Component\HttpFoundation\Request;

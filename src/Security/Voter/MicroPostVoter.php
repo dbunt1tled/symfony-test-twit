@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use App\Document\Post;
 use App\Entity\MicroPost;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -27,7 +28,7 @@ class MicroPostVoter extends Voter
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, [self::EDIT,self::DELETE])
-            && $subject instanceof MicroPost;
+            && ($subject instanceof MicroPost || $subject instanceof Post);
     }
 
     protected function voteOnAttribute($attribute, $subject, TokenInterface $token)
@@ -38,11 +39,11 @@ class MicroPostVoter extends Voter
             return false;
         }
         /**
-         * @var MicroPost $microPost
+         * @var MicroPost|Post $post
          */
-        $microPost = $subject;
+        $post = $subject;
 
-        return (($microPost->getUser() === $user) || ($this->authorizationChecker->isGranted('ROLE_MODERATOR')) );
+        return (($post->getUser()->getId() === $user->getId()) || ($this->authorizationChecker->isGranted('ROLE_MODERATOR')) );
         /*
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
