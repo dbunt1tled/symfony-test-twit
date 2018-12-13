@@ -4,7 +4,7 @@ export interface Post {
   title: string;
   category: any;
   createdAt: any;
-  slug: string;
+  slug: any;
   likedBy: any;
   enabled: boolean;
   user: any;

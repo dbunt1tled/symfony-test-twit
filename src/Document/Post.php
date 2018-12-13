@@ -83,7 +83,7 @@ class Post
     /**
      * @return string
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -101,7 +101,7 @@ class Post
     /**
      * @return User|null
      */
-    public function getUser()
+    public function getUser(): ?User
     {
         return $this->user;
     }
@@ -133,9 +133,7 @@ class Post
         $this->category = $category;
         return $this;
     }
-    /**
-     * @return ArrayCollection
-     */
+
     public function getLikedBy()
     {
         $this->likedBy = $this->likedBy ?: new ArrayCollection();
@@ -153,7 +151,12 @@ class Post
             $this->likedBy->removeElement($user);
         }
     }
-    public function toArray() {
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
         return get_object_vars($this);
         // alternatively, you could do:
         // return ['username' => $this->username, 'password' => '****']

@@ -59,6 +59,24 @@ class CategoryController extends AbstractController
         $tree = $this->categoryRepository->getFullTreeArray();
         return $this->json($tree, Response::HTTP_OK);
     }
+    /**
+     * @Route("/tree-all-drop-down", name="api_category_tree_all_drop_down")
+     * @Method({"GET"})
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function categoriesTreeAllDropDown()
+    {
+        $categoriesResult = [];
+        $categories = $this->categoryRepository->getFullTree();
+        if($categories) {
+            foreach ($categories as $category) {
+                $categoriesResult[] = new \App\ValueObjects\Api\Short\Category($category);
+            }
+        }
+        return $this->json([
+            'categories' => $categoriesResult,
+        ], Response::HTTP_OK);
+    }
 
     /**
      * @Route("/{slug}", name="api_post_post")

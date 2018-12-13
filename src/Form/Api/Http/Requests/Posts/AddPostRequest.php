@@ -20,7 +20,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validation;
 
-class ManagePostsRequest implements RequestDTOInterface, PostDTOInterface
+class AddPostRequest implements RequestDTOInterface, PostDTOInterface
 {
     /**
      * @var string

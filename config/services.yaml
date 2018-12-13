@@ -142,6 +142,16 @@ services:
         - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded }
         - { name: kernel.event_listener, event: lexik_jwt_authentication.on_authentication_success, method: onAuthenticationSuccessResponse }
 
+#    slug_validator:
+#        class: App\Validator\Constraints\SlugValidator
+#        arguments:
+#        #        - "@doctrine.orm.entity_manager"
+#        tags:
+#            -
+#                name: validator.constraint_validator
+#                alias: slug
+
+
     #App\Form\Resolvers\Posts\CreatePostsResolver:
     #    tags:
     #        - { name: controller.argument_value_resolver, priority: 50 }

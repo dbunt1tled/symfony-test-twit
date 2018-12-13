@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Document\Post;
 use App\Document\User;
 use App\Form\Api\DTO\PostAssembler;
+use App\Form\Api\Http\Requests\Posts\AddPostRequest;
 use App\Form\Api\Http\Requests\Posts\ManagePostsRequest;
 use App\Form\PostType;
 use App\Repositories\CategoryRepository;
@@ -86,6 +87,38 @@ class PostController extends AbstractController
     }
 
     /**
+     * @Route("/add", name="api_post_add")
+     * @Method({"POST"})
+     * @param AddPostRequest $request
+     * @Security("is_granted('ROLE_USER')", message="Access Denied")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function add(AddPostRequest $request)
+    {
+        /*if (!$this->authorizationChecker->isGranted('ROLE_USER')){
+            throw new UnauthorizedHttpException();
+        }/**/
+        $status = new Status();
+        try {
+            $errors = $request->getErrors();
+            if (!empty($errors)) {
+                $field = key($errors);
+                $firstError = $errors[$field][0];
+                throw new BadRequestHttpException($field  .'::' . $firstError);
+            }
+            $post = $this->postAssembler->createPost($request);
+            $post->setUser($this->getUser());
+            $this->postRepository->save($post);
+
+            $status->setSuccessStatus($post->getSlug());
+
+        }catch (\Exception $e) {
+            $status->setFailureStatus($e->getMessage());
+        }
+        return $this->json($status, Response::HTTP_OK);
+    }
+
+    /**
      * @Route("/user/{email}", name="api_post_user")
      * @param User $userWithPosts
      * @return \Symfony\Component\HttpFoundation\Response
@@ -105,31 +138,6 @@ class PostController extends AbstractController
             'posts' => $posts1,
             'user' => $user,
         ],Response::HTTP_OK);
-    }
-
-    /**
-     * @Route("/add", name="api_post_add")
-     * @param Request $request
-     * @Security("is_granted('ROLE_USER')", message="Access Denied")
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function add(Request $request)
-    {
-        /*if (!$this->authorizationChecker->isGranted('ROLE_USER')){
-            throw new UnauthorizedHttpException();
-        }/**/
-        $post = new Post();
-        $form = $this->createForm(PostType::class,$post);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $post->setUser($this->getUser());
-            $this->postRepository->save($post);
-            return $this->redirectToRoute('post_index');
-        }
-        return $this->render('post/add.html.twig',[
-            'form' => $form->createView(),
-        ]);
     }
     /**
      * @Route("/delete/{id}", name="api_post_delete")
@@ -179,7 +187,7 @@ class PostController extends AbstractController
             if (!empty($errors)) {
                 $field = key($errors);
                 $firstError = $errors[$field][0];
-                throw new BadRequestHttpException((string)$field.'::'.$firstError);
+                throw new BadRequestHttpException($field . '::' . $firstError);
             }
             $this->postAssembler->updatePost($post, $request);
             $this->postRepository->save($post);

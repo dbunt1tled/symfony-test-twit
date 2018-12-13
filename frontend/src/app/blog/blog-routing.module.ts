@@ -21,6 +21,7 @@ const routes: Routes = [
   { path: 'confirm/:token', component: ConfirmComponent, },
   { path: 'user/:username', component: UserComponent, },
   { path: 'notification/all', component: NotificationUnreadComponent, },
+  { path: 'manage/add', component: PostManageComponent },
   { path: ':slug/manage', component: PostManageComponent },
   { path: ':slug', component: PostComponent, },
 ];

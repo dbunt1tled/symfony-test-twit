@@ -27,8 +27,14 @@ export class BlogService {
   getPostForManage(slug: string) {
     return this._http.get<any>(`${this.apiClient}/posts/${slug}/manage`);
   }
-  getPostUpdate(post: Post) {
-    return this._http.post<Status>(`${this.apiClient}/posts/${post.slug}/update`, post);
+  getCategoriesDropDown() {
+    return this._http.get<any>(`${this.apiClient}/category/tree-all-drop-down`);
+  }
+  postUpdate(slug: string, post: Post) {
+    return this._http.post<Status>(`${this.apiClient}/posts/${slug}/update`, post);
+  }
+  postAdd(post: Post) {
+    return this._http.post<Status>(`${this.apiClient}/posts/add`, post);
   }
   getCategoriesTreeAll() {
     return this._http.get(`${this.apiClient}/category/tree-all`);

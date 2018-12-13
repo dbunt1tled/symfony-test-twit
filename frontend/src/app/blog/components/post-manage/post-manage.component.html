@@ -24,9 +24,8 @@
 
     <div class="form-group">
       <label for="slug">Slug</label>
-      <input type="text" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.slug.errors }" formControlName="slug" id="slug" name="slug" required>
+      <input type="text" class="form-control" [ngClass]="{ 'is-invalid': submitted && getField.slug.errors }" formControlName="slug" id="slug" name="slug">
       <div class="d-block invalid-feedback" *ngIf="submitted && getField.slug.errors">
-        <div *ngIf="getField.slug.errors?.required">Slug is required</div>
         <div *ngIf="getField.slug.errors?.minSymbols">Slug must be at least {{ minSymbols }} characters</div>
         <div *ngIf="getField.slug.errors?.incorrect">{{getField.slug.errors?.incorrect}}</div>
       </div>

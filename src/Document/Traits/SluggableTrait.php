@@ -38,8 +38,11 @@ trait SluggableTrait
      *
      * @return $this
      */
-    public function setSlug($slug): self
+    public function setSlug(?string $slug): self
     {
+        if ($slug === '') {
+            $slug = null;
+        }
         $this->slug = $slug;
         return $this;
     }
